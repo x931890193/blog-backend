@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+option go_package = "../proto";
+package proto;
+
+
+message LoginAdminRequest{
+  string username = 1;
+  string password = 2;
+}
+
+message LoginAdminResp{
+  uint32 code = 1;
+  string msg = 2;
+  string token = 3;
+}
+
+message LogoutAdminRequest{
+  string token = 1;
+}
+
+message LogoutAdminResp{
+  uint32 code = 1;
+  string msg = 2;
+}
+
+message AdminInfoResp {
+  string name = 1;
+  string avatar = 2;
+  string job = 3;
+  string organization = 4;
+  string location = 5;
+  string email = 6;
+  string introduction = 7;
+  string personalWebsite = 8;
+  string jobName = 9;
+  string organizationName = 10;
+  string locationName = 11;
+  string phone = 12;
+  string registrationDate = 13;
+  string accountId = 14;
+  string certification = 15;
+  string role = 16;
+  uint32 code = 17;
+  string msg = 18;
+}
+
