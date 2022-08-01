@@ -45,3 +45,87 @@ message AdminInfoResp {
   string msg = 18;
 }
 
+message Comment {
+  string _id = 1;
+  string avatar = 2;
+  string username = 3;
+  string label = 4;
+  string createDate = 5;
+  string content = 6;
+  repeated Comment children = 7;
+  string parentUsername = 8;
+
+}
+
+message CommentListResp {
+
+  message Pagination {
+    uint32 countTotal = 1;
+    uint32 totalPage = 2;
+    uint32 currentPage = 3;
+
+
+  }
+  uint32 code = 1;
+  string msg = 2;
+  repeated Comment list = 4;
+  Pagination pagination = 5;
+
+
+}
+
+message CommentAddRequest {
+  string content = 1;
+  string articleId = 2;
+  string parentId = 3;
+}
+
+message CommentAddResp {
+  uint32 code = 1;
+  string msg = 2;
+  Comment data = 3;
+}
+
+message CatchMe {
+  string git = 1;
+  string job = 2;
+
+}
+message AboutResp {
+  uint32 code = 1;
+  string msg = 2;
+  string likeNum = 3;
+  CatchMe catchMe = 4;
+  repeated string descriptions = 5;
+
+}
+
+message SiteInfoResp {
+  uint32 code = 1;
+  string msg = 2;
+  string author =3;
+  string github = 4;
+  string beian = 5;
+}
+
+message BrowseList {
+  string articleId = 1;
+  string title = 2;
+  uint32 count = 3;
+}
+
+message TopCommentList {
+  string articleId = 1;
+  string avatar = 2;
+  string title = 3;
+  string username = 4;
+  string content = 5;
+}
+
+message TopCommentResp {
+  uint32 code = 1;
+  string msg = 2;
+  string loveCount = 3;
+  repeated BrowseList browseList = 4;
+  repeated TopCommentList topCommentList = 5;
+}
