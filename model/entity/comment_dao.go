@@ -40,3 +40,11 @@ func (c *Comment) GetCommentListById(pageSize, CurrentPage int) ([]*Comment, err
 	parentRes = append(parentRes, grandRes...)
 	return parentRes, nil
 }
+
+func (c *Comment) GetTopComment(limit int) ([]*Comment, error) {
+	var res []*Comment
+	if err := conn.MysqlConn.Model(&c).Where("parent_id = 0").Order("created_at DESC").Limit(limit).Find(&res).Error; err != nil {
+		return nil, err
+	}
+	return res, nil
+}

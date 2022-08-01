@@ -86,6 +86,10 @@ func getAllChildrenComment(dbRes []*entity.Comment, parentId uint, userMap map[i
 }
 
 func GetCommentList(ArticleId string, pageSize, CurrentPage int) (*pb.CommentListResp, error) {
+	var (
+		res            []*pb.Comment
+		commentUserIds []int
+	)
 	article := &entity.Article{}
 	if id, ok := config.ArticleIdmap[ArticleId]; ok {
 		article.ID = id
@@ -100,22 +104,14 @@ func GetCommentList(ArticleId string, pageSize, CurrentPage int) (*pb.CommentLis
 	if err != nil {
 		return nil, err
 	}
-	var commentUserIds []int
-	//var commentMap = map[int]*entity.Comment{}
-
 	for _, item := range dbRes {
 		//commentMap[item.ID] = item
 		commentUserIds = append(commentUserIds, item.UserId)
 	}
-	userMap := map[int]entity.User{}
-	users, err := GetUsersByIds(commentUserIds)
+	userMap, err := GetUsersMapByIds(commentUserIds)
 	if err != nil {
 		return nil, err
 	}
-	for _, user := range users {
-		userMap[user.ID] = user
-	}
-	var res []*pb.Comment
 	res = getAllChildrenComment(dbRes, 0, userMap)
 	resp := pb.CommentListResp{}
 	resp.List = res
@@ -126,4 +122,64 @@ func GetCommentList(ArticleId string, pageSize, CurrentPage int) (*pb.CommentLis
 	}
 
 	return &resp, nil
+}
+
+func NewTempArticle(id int) *entity.Article {
+	article := &entity.Article{}
+	if title, ok := config.ArticleIdmapReverse[id]; ok {
+		article.Title = title
+	} else {
+		article.Title = "未知title"
+	}
+	return article
+}
+
+// GetTopComment comment  and most click
+func GetTopComment() (*pb.TopCommentResp, error) {
+	var (
+		comment        entity.Comment
+		commentUserIds []int
+	)
+	res := &pb.TopCommentResp{BrowseList: []*pb.BrowseList{}, TopCommentList: []*pb.TopCommentList{}}
+	articleMap, err := entity.GetArticleMap(10)
+	if err != nil {
+		return nil, err
+	}
+	topCommentList, err := comment.GetTopComment(10)
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range topCommentList {
+		commentUserIds = append(commentUserIds, item.UserId)
+	}
+	userMap, err := GetUsersMapByIds(commentUserIds)
+	if err != nil {
+		return nil, err
+	}
+	for _, commentItem := range topCommentList {
+		user := &entity.User{}
+		article := &entity.Article{}
+		if _, ok := userMap[commentItem.UserId]; !ok {
+			user = NewTempUser()
+		}
+
+		if _, ok := articleMap[commentItem.ArticleId]; !ok {
+			article = NewTempArticle(commentItem.ArticleId)
+		} else {
+			res.BrowseList = append(res.BrowseList, &pb.BrowseList{
+				ArticleId: strconv.Itoa(commentItem.ArticleId),
+				Title:     article.Title,
+				Count:     uint32(article.ClickTimes),
+			})
+		}
+		res.TopCommentList = append(res.TopCommentList, &pb.TopCommentList{
+			ArticleId: strconv.Itoa(commentItem.ArticleId),
+			Avatar:    user.Avatar,
+			Title:     article.Title,
+			Username:  user.UserName,
+			Content:   commentItem.Content,
+		})
+
+	}
+	return res, nil
 }

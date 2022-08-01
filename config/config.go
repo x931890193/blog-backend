@@ -21,6 +21,11 @@ var (
 		"message":     -2,
 		"friendslink": -3,
 	}
+	ArticleIdmapReverse = map[int]string{
+		-1: "aboutme",
+		-2: "message",
+		-3: "friendslink",
+	}
 	UserTags = []string{"天然呆", "小萌新", "学霸", "萌萌哒", "技术宅", "忠实粉"}
 )
 

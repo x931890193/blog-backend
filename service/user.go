@@ -43,3 +43,15 @@ func GetUsersByIds(ids []int) ([]entity.User, error) {
 	}
 	return users, nil
 }
+
+func GetUsersMapByIds(ids []int) (map[int]entity.User, error) {
+	userMap := map[int]entity.User{}
+	users, err := entity.GetUsersByIDs(ids)
+	if err != nil {
+		return nil, err
+	}
+	for _, user := range users {
+		userMap[user.ID] = user
+	}
+	return userMap, nil
+}

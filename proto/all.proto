@@ -103,7 +103,7 @@ message AboutResp {
 message SiteInfoResp {
   uint32 code = 1;
   string msg = 2;
-  string author =3;
+  string author = 3;
   string github = 4;
   string beian = 5;
 }
@@ -128,4 +128,30 @@ message TopCommentResp {
   string loveCount = 3;
   repeated BrowseList browseList = 4;
   repeated TopCommentList topCommentList = 5;
+}
+
+message ClassList {
+  uint32 count = 1;
+  string createDate = 2;
+  string lastModifiedDate = 3;
+  string name = 4;
+  uint32 state = 5;
+  uint32 _id = 6;
+}
+message ListYear {
+  message ListItem {
+    string createDate = 1;
+    string title = 2;
+    uint32 _id = 3;
+  }
+  repeated ListItem list = 1;
+  string year = 2;
+}
+
+message ListByClass {
+  uint32 code = 1;
+  string msg = 2;
+  repeated ListYear articleList = 3;
+  repeated ClassList classList = 4;
+
 }

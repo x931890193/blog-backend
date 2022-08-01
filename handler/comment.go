@@ -36,8 +36,14 @@ func AddComment(c *gin.Context) {
 }
 
 func GetTopComments(c *gin.Context) {
-	resp := pb.TopCommentResp{}
-	c.ProtoBuf(http.StatusOK, &resp)
+	resp, err := service.GetTopComment()
+	if err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	c.ProtoBuf(http.StatusOK, resp)
 }
 
 // CommentListRequest query 参数
