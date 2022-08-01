@@ -14,8 +14,14 @@ import (
 )
 
 var (
-	Cfg      *config
-	BasePath string
+	Cfg          *config
+	BasePath     string
+	ArticleIdmap = map[string]int{
+		"aboutme":     -1,
+		"message":     -2,
+		"friendslink": -3,
+	}
+	UserTags = []string{"天然呆", "小萌新", "学霸", "萌萌哒", "技术宅", "忠实粉"}
 )
 
 func substr(s string, pos, length int) string {

@@ -2,9 +2,11 @@ package entity
 
 import (
 	"blog-backend/cache"
+	"blog-backend/logger"
 	"blog-backend/model/conn"
 	"blog-backend/utils/crypt"
 	"encoding/json"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )
@@ -20,6 +22,15 @@ func (u *User) Authenticate() error {
 		return err
 	}
 	return nil
+}
+
+func GetUsersByIDs(ids []int) ([]User, error) {
+	users := []User{}
+	if err := conn.MysqlConn.Model(User{}).Where("id in (?)", ids).Find(&users).Error; err != nil {
+		logger.Logger.Error(fmt.Sprintf("GetUsersByIDs error: %v", err.Error()))
+		return nil, err
+	}
+	return users, nil
 }
 
 // Claims Claim是一些实体（通常指的用户）的状态和额外的元数据

@@ -36,7 +36,7 @@ func init() {
 }
 
 type BaseModel struct {
-	ID        uint `gorm:"primary_key; index"`
+	ID        int `gorm:"primary_key; index"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	IsDelete  bool `gorm:"default:false"`
@@ -120,8 +120,8 @@ func (Reward) TableName() string {
 
 type Comment struct {
 	BaseModel
-	UserId    uint   `gorm:"not null; comment: 用户ID; index;" json:"user_id"`
-	ArticleId uint   `gorm:"not null; comment: 文章ID; index; " json:"article_id"`
+	UserId    int    `gorm:"not null; comment: 用户ID; index;" json:"user_id"`
+	ArticleId int    `gorm:"not null; comment: 文章ID; index; " json:"article_id"`
 	Content   string `gorm:"not null; comment: 评论内容; type:TEXT" json:"content"`
 	ParentId  uint   `gorm:"comment: 父评论ID; index;" json:"parent_id"`
 }

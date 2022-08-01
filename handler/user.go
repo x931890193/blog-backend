@@ -3,7 +3,7 @@ package handler
 import (
 	"blog-backend/cache"
 	pb "blog-backend/proto"
-	service "blog-backend/service"
+	"blog-backend/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -22,7 +22,7 @@ func AdminLogin(c *gin.Context) {
 		return
 	}
 	resp := pb.LoginAdminResp{}
-	token, err := service.Auth(requestData.Username, requestData.Password)
+	token, err := service.UserAuth(requestData.Username, requestData.Password)
 	if err != nil {
 		resp.Code = 1
 		resp.Msg = err.Error()

@@ -46,6 +46,7 @@ func initMysqlDB() {
 	sqlDb.SetMaxIdleConns(10)                  // 最大错误连接
 	sqlDb.SetMaxOpenConns(50)                  // 最大连接数
 	sqlDb.SetConnMaxLifetime(time.Second * 10) // 连接最大生命周期
+	MysqlConn = MysqlConn.Debug()
 }
 
 // initPgDb 初始化 PgDB 连接

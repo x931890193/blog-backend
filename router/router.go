@@ -24,48 +24,53 @@ func SetupServer() *gin.Engine {
 	router.HandleMethodNotAllowed = true
 	router.GET("/", handler.Hello)
 	//router.Use(middleware.RequestMiddleware())
-	r := router.Group("/api")
+	admin := router.Group("/admin")
 	{
-		admin := r.Group("/admin")
-		{
-			admin.POST("/generate", handler.GenerateAdmin)
-			admin.POST("/login", handler.AdminLogin)
-			admin.Use(middleware.AuthMiddleware())
-			admin.POST("/logout", handler.LoginOut)
-			admin.GET("/info", handler.AdminInfo)
+		admin.POST("/generate", handler.GenerateAdmin)
+		admin.POST("/login", handler.AdminLogin)
+		admin.Use(middleware.AuthMiddleware())
+		admin.POST("/logout", handler.LoginOut)
+		admin.GET("/info", handler.AdminInfo)
 
-		}
-		// article
-		article := r.Group("/article")
-		{
-			article.GET("/")
-			article.GET("/list")
-		}
-		// comment
-		comment := r.Group("/comment")
-		{
-			comment.GET("/getTopComment")
-		}
-		// resource
-		resource := r.Group("/resource")
-		{
-			resource.GET("/about")
-		}
-		// user
-		user := r.Group("/user")
-		{
-			user.GET("")
-		}
-		// reward
-		reward := r.Group("/reward")
-		{
-			reward.GET("/list")
-		}
-		// links
-		links := r.GET("/links")
-		{
-			links.GET("/list")
-		}
+	}
+	// article
+	article := router.Group("/article")
+	{
+		article.GET("/list")
+		article.GET("/getListByClass") // 归档标签
+		article.GET("/getInfo")
+	}
+	// comment
+	comment := router.Group("/comment")
+	{
+		comment.GET("/list", handler.GetCommentList)
+		comment.GET("/info")
+		comment.POST("/add", handler.AddComment)
+		comment.GET("/getTopComment", handler.GetTopComments)
+	}
+	// resource
+	resource := router.Group("/resource")
+	{
+		resource.GET("/site_info")
+		resource.GET("/about")
+	}
+	// user
+	user := router.Group("/user")
+	{
+		user.GET("")
+		user.POST("/login")
+		user.POST("/logout")
+		user.GET("/getUserInfo")
+	}
+	// reward
+	reward := router.Group("/reward")
+	{
+		reward.GET("/list")
+	}
+	// links
+	links := router.GET("/links")
+	{
+		links.GET("/list")
 	}
 
 	return router

@@ -1,8 +1,11 @@
 package service
 
-import "blog-backend/model/entity"
+import (
+	"blog-backend/model/entity"
+	"blog-backend/utils"
+)
 
-func Auth(username, password string) (token string, err error) {
+func UserAuth(username, password string) (token string, err error) {
 	user := entity.User{UserName: username, Password: password}
 	err = user.Authenticate()
 	if err != nil {
@@ -23,4 +26,20 @@ func AdminInfo(token string) (*entity.User, error) {
 	userInfo := parseToken.UserInfo
 	return &userInfo, err
 
+}
+
+func NewTempUser() *entity.User {
+	user := &entity.User{}
+	user.UserName = "游客"
+	user.ID = -1
+	user.Label = utils.GetRandomTag()
+	return user
+}
+
+func GetUsersByIds(ids []int) ([]entity.User, error) {
+	users, err := entity.GetUsersByIDs(ids)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
