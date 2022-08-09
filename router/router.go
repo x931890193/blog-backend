@@ -27,6 +27,7 @@ func SetupServer() *gin.Engine {
 	admin := router.Group("/admin")
 	{
 		admin.POST("/generate", handler.GenerateAdmin)
+		admin.GET("/captcha", handler.GetCaptcha)
 		admin.POST("/login", handler.AdminLogin)
 		admin.Use(middleware.AuthMiddleware())
 		admin.POST("/logout", handler.LoginOut)
