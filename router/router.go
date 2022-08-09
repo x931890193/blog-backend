@@ -36,7 +36,7 @@ func SetupServer() *gin.Engine {
 	// article
 	article := router.Group("/article")
 	{
-		article.GET("/list")
+		article.GET("/list", handler.GetArticleList)
 		article.GET("/getListByClass") // 归档标签
 		article.GET("/getInfo")
 	}

@@ -23,6 +23,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			}
 		}
 		c.Next()
+		println(111111)
 	}
 }
 

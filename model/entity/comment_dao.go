@@ -10,7 +10,7 @@ func (c *Comment) AddOneComment(user *User) (*Comment, error) {
 	return c, nil
 }
 
-func (c *Comment) GetCommentListById(pageSize, CurrentPage int) ([]*Comment, error) {
+func (c *Comment) GetCommentList(pageSize, CurrentPage int) ([]*Comment, error) {
 	var (
 		parentRes []*Comment
 		subRes    []*Comment

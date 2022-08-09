@@ -57,15 +57,14 @@ message Comment {
 
 }
 
+message Pagination {
+  uint32 countTotal = 1;
+  uint32 totalPage = 2;
+  uint32 currentPage = 3;
+  uint32 pageSize = 4;
+}
+
 message CommentListResp {
-
-  message Pagination {
-    uint32 countTotal = 1;
-    uint32 totalPage = 2;
-    uint32 currentPage = 3;
-
-
-  }
   uint32 code = 1;
   string msg = 2;
   repeated Comment list = 4;
@@ -154,4 +153,28 @@ message ListByClass {
   repeated ListYear articleList = 3;
   repeated ClassList classList = 4;
 
+}
+
+message Article {
+  uint32 browseCount = 1;
+  uint32 classId = 2;
+  uint32 collectCount = 3;
+  uint32 commentCount = 4;
+  string content = 5;
+  string createDate = 6;
+  bool  isHot = 7;
+  bool isRecommend = 8;
+  string lastModifiedDate = 9;
+  uint32 likeCount = 10;
+  uint32 state = 11;
+  uint32 _id = 12;
+  uint32 __v = 13;
+  repeated uint32 tags = 14;
+}
+
+message ArticleListResp {
+  uint32 code = 1;
+  string msg = 2;
+  repeated Article list = 3;
+  Pagination pagination = 4;
 }

@@ -16,7 +16,7 @@ func AdminLogin(c *gin.Context) {
 	//res := proto.BaseResponse{}
 	requestData := pb.LoginAdminRequest{}
 	if err := c.Bind(&requestData); err != nil {
-		c.JSON(http.StatusBadRequest, pb.LoginAdminResp{
+		c.ProtoBuf(http.StatusBadRequest, pb.LoginAdminResp{
 			Msg: "参数错误！",
 		})
 		return

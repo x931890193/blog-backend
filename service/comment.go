@@ -12,7 +12,8 @@ func AddComment(request *pb.CommentAddRequest, user *entity.User) (data *pb.Comm
 	if id, ok := config.ArticleIdmap[request.ArticleId]; ok {
 		article.ID = id
 	} else {
-		article, err = entity.GetArticleById(request.ArticleId)
+		article.ID, _ = strconv.Atoi(request.ArticleId)
+		article, err = article.GetArticleById()
 		if err != nil {
 			return nil, err
 		}
@@ -94,13 +95,14 @@ func GetCommentList(ArticleId string, pageSize, CurrentPage int) (*pb.CommentLis
 	if id, ok := config.ArticleIdmap[ArticleId]; ok {
 		article.ID = id
 	} else {
-		_, err := entity.GetArticleById(ArticleId)
+		article.ID, _ = strconv.Atoi(ArticleId)
+		_, err := article.GetArticleById()
 		if err != nil {
 			return nil, err
 		}
 	}
 	comment := entity.Comment{ArticleId: article.ID}
-	dbRes, err := comment.GetCommentListById(pageSize, CurrentPage)
+	dbRes, err := comment.GetCommentList(pageSize, CurrentPage)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +117,7 @@ func GetCommentList(ArticleId string, pageSize, CurrentPage int) (*pb.CommentLis
 	res = getAllChildrenComment(dbRes, 0, userMap)
 	resp := pb.CommentListResp{}
 	resp.List = res
-	resp.Pagination = &pb.CommentListResp_Pagination{
+	resp.Pagination = &pb.Pagination{
 		CountTotal:  uint32(len(res)),
 		TotalPage:   uint32(len(res)),
 		CurrentPage: uint32(CurrentPage),

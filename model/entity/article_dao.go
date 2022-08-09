@@ -2,16 +2,16 @@ package entity
 
 import "blog-backend/model/conn"
 
-func GetArticleById(id string) (*Article, error) {
+func (a *Article) GetArticleById() (*Article, error) {
 	article := Article{}
-	err := conn.MysqlConn.Model(Article{}).Where("id=?", id).First(&article).Error
+	err := conn.MysqlConn.Model(Article{}).Where("id=?", a.ID).First(&article).Error
 	if err != nil {
 		return nil, err
 	}
 	return &article, nil
 }
 
-func GetArticleList(limit int) ([]*Article, error) {
+func (a *Article) GetArticleListOrderClickTime(limit int) ([]*Article, error) {
 	var res []*Article
 	err := conn.MysqlConn.Model(Article{}).Order("click_times Desc").Limit(limit).Find(&res).Error
 	if err != nil {
@@ -33,4 +33,14 @@ func GetArticleMap(limit int) (map[int]*Article, error) {
 		articleMap[article.ID] = article
 	}
 	return articleMap, nil
+}
+
+func (a *Article) GetArticleListOrderCreateTime(pageSize, CurrentPage int) ([]*Article, error) {
+	var res []*Article
+	limitStart := (CurrentPage - 1) * pageSize
+	err := conn.MysqlConn.Model(Article{}).Order("created_at Desc").Limit(pageSize).Offset(limitStart).Find(&res).Error
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
