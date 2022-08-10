@@ -7,6 +7,8 @@ package proto;
 message LoginAdminRequest{
   string username = 1;
   string password = 2;
+  string code = 3;
+  string id = 4;
 }
 
 message LoginAdminResp{
@@ -177,4 +179,36 @@ message ArticleListResp {
   string msg = 2;
   repeated Article list = 3;
   Pagination pagination = 4;
+}
+
+message CaptchaResp {
+  uint32 code = 1;
+  string msg = 2;
+  string id = 3;
+  string img = 4;
+}
+
+message ComponentMeta {
+  string title = 1;
+  string name = 2;
+  string icon = 3;
+  bool noCache = 4;
+  bool  affix = 5;
+  string  activeMenu = 6;
+}
+
+message Component {
+  string component = 1;
+  string path = 3;
+  string name = 4;
+  ComponentMeta meta = 5;
+  bool hidden = 6;
+  repeated Component children = 7;
+}
+
+
+message AdminRouterResp {
+  uint32 code = 1;
+  string msg = 2;
+  repeated Component data = 3;
 }

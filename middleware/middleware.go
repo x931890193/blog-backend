@@ -13,14 +13,22 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.Request.Header.Get("Token") // Authorization
+		token := c.Request.Header.Get("Authorization") // Authorization
 		if token != "1" {
-			res := cache.Client.Get(token)
-			if res == nil {
+			tokenSlice := strings.Split(token, " ")
+			if len(tokenSlice) != 2 {
 				logger.Logger.Error(fmt.Sprintf("鉴权参数错误！%v", c.Request.Header))
 				c.AbortWithStatus(403)
 				return
 			}
+			token = tokenSlice[1]
+			res, err := cache.Client.Get(token).Result()
+			if err != nil || res == "" {
+				logger.Logger.Error(fmt.Sprintf("鉴权参数错误！%v", c.Request.Header))
+				c.AbortWithStatus(403)
+				return
+			}
+			c.Set("admin", token)
 		}
 		c.Next()
 	}

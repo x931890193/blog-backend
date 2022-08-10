@@ -30,8 +30,9 @@ func SetupServer() *gin.Engine {
 		admin.GET("/captcha", handler.GetCaptcha)
 		admin.POST("/login", handler.AdminLogin)
 		admin.Use(middleware.AuthMiddleware())
-		admin.POST("/logout", handler.LoginOut)
 		admin.GET("/info", handler.AdminInfo)
+		admin.GET("/routers", handler.Routers)
+		admin.POST("/logout", handler.LoginOut)
 
 	}
 	// article
