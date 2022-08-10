@@ -1987,6 +1987,195 @@ func (x *AdminRouterResp) GetData() []*Component {
 	return nil
 }
 
+type AdminCategoryAddRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Title       string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Support     bool   `protobuf:"varint,3,opt,name=support,proto3" json:"support,omitempty"`
+}
+
+func (x *AdminCategoryAddRequest) Reset() {
+	*x = AdminCategoryAddRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_all_proto_msgTypes[25]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AdminCategoryAddRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdminCategoryAddRequest) ProtoMessage() {}
+
+func (x *AdminCategoryAddRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_all_proto_msgTypes[25]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdminCategoryAddRequest.ProtoReflect.Descriptor instead.
+func (*AdminCategoryAddRequest) Descriptor() ([]byte, []int) {
+	return file_all_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *AdminCategoryAddRequest) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *AdminCategoryAddRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *AdminCategoryAddRequest) GetSupport() bool {
+	if x != nil {
+		return x.Support
+	}
+	return false
+}
+
+type AdminCategoryAddResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code uint32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg  string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+}
+
+func (x *AdminCategoryAddResp) Reset() {
+	*x = AdminCategoryAddResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_all_proto_msgTypes[26]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AdminCategoryAddResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdminCategoryAddResp) ProtoMessage() {}
+
+func (x *AdminCategoryAddResp) ProtoReflect() protoreflect.Message {
+	mi := &file_all_proto_msgTypes[26]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdminCategoryAddResp.ProtoReflect.Descriptor instead.
+func (*AdminCategoryAddResp) Descriptor() ([]byte, []int) {
+	return file_all_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *AdminCategoryAddResp) GetCode() uint32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *AdminCategoryAddResp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+type AdminCategoryListResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code  uint32                               `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg   string                               `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	Total uint32                               `protobuf:"varint,3,opt,name=total,proto3" json:"total,omitempty"`
+	Rows  []*AdminCategoryListRespCategoryBase `protobuf:"bytes,4,rep,name=rows,proto3" json:"rows,omitempty"`
+}
+
+func (x *AdminCategoryListResp) Reset() {
+	*x = AdminCategoryListResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_all_proto_msgTypes[27]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AdminCategoryListResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdminCategoryListResp) ProtoMessage() {}
+
+func (x *AdminCategoryListResp) ProtoReflect() protoreflect.Message {
+	mi := &file_all_proto_msgTypes[27]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdminCategoryListResp.ProtoReflect.Descriptor instead.
+func (*AdminCategoryListResp) Descriptor() ([]byte, []int) {
+	return file_all_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *AdminCategoryListResp) GetCode() uint32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *AdminCategoryListResp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *AdminCategoryListResp) GetTotal() uint32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *AdminCategoryListResp) GetRows() []*AdminCategoryListRespCategoryBase {
+	if x != nil {
+		return x.Rows
+	}
+	return nil
+}
+
 type ListYear_ListItem struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2000,7 +2189,7 @@ type ListYear_ListItem struct {
 func (x *ListYear_ListItem) Reset() {
 	*x = ListYear_ListItem{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[25]
+		mi := &file_all_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2013,7 +2202,7 @@ func (x *ListYear_ListItem) String() string {
 func (*ListYear_ListItem) ProtoMessage() {}
 
 func (x *ListYear_ListItem) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[25]
+	mi := &file_all_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2046,6 +2235,188 @@ func (x *ListYear_ListItem) GetTitle() string {
 func (x *ListYear_ListItem) GetXId() uint32 {
 	if x != nil {
 		return x.XId
+	}
+	return 0
+}
+
+type AdminCategoryListRespBlogBase struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Title      string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Summary    string `protobuf:"bytes,2,opt,name=summary,proto3" json:"summary,omitempty"`
+	HeaderImg  string `protobuf:"bytes,3,opt,name=headerImg,proto3" json:"headerImg,omitempty"`
+	Comment    string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment,omitempty"`
+	Weight     uint32 `protobuf:"varint,5,opt,name=weight,proto3" json:"weight,omitempty"`
+	Support    bool   `protobuf:"varint,6,opt,name=support,proto3" json:"support,omitempty"`
+	CreateTime string `protobuf:"bytes,7,opt,name=createTime,proto3" json:"createTime,omitempty"`
+}
+
+func (x *AdminCategoryListRespBlogBase) Reset() {
+	*x = AdminCategoryListRespBlogBase{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_all_proto_msgTypes[29]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AdminCategoryListRespBlogBase) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdminCategoryListRespBlogBase) ProtoMessage() {}
+
+func (x *AdminCategoryListRespBlogBase) ProtoReflect() protoreflect.Message {
+	mi := &file_all_proto_msgTypes[29]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdminCategoryListRespBlogBase.ProtoReflect.Descriptor instead.
+func (*AdminCategoryListRespBlogBase) Descriptor() ([]byte, []int) {
+	return file_all_proto_rawDescGZIP(), []int{27, 0}
+}
+
+func (x *AdminCategoryListRespBlogBase) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *AdminCategoryListRespBlogBase) GetSummary() string {
+	if x != nil {
+		return x.Summary
+	}
+	return ""
+}
+
+func (x *AdminCategoryListRespBlogBase) GetHeaderImg() string {
+	if x != nil {
+		return x.HeaderImg
+	}
+	return ""
+}
+
+func (x *AdminCategoryListRespBlogBase) GetComment() string {
+	if x != nil {
+		return x.Comment
+	}
+	return ""
+}
+
+func (x *AdminCategoryListRespBlogBase) GetWeight() uint32 {
+	if x != nil {
+		return x.Weight
+	}
+	return 0
+}
+
+func (x *AdminCategoryListRespBlogBase) GetSupport() bool {
+	if x != nil {
+		return x.Support
+	}
+	return false
+}
+
+func (x *AdminCategoryListRespBlogBase) GetCreateTime() string {
+	if x != nil {
+		return x.CreateTime
+	}
+	return ""
+}
+
+type AdminCategoryListRespCategoryBase struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Title       string                           `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Description string                           `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	CreateTime  string                           `protobuf:"bytes,3,opt,name=createTime,proto3" json:"createTime,omitempty"`
+	Support     bool                             `protobuf:"varint,4,opt,name=support,proto3" json:"support,omitempty"`
+	BlogList    []*AdminCategoryListRespBlogBase `protobuf:"bytes,5,rep,name=blogList,proto3" json:"blogList,omitempty"`
+	Id          uint32                           `protobuf:"varint,6,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *AdminCategoryListRespCategoryBase) Reset() {
+	*x = AdminCategoryListRespCategoryBase{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_all_proto_msgTypes[30]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AdminCategoryListRespCategoryBase) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdminCategoryListRespCategoryBase) ProtoMessage() {}
+
+func (x *AdminCategoryListRespCategoryBase) ProtoReflect() protoreflect.Message {
+	mi := &file_all_proto_msgTypes[30]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdminCategoryListRespCategoryBase.ProtoReflect.Descriptor instead.
+func (*AdminCategoryListRespCategoryBase) Descriptor() ([]byte, []int) {
+	return file_all_proto_rawDescGZIP(), []int{27, 1}
+}
+
+func (x *AdminCategoryListRespCategoryBase) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *AdminCategoryListRespCategoryBase) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *AdminCategoryListRespCategoryBase) GetCreateTime() string {
+	if x != nil {
+		return x.CreateTime
+	}
+	return ""
+}
+
+func (x *AdminCategoryListRespCategoryBase) GetSupport() bool {
+	if x != nil {
+		return x.Support
+	}
+	return false
+}
+
+func (x *AdminCategoryListRespCategoryBase) GetBlogList() []*AdminCategoryListRespBlogBase {
+	if x != nil {
+		return x.BlogList
+	}
+	return nil
+}
+
+func (x *AdminCategoryListRespCategoryBase) GetId() uint32 {
+	if x != nil {
+		return x.Id
 	}
 	return 0
 }
@@ -2297,9 +2668,54 @@ var file_all_proto_rawDesc = []byte{
 	0x0d, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x24, 0x0a, 0x04, 0x64, 0x61, 0x74,
 	0x61, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
-	0x43, 0x6f, 0x6d, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x42,
-	0x0a, 0x5a, 0x08, 0x2e, 0x2e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x43, 0x6f, 0x6d, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22,
+	0x6b, 0x0a, 0x17, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79,
+	0x41, 0x64, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69,
+	0x74, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65,
+	0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x22, 0x3c, 0x0a, 0x14,
+	0x41, 0x64, 0x6d, 0x69, 0x6e, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x41, 0x64, 0x64,
+	0x52, 0x65, 0x73, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x22, 0xaf, 0x04, 0x0a, 0x15, 0x41,
+	0x64, 0x6d, 0x69, 0x6e, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x4c, 0x69, 0x73, 0x74,
+	0x52, 0x65, 0x73, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f,
+	0x74, 0x61, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c,
+	0x12, 0x3d, 0x0a, 0x04, 0x72, 0x6f, 0x77, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x29,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x43, 0x61, 0x74, 0x65,
+	0x67, 0x6f, 0x72, 0x79, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x2e, 0x63, 0x61, 0x74,
+	0x65, 0x67, 0x6f, 0x72, 0x79, 0x42, 0x61, 0x73, 0x65, 0x52, 0x04, 0x72, 0x6f, 0x77, 0x73, 0x1a,
+	0xc4, 0x01, 0x0a, 0x08, 0x62, 0x6c, 0x6f, 0x67, 0x42, 0x61, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05,
+	0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74,
+	0x6c, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x12, 0x1c, 0x0a, 0x09,
+	0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x49, 0x6d, 0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x49, 0x6d, 0x67, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f,
+	0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6d,
+	0x6d, 0x65, 0x6e, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x0d, 0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x18, 0x0a, 0x07,
+	0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73,
+	0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x54, 0x69, 0x6d, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x1a, 0xd3, 0x01, 0x0a, 0x0c, 0x63, 0x61, 0x74, 0x65, 0x67,
+	0x6f, 0x72, 0x79, 0x42, 0x61, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x20, 0x0a,
+	0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x1e, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x12,
+	0x18, 0x0a, 0x07, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08,
+	0x52, 0x07, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x12, 0x41, 0x0a, 0x08, 0x62, 0x6c, 0x6f,
+	0x67, 0x4c, 0x69, 0x73, 0x74, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x25, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72,
+	0x79, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x42, 0x61,
+	0x73, 0x65, 0x52, 0x08, 0x62, 0x6c, 0x6f, 0x67, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x69, 0x64, 0x42, 0x0a, 0x5a, 0x08,
+	0x2e, 0x2e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -2314,34 +2730,39 @@ func file_all_proto_rawDescGZIP() []byte {
 	return file_all_proto_rawDescData
 }
 
-var file_all_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
+var file_all_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
 var file_all_proto_goTypes = []interface{}{
-	(*LoginAdminRequest)(nil),  // 0: proto.LoginAdminRequest
-	(*LoginAdminResp)(nil),     // 1: proto.LoginAdminResp
-	(*LogoutAdminRequest)(nil), // 2: proto.LogoutAdminRequest
-	(*LogoutAdminResp)(nil),    // 3: proto.LogoutAdminResp
-	(*AdminInfoResp)(nil),      // 4: proto.AdminInfoResp
-	(*Comment)(nil),            // 5: proto.Comment
-	(*Pagination)(nil),         // 6: proto.Pagination
-	(*CommentListResp)(nil),    // 7: proto.CommentListResp
-	(*CommentAddRequest)(nil),  // 8: proto.CommentAddRequest
-	(*CommentAddResp)(nil),     // 9: proto.CommentAddResp
-	(*CatchMe)(nil),            // 10: proto.CatchMe
-	(*AboutResp)(nil),          // 11: proto.AboutResp
-	(*SiteInfoResp)(nil),       // 12: proto.SiteInfoResp
-	(*BrowseList)(nil),         // 13: proto.BrowseList
-	(*TopCommentList)(nil),     // 14: proto.TopCommentList
-	(*TopCommentResp)(nil),     // 15: proto.TopCommentResp
-	(*ClassList)(nil),          // 16: proto.ClassList
-	(*ListYear)(nil),           // 17: proto.ListYear
-	(*ListByClass)(nil),        // 18: proto.ListByClass
-	(*Article)(nil),            // 19: proto.Article
-	(*ArticleListResp)(nil),    // 20: proto.ArticleListResp
-	(*CaptchaResp)(nil),        // 21: proto.CaptchaResp
-	(*ComponentMeta)(nil),      // 22: proto.ComponentMeta
-	(*Component)(nil),          // 23: proto.Component
-	(*AdminRouterResp)(nil),    // 24: proto.AdminRouterResp
-	(*ListYear_ListItem)(nil),  // 25: proto.ListYear.ListItem
+	(*LoginAdminRequest)(nil),                 // 0: proto.LoginAdminRequest
+	(*LoginAdminResp)(nil),                    // 1: proto.LoginAdminResp
+	(*LogoutAdminRequest)(nil),                // 2: proto.LogoutAdminRequest
+	(*LogoutAdminResp)(nil),                   // 3: proto.LogoutAdminResp
+	(*AdminInfoResp)(nil),                     // 4: proto.AdminInfoResp
+	(*Comment)(nil),                           // 5: proto.Comment
+	(*Pagination)(nil),                        // 6: proto.Pagination
+	(*CommentListResp)(nil),                   // 7: proto.CommentListResp
+	(*CommentAddRequest)(nil),                 // 8: proto.CommentAddRequest
+	(*CommentAddResp)(nil),                    // 9: proto.CommentAddResp
+	(*CatchMe)(nil),                           // 10: proto.CatchMe
+	(*AboutResp)(nil),                         // 11: proto.AboutResp
+	(*SiteInfoResp)(nil),                      // 12: proto.SiteInfoResp
+	(*BrowseList)(nil),                        // 13: proto.BrowseList
+	(*TopCommentList)(nil),                    // 14: proto.TopCommentList
+	(*TopCommentResp)(nil),                    // 15: proto.TopCommentResp
+	(*ClassList)(nil),                         // 16: proto.ClassList
+	(*ListYear)(nil),                          // 17: proto.ListYear
+	(*ListByClass)(nil),                       // 18: proto.ListByClass
+	(*Article)(nil),                           // 19: proto.Article
+	(*ArticleListResp)(nil),                   // 20: proto.ArticleListResp
+	(*CaptchaResp)(nil),                       // 21: proto.CaptchaResp
+	(*ComponentMeta)(nil),                     // 22: proto.ComponentMeta
+	(*Component)(nil),                         // 23: proto.Component
+	(*AdminRouterResp)(nil),                   // 24: proto.AdminRouterResp
+	(*AdminCategoryAddRequest)(nil),           // 25: proto.AdminCategoryAddRequest
+	(*AdminCategoryAddResp)(nil),              // 26: proto.AdminCategoryAddResp
+	(*AdminCategoryListResp)(nil),             // 27: proto.AdminCategoryListResp
+	(*ListYear_ListItem)(nil),                 // 28: proto.ListYear.ListItem
+	(*AdminCategoryListRespBlogBase)(nil),     // 29: proto.AdminCategoryListResp.blogBase
+	(*AdminCategoryListRespCategoryBase)(nil), // 30: proto.AdminCategoryListResp.categoryBase
 }
 var file_all_proto_depIdxs = []int32{
 	5,  // 0: proto.Comment.children:type_name -> proto.Comment
@@ -2351,7 +2772,7 @@ var file_all_proto_depIdxs = []int32{
 	10, // 4: proto.AboutResp.catchMe:type_name -> proto.CatchMe
 	13, // 5: proto.TopCommentResp.browseList:type_name -> proto.BrowseList
 	14, // 6: proto.TopCommentResp.topCommentList:type_name -> proto.TopCommentList
-	25, // 7: proto.ListYear.list:type_name -> proto.ListYear.ListItem
+	28, // 7: proto.ListYear.list:type_name -> proto.ListYear.ListItem
 	17, // 8: proto.ListByClass.articleList:type_name -> proto.ListYear
 	16, // 9: proto.ListByClass.classList:type_name -> proto.ClassList
 	19, // 10: proto.ArticleListResp.list:type_name -> proto.Article
@@ -2359,11 +2780,13 @@ var file_all_proto_depIdxs = []int32{
 	22, // 12: proto.Component.meta:type_name -> proto.ComponentMeta
 	23, // 13: proto.Component.children:type_name -> proto.Component
 	23, // 14: proto.AdminRouterResp.data:type_name -> proto.Component
-	15, // [15:15] is the sub-list for method output_type
-	15, // [15:15] is the sub-list for method input_type
-	15, // [15:15] is the sub-list for extension type_name
-	15, // [15:15] is the sub-list for extension extendee
-	0,  // [0:15] is the sub-list for field type_name
+	30, // 15: proto.AdminCategoryListResp.rows:type_name -> proto.AdminCategoryListResp.categoryBase
+	29, // 16: proto.AdminCategoryListResp.categoryBase.blogList:type_name -> proto.AdminCategoryListResp.blogBase
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_all_proto_init() }
@@ -2673,7 +3096,67 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AdminCategoryAddRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_all_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AdminCategoryAddResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_all_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AdminCategoryListResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_all_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListYear_ListItem); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_all_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AdminCategoryListRespBlogBase); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_all_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AdminCategoryListRespCategoryBase); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2691,7 +3174,7 @@ func file_all_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_all_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   26,
+			NumMessages:   31,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

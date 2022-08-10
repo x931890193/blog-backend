@@ -81,9 +81,11 @@ func (Tags) TableName() string {
 
 // Category 分类
 type Category struct {
+	BaseModel
 	Name        string `gorm:"not null; comment:分类名; type:VARCHAR(255)" json:"name"`
 	DisplayName string `gorm:"not null; comment:分类别名; index; type:VARCHAR(255)" json:"display_name"`
 	SeoDesc     string `gorm:"comment:seo描述; type:VARCHAR(255)" json:"seo_desc"`
+	Support     bool   `gorm:"not null; default 1; " json:"support"`
 	ParentId    uint   `gorm:"not null;default 0; comment:父类ID; index;" json:"parent_id"`
 }
 
@@ -95,6 +97,8 @@ func (Category) TableName() string {
 type Article struct {
 	BaseModel
 	Uid        string `gorm:"index; type:VARCHAR(255)" json:"uid"`
+	CategoryId uint   `gorm:"index;" json:"category_id"`
+	Tags       string `gorm:"type:VARCHAR(255)" json:"tags"`
 	UserId     uint   `gorm:"not null; comment: 用户ID; index;" json:"user_id"`
 	Title      string `gorm:"not null; comment: 标题; index; type:VARCHAR(255)" json:"title"`
 	Summary    string `gorm:"not null; comment: 摘要; type:CHAR(255)" json:"summary"`

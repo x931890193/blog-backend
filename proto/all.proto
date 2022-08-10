@@ -212,3 +212,42 @@ message AdminRouterResp {
   string msg = 2;
   repeated Component data = 3;
 }
+
+message AdminCategoryAddRequest{
+  string title = 1;
+  string description = 2;
+  bool support = 3;
+}
+
+message AdminCategoryAddResp{
+  uint32 code = 1;
+  string msg = 2;
+}
+
+
+message AdminCategoryListResp {
+  message blogBase {
+    string title = 1;
+    string summary = 2;
+    string headerImg = 3;
+    string comment = 4;
+    uint32 weight = 5;
+    bool support = 6;
+    string createTime = 7;
+
+  }
+  message categoryBase {
+      string title = 1;
+      string description = 2;
+      string createTime = 3;
+      bool support = 4;
+      repeated blogBase blogList = 5;
+      uint32 id = 6;
+
+
+  }
+  uint32 code = 1;
+  string msg = 2;
+  uint32 total = 3;
+  repeated categoryBase rows = 4;
+}
