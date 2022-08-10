@@ -97,7 +97,7 @@ func Routers(c *gin.Context) {
 				{
 					Component: "blog/blog/edit",
 					Name:      "BlogEdit",
-					Path:      "edit",
+					Path:      "edit/*",
 					Hidden:    true,
 				},
 				{

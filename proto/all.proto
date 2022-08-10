@@ -243,11 +243,53 @@ message AdminCategoryListResp {
       bool support = 4;
       repeated blogBase blogList = 5;
       uint32 id = 6;
-
-
   }
   uint32 code = 1;
   string msg = 2;
   uint32 total = 3;
   repeated categoryBase rows = 4;
+}
+
+message AdminArticleAddRequest {
+  string title = 1;
+  string summary = 2;
+  uint32 categoryId = 3;
+  bool support = 4;
+  bool comment = 5;
+  uint32 headerImgType = 6;
+  string headerImg = 7;
+  uint32 weight = 8;
+  repeated string tagTitleList = 9;
+  string content = 10;
+}
+
+message AdminArticleAddResp {
+  uint32 code = 1;
+  string msg = 2;
+}
+
+
+message AdminArticleListResp {
+  message adminArticleListCategory {
+      string title = 1;
+      string description = 2;
+  }
+
+  message adminArticleListBase {
+    string title = 1;
+    string summary = 2;
+    string headerImg = 3;
+    bool comment = 4;
+    uint32 weight = 5;
+    bool support = 6;
+    string createTime = 7;
+    uint32 id = 8;
+    bool status = 9;
+    adminArticleListCategory category = 10;
+  }
+  uint32 code = 1;
+  string msg = 2;
+  uint32 total = 3;
+  repeated adminArticleListBase rows = 4;
+
 }

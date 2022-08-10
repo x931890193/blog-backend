@@ -44,3 +44,10 @@ func (a *Article) GetArticleListOrderCreateTime(pageSize, CurrentPage int) ([]*A
 	}
 	return res, nil
 }
+
+func (a *Article) CreateOne() error {
+	if err := conn.MysqlConn.Model(&a).Create(a).Error; err != nil {
+		return err
+	}
+	return nil
+}

@@ -96,15 +96,18 @@ func (Category) TableName() string {
 // Article 文章
 type Article struct {
 	BaseModel
-	Uid        string `gorm:"index; type:VARCHAR(255)" json:"uid"`
-	CategoryId uint   `gorm:"index;" json:"category_id"`
-	Tags       string `gorm:"type:VARCHAR(255)" json:"tags"`
-	UserId     uint   `gorm:"not null; comment: 用户ID; index;" json:"user_id"`
-	Title      string `gorm:"not null; comment: 标题; index; type:VARCHAR(255)" json:"title"`
-	Summary    string `gorm:"not null; comment: 摘要; type:CHAR(255)" json:"summary"`
-	Original   string `gorm:"not null; comment: 原文章内容; type:TEXT" json:"original"`
-	Content    string `gorm:"not null; comment: 文章内容; type:TEXT" json:"content"`
-	ClickTimes uint   `gorm:"not null; default: 0; index;" json:"click_times"`
+	CategoryId    uint   `gorm:"index;" json:"category_id"`
+	Tags          string `gorm:"type:VARCHAR(255)" json:"tags"`
+	UserId        uint   `gorm:"not null; comment: 用户ID; index;" json:"user_id"`
+	Title         string `gorm:"not null; comment: 标题; index; type:VARCHAR(255)" json:"title"`
+	Summary       string `gorm:"not null; comment: 摘要; type:CHAR(255)" json:"summary"`
+	Content       string `gorm:"not null; comment: 文章内容; type:TEXT" json:"content"`
+	ClickTimes    uint   `gorm:"not null; default: 0; index;" json:"click_times"`
+	CanComment    bool   `gorm:"not null; default: 1;" json:"can_comment"`
+	Weight        uint   `gorm:"not null;" json:"weight"`
+	Support       bool   `gorm:"not null; default: true;" json:"support"`
+	HeaderImgType uint   `gorm:"not null; type:tinyint" json:"header_img_type"`
+	HeaderImg     string `gorm:"type:VARCHAR(255)" json:"header_img"`
 }
 
 func (Article) TableName() string {

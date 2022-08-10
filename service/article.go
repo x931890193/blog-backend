@@ -3,6 +3,7 @@ package service
 import (
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
+	"encoding/json"
 )
 
 func ArticleList(pageSize, currentPage int) ([]*pb.Article, error) {
@@ -29,4 +30,36 @@ func ArticleList(pageSize, currentPage int) ([]*pb.Article, error) {
 		})
 	}
 	return res, nil
+}
+
+func ArticleListOrigin(pageSize, currentPage int) ([]*entity.Article, error) {
+	article := entity.Article{}
+	articles, err := article.GetArticleListOrderCreateTime(pageSize, currentPage)
+	if err != nil {
+		return nil, err
+	}
+	return articles, nil
+}
+
+func AddArticle(request *pb.AdminArticleAddRequest) error {
+	tags, _ := json.Marshal(request.TagTitleList)
+	article := entity.Article{
+		CategoryId:    uint(request.CategoryId),
+		Tags:          string(tags),
+		UserId:        0,
+		Title:         request.Title,
+		Summary:       request.Summary,
+		Content:       request.Content,
+		ClickTimes:    0,
+		CanComment:    request.Comment,
+		Weight:        uint(request.Weight),
+		Support:       request.Support,
+		HeaderImgType: uint(request.HeaderImgType),
+		HeaderImg:     request.HeaderImg,
+	}
+	err := article.CreateOne()
+	if err != nil {
+		return err
+	}
+	return nil
 }

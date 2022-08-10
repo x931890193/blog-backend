@@ -33,6 +33,8 @@ func SetupServer() *gin.Engine {
 		admin.GET("/info", handler.AdminInfo)
 		admin.GET("/routers", handler.Routers)
 		admin.POST("/logout", handler.LoginOut)
+		admin.POST("/article/add", handler.AddArticle)
+		admin.GET("/article/list", handler.ArticleList)
 		admin.POST("/article/category/add", handler.AddCategory)
 		admin.POST("/article/category/edit", handler.LoginOut)
 		admin.GET("/article/category/list", handler.AdminCategoryList)
