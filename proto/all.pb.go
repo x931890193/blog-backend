@@ -2453,6 +2453,149 @@ func (x *AdminArticleListResp) GetRows() []*AdminArticleListRespAdminArticleList
 	return nil
 }
 
+type AdminArticleOneResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code          uint32   `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg           string   `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	Title         string   `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Summary       string   `protobuf:"bytes,4,opt,name=summary,proto3" json:"summary,omitempty"`
+	CategoryId    uint32   `protobuf:"varint,5,opt,name=categoryId,proto3" json:"categoryId,omitempty"`
+	Support       bool     `protobuf:"varint,6,opt,name=support,proto3" json:"support,omitempty"`
+	Comment       bool     `protobuf:"varint,7,opt,name=comment,proto3" json:"comment,omitempty"`
+	HeaderImgType uint32   `protobuf:"varint,8,opt,name=headerImgType,proto3" json:"headerImgType,omitempty"`
+	HeaderImg     string   `protobuf:"bytes,9,opt,name=headerImg,proto3" json:"headerImg,omitempty"`
+	Weight        uint32   `protobuf:"varint,10,opt,name=weight,proto3" json:"weight,omitempty"`
+	TagTitleList  []string `protobuf:"bytes,11,rep,name=tagTitleList,proto3" json:"tagTitleList,omitempty"`
+	Content       string   `protobuf:"bytes,12,opt,name=content,proto3" json:"content,omitempty"`
+	Id            uint32   `protobuf:"varint,13,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *AdminArticleOneResp) Reset() {
+	*x = AdminArticleOneResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_all_proto_msgTypes[31]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AdminArticleOneResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdminArticleOneResp) ProtoMessage() {}
+
+func (x *AdminArticleOneResp) ProtoReflect() protoreflect.Message {
+	mi := &file_all_proto_msgTypes[31]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdminArticleOneResp.ProtoReflect.Descriptor instead.
+func (*AdminArticleOneResp) Descriptor() ([]byte, []int) {
+	return file_all_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *AdminArticleOneResp) GetCode() uint32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *AdminArticleOneResp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *AdminArticleOneResp) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *AdminArticleOneResp) GetSummary() string {
+	if x != nil {
+		return x.Summary
+	}
+	return ""
+}
+
+func (x *AdminArticleOneResp) GetCategoryId() uint32 {
+	if x != nil {
+		return x.CategoryId
+	}
+	return 0
+}
+
+func (x *AdminArticleOneResp) GetSupport() bool {
+	if x != nil {
+		return x.Support
+	}
+	return false
+}
+
+func (x *AdminArticleOneResp) GetComment() bool {
+	if x != nil {
+		return x.Comment
+	}
+	return false
+}
+
+func (x *AdminArticleOneResp) GetHeaderImgType() uint32 {
+	if x != nil {
+		return x.HeaderImgType
+	}
+	return 0
+}
+
+func (x *AdminArticleOneResp) GetHeaderImg() string {
+	if x != nil {
+		return x.HeaderImg
+	}
+	return ""
+}
+
+func (x *AdminArticleOneResp) GetWeight() uint32 {
+	if x != nil {
+		return x.Weight
+	}
+	return 0
+}
+
+func (x *AdminArticleOneResp) GetTagTitleList() []string {
+	if x != nil {
+		return x.TagTitleList
+	}
+	return nil
+}
+
+func (x *AdminArticleOneResp) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *AdminArticleOneResp) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
 type ListYear_ListItem struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2466,7 +2609,7 @@ type ListYear_ListItem struct {
 func (x *ListYear_ListItem) Reset() {
 	*x = ListYear_ListItem{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[31]
+		mi := &file_all_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2479,7 +2622,7 @@ func (x *ListYear_ListItem) String() string {
 func (*ListYear_ListItem) ProtoMessage() {}
 
 func (x *ListYear_ListItem) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[31]
+	mi := &file_all_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2533,7 +2676,7 @@ type AdminCategoryListRespBlogBase struct {
 func (x *AdminCategoryListRespBlogBase) Reset() {
 	*x = AdminCategoryListRespBlogBase{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[32]
+		mi := &file_all_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2546,7 +2689,7 @@ func (x *AdminCategoryListRespBlogBase) String() string {
 func (*AdminCategoryListRespBlogBase) ProtoMessage() {}
 
 func (x *AdminCategoryListRespBlogBase) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[32]
+	mi := &file_all_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2627,7 +2770,7 @@ type AdminCategoryListRespCategoryBase struct {
 func (x *AdminCategoryListRespCategoryBase) Reset() {
 	*x = AdminCategoryListRespCategoryBase{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[33]
+		mi := &file_all_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2640,7 +2783,7 @@ func (x *AdminCategoryListRespCategoryBase) String() string {
 func (*AdminCategoryListRespCategoryBase) ProtoMessage() {}
 
 func (x *AdminCategoryListRespCategoryBase) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[33]
+	mi := &file_all_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2710,7 +2853,7 @@ type AdminArticleListRespAdminArticleListCategory struct {
 func (x *AdminArticleListRespAdminArticleListCategory) Reset() {
 	*x = AdminArticleListRespAdminArticleListCategory{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[34]
+		mi := &file_all_proto_msgTypes[35]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2723,7 +2866,7 @@ func (x *AdminArticleListRespAdminArticleListCategory) String() string {
 func (*AdminArticleListRespAdminArticleListCategory) ProtoMessage() {}
 
 func (x *AdminArticleListRespAdminArticleListCategory) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[34]
+	mi := &file_all_proto_msgTypes[35]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2773,7 +2916,7 @@ type AdminArticleListRespAdminArticleListBase struct {
 func (x *AdminArticleListRespAdminArticleListBase) Reset() {
 	*x = AdminArticleListRespAdminArticleListBase{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[35]
+		mi := &file_all_proto_msgTypes[36]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2786,7 +2929,7 @@ func (x *AdminArticleListRespAdminArticleListBase) String() string {
 func (*AdminArticleListRespAdminArticleListBase) ProtoMessage() {}
 
 func (x *AdminArticleListRespAdminArticleListBase) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[35]
+	mi := &file_all_proto_msgTypes[36]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3229,8 +3372,31 @@ var file_all_proto_rawDesc = []byte{
 	0x74, 0x6f, 0x2e, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x41, 0x72, 0x74, 0x69, 0x63, 0x6c, 0x65, 0x4c,
 	0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x2e, 0x61, 0x64, 0x6d, 0x69, 0x6e, 0x41, 0x72, 0x74,
 	0x69, 0x63, 0x6c, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79,
-	0x52, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2e,
-	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x22, 0xe9, 0x02, 0x0a, 0x13, 0x41,
+	0x64, 0x6d, 0x69, 0x6e, 0x41, 0x72, 0x74, 0x69, 0x63, 0x6c, 0x65, 0x4f, 0x6e, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d,
+	0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x61, 0x74, 0x65,
+	0x67, 0x6f, 0x72, 0x79, 0x49, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0a, 0x63, 0x61,
+	0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x49, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x70, 0x70,
+	0x6f, 0x72, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x70, 0x70, 0x6f,
+	0x72, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x07, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x24, 0x0a, 0x0d,
+	0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x49, 0x6d, 0x67, 0x54, 0x79, 0x70, 0x65, 0x18, 0x08, 0x20,
+	0x01, 0x28, 0x0d, 0x52, 0x0d, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x49, 0x6d, 0x67, 0x54, 0x79,
+	0x70, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x49, 0x6d, 0x67, 0x18,
+	0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x49, 0x6d, 0x67,
+	0x12, 0x16, 0x0a, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0d,
+	0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x22, 0x0a, 0x0c, 0x74, 0x61, 0x67, 0x54,
+	0x69, 0x74, 0x6c, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0c,
+	0x74, 0x61, 0x67, 0x54, 0x69, 0x74, 0x6c, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07,
+	0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63,
+	0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x0d, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x02, 0x69, 0x64, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2e, 0x2f, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3245,7 +3411,7 @@ func file_all_proto_rawDescGZIP() []byte {
 	return file_all_proto_rawDescData
 }
 
-var file_all_proto_msgTypes = make([]protoimpl.MessageInfo, 36)
+var file_all_proto_msgTypes = make([]protoimpl.MessageInfo, 37)
 var file_all_proto_goTypes = []interface{}{
 	(*LoginAdminRequest)(nil),                            // 0: proto.LoginAdminRequest
 	(*LoginAdminResp)(nil),                               // 1: proto.LoginAdminResp
@@ -3278,11 +3444,12 @@ var file_all_proto_goTypes = []interface{}{
 	(*AdminArticleAddRequest)(nil),                       // 28: proto.AdminArticleAddRequest
 	(*AdminArticleAddResp)(nil),                          // 29: proto.AdminArticleAddResp
 	(*AdminArticleListResp)(nil),                         // 30: proto.AdminArticleListResp
-	(*ListYear_ListItem)(nil),                            // 31: proto.ListYear.ListItem
-	(*AdminCategoryListRespBlogBase)(nil),                // 32: proto.AdminCategoryListResp.blogBase
-	(*AdminCategoryListRespCategoryBase)(nil),            // 33: proto.AdminCategoryListResp.categoryBase
-	(*AdminArticleListRespAdminArticleListCategory)(nil), // 34: proto.AdminArticleListResp.adminArticleListCategory
-	(*AdminArticleListRespAdminArticleListBase)(nil),     // 35: proto.AdminArticleListResp.adminArticleListBase
+	(*AdminArticleOneResp)(nil),                          // 31: proto.AdminArticleOneResp
+	(*ListYear_ListItem)(nil),                            // 32: proto.ListYear.ListItem
+	(*AdminCategoryListRespBlogBase)(nil),                // 33: proto.AdminCategoryListResp.blogBase
+	(*AdminCategoryListRespCategoryBase)(nil),            // 34: proto.AdminCategoryListResp.categoryBase
+	(*AdminArticleListRespAdminArticleListCategory)(nil), // 35: proto.AdminArticleListResp.adminArticleListCategory
+	(*AdminArticleListRespAdminArticleListBase)(nil),     // 36: proto.AdminArticleListResp.adminArticleListBase
 }
 var file_all_proto_depIdxs = []int32{
 	5,  // 0: proto.Comment.children:type_name -> proto.Comment
@@ -3292,7 +3459,7 @@ var file_all_proto_depIdxs = []int32{
 	10, // 4: proto.AboutResp.catchMe:type_name -> proto.CatchMe
 	13, // 5: proto.TopCommentResp.browseList:type_name -> proto.BrowseList
 	14, // 6: proto.TopCommentResp.topCommentList:type_name -> proto.TopCommentList
-	31, // 7: proto.ListYear.list:type_name -> proto.ListYear.ListItem
+	32, // 7: proto.ListYear.list:type_name -> proto.ListYear.ListItem
 	17, // 8: proto.ListByClass.articleList:type_name -> proto.ListYear
 	16, // 9: proto.ListByClass.classList:type_name -> proto.ClassList
 	19, // 10: proto.ArticleListResp.list:type_name -> proto.Article
@@ -3300,10 +3467,10 @@ var file_all_proto_depIdxs = []int32{
 	22, // 12: proto.Component.meta:type_name -> proto.ComponentMeta
 	23, // 13: proto.Component.children:type_name -> proto.Component
 	23, // 14: proto.AdminRouterResp.data:type_name -> proto.Component
-	33, // 15: proto.AdminCategoryListResp.rows:type_name -> proto.AdminCategoryListResp.categoryBase
-	35, // 16: proto.AdminArticleListResp.rows:type_name -> proto.AdminArticleListResp.adminArticleListBase
-	32, // 17: proto.AdminCategoryListResp.categoryBase.blogList:type_name -> proto.AdminCategoryListResp.blogBase
-	34, // 18: proto.AdminArticleListResp.adminArticleListBase.category:type_name -> proto.AdminArticleListResp.adminArticleListCategory
+	34, // 15: proto.AdminCategoryListResp.rows:type_name -> proto.AdminCategoryListResp.categoryBase
+	36, // 16: proto.AdminArticleListResp.rows:type_name -> proto.AdminArticleListResp.adminArticleListBase
+	33, // 17: proto.AdminCategoryListResp.categoryBase.blogList:type_name -> proto.AdminCategoryListResp.blogBase
+	35, // 18: proto.AdminArticleListResp.adminArticleListBase.category:type_name -> proto.AdminArticleListResp.adminArticleListCategory
 	19, // [19:19] is the sub-list for method output_type
 	19, // [19:19] is the sub-list for method input_type
 	19, // [19:19] is the sub-list for extension type_name
@@ -3690,7 +3857,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListYear_ListItem); i {
+			switch v := v.(*AdminArticleOneResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3702,7 +3869,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminCategoryListRespBlogBase); i {
+			switch v := v.(*ListYear_ListItem); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3714,7 +3881,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminCategoryListRespCategoryBase); i {
+			switch v := v.(*AdminCategoryListRespBlogBase); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3726,7 +3893,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminArticleListRespAdminArticleListCategory); i {
+			switch v := v.(*AdminCategoryListRespCategoryBase); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3738,6 +3905,18 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AdminArticleListRespAdminArticleListCategory); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_all_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AdminArticleListRespAdminArticleListBase); i {
 			case 0:
 				return &v.state
@@ -3756,7 +3935,7 @@ func file_all_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_all_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   36,
+			NumMessages:   37,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -297,3 +297,20 @@ message AdminArticleListResp {
   repeated adminArticleListBase rows = 4;
 
 }
+
+
+message AdminArticleOneResp {
+  uint32 code = 1;
+  string msg = 2;
+  string title = 3;
+  string summary = 4;
+  uint32 categoryId = 5;
+  bool support = 6;
+  bool comment = 7;
+  uint32 headerImgType = 8;
+  string headerImg = 9;
+  uint32 weight = 10;
+  repeated string tagTitleList = 11;
+  string content = 12;
+  uint32 id = 13;
+}

@@ -51,3 +51,18 @@ func (a *Article) CreateOne() error {
 	}
 	return nil
 }
+
+func (a *Article) GetOne() (*Article, error) {
+	var article Article
+	if err := conn.MysqlConn.Model(&a).Where("id=?", a.ID).First(&article).Error; err != nil {
+		return nil, err
+	}
+	return &article, nil
+}
+
+func (a *Article) UpdateById() error {
+	if err := conn.MysqlConn.Model(&a).Where("id=?", a.ID).Updates(&a).Error; err != nil {
+		return err
+	}
+	return nil
+}

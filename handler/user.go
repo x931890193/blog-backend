@@ -79,6 +79,17 @@ func Routers(c *gin.Context) {
 			Children: []*pb.Component{
 				{
 					Component: "blog/blog/index",
+					Name:      "index",
+					Path:      "",
+					Hidden:    true,
+					Meta: &pb.ComponentMeta{
+						Title:   "",
+						NoCache: false,
+						Icon:    "documentation",
+					},
+				},
+				{
+					Component: "blog/blog/index",
 					Name:      "AddBlog",
 					Path:      "index",
 					Meta: &pb.ComponentMeta{
@@ -140,6 +151,12 @@ func Routers(c *gin.Context) {
 			Meta:      &pb.ComponentMeta{Title: "日志管理", Icon: "log"},
 			Path:      "/log",
 			Children: []*pb.Component{
+				{
+					Component: "log/loginLog/index",
+					Name:      "",
+					Path:      "",
+					Hidden:    true,
+				},
 				{
 					Component: "log/loginLog/index",
 					Name:      "loginLog",
@@ -204,6 +221,12 @@ func Routers(c *gin.Context) {
 			Children: []*pb.Component{
 				{
 					Component: "monitor/blacklist/index",
+					Name:      "",
+					Path:      "",
+					Hidden:    true,
+				},
+				{
+					Component: "monitor/blacklist/index",
 					Name:      "blacklist",
 					Path:      "blacklist",
 					Meta: &pb.ComponentMeta{
@@ -253,6 +276,12 @@ func Routers(c *gin.Context) {
 			Meta:      &pb.ComponentMeta{Title: "网站管理", Icon: "system"},
 			Path:      "/system",
 			Children: []*pb.Component{
+				{
+					Component: "system/carousel/index",
+					Name:      "",
+					Path:      "",
+					Hidden:    true,
+				},
 				{
 					Component: "system/carousel/index",
 					Name:      "carousel",
@@ -326,6 +355,12 @@ func Routers(c *gin.Context) {
 			Meta:      &pb.ComponentMeta{Title: "系统工具", Icon: "tool"},
 			Path:      "/tool",
 			Children: []*pb.Component{
+				{
+					Component: "tool/quartz/index",
+					Name:      "",
+					Path:      "",
+					Hidden:    true,
+				},
 				{
 					Component: "tool/quartz/index",
 					Name:      "quartz",

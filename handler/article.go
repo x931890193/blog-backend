@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type ArticleListRequest struct {
@@ -38,7 +39,7 @@ func GetArticleList(c *gin.Context) {
 	c.ProtoBuf(http.StatusOK, &resp)
 }
 
-func AddArticle(c *gin.Context) {
+func AdminAddArticle(c *gin.Context) {
 	req := pb.AdminArticleAddRequest{}
 	resp := pb.AdminArticleAddResp{}
 	if err := c.Bind(&req); err != nil {
@@ -58,6 +59,27 @@ func AddArticle(c *gin.Context) {
 
 }
 
+func AdminGetArticle(c *gin.Context) {
+	id := c.Param("id")
+	resp := &pb.AdminArticleOneResp{}
+	atoi, err := strconv.Atoi(id)
+	if err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, resp)
+		return
+	}
+	resp, err = service.GetAdminOne(atoi)
+	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, resp)
+		return
+	}
+	c.ProtoBuf(http.StatusOK, resp)
+	return
+}
+
 type AdminArticleListRequest struct {
 	PageNum       int    `form:"pageNum"`
 	pageSize      int    `form:"pageSize"`
@@ -66,7 +88,7 @@ type AdminArticleListRequest struct {
 	params        interface{}
 }
 
-func ArticleList(c *gin.Context) {
+func AdminArticleList(c *gin.Context) {
 	req := AdminArticleListRequest{}
 	resp := pb.AdminArticleListResp{}
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -83,11 +105,11 @@ func ArticleList(c *gin.Context) {
 	resp.Total = uint32(len(list))
 	for _, l := range list {
 		resp.Rows = append(resp.Rows, &pb.AdminArticleListRespAdminArticleListBase{
-			Title:   l.Title,
-			Summary: l.Summary,
-			Comment: l.CanComment,
-			Weight:  uint32(l.Weight),
-			//Support:    l.Support,
+			Title:      l.Title,
+			Summary:    l.Summary,
+			Comment:    l.CanComment,
+			Weight:     uint32(l.Weight),
+			Support:    l.Support,
 			CreateTime: l.CreatedAt.Format("2006-01-02 15:04:05"),
 			Id:         uint32(l.ID),
 			Status:     !l.IsDelete,
@@ -95,5 +117,32 @@ func ArticleList(c *gin.Context) {
 		})
 	}
 
+	c.ProtoBuf(http.StatusOK, &resp)
+}
+
+func AdminEditArticle(c *gin.Context) {
+	id := c.Param("id")
+	req := pb.AdminArticleAddRequest{}
+	resp := pb.AdminArticleAddResp{}
+	atoi, err := strconv.Atoi(id)
+	if err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	if err = c.Bind(&req); err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	err = service.UpdateArticle(&req, atoi)
+	if err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
 	c.ProtoBuf(http.StatusOK, &resp)
 }
