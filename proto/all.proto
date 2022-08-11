@@ -56,6 +56,10 @@ message Comment {
   string content = 6;
   repeated Comment children = 7;
   string parentUsername = 8;
+  string ip = 9;
+  string ua = 10;
+  string location = 11;
+  string os = 12;
 
 }
 

@@ -4,10 +4,13 @@ import (
 	"blog-backend/config"
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
+	"blog-backend/utils/useragent"
+	"fmt"
+	"github.com/gin-gonic/gin"
 	"strconv"
 )
 
-func AddComment(request *pb.CommentAddRequest, user *entity.User) (data *pb.Comment, err error) {
+func AddComment(request *pb.CommentAddRequest, user *entity.User, c *gin.Context) (data *pb.Comment, err error) {
 	article := &entity.Article{}
 	if id, ok := config.ArticleIdmap[request.ArticleId]; ok {
 		article.ID = id
@@ -23,12 +26,19 @@ func AddComment(request *pb.CommentAddRequest, user *entity.User) (data *pb.Comm
 	if err != nil {
 		parentId = 0
 	}
-
+	v, exist := c.Get("client")
+	ua := useragent.UserAgent{}
+	if exist {
+		ua, _ = v.(useragent.UserAgent)
+	}
 	comment := entity.Comment{
 		UserId:    user.ID,
 		ArticleId: article.ID,
 		Content:   request.Content,
 		ParentId:  uint(parentId),
+		Ip:        ua.Ip,
+		Ua:        fmt.Sprintf("%v %v", ua.Client["name"], ua.Client["version"]),
+		OS:        fmt.Sprintf("%v %v", ua.OS.Name, ua.OS.Version),
 	}
 	one, err := comment.AddOneComment(user)
 	if err != nil {
@@ -80,6 +90,9 @@ func getAllChildrenComment(dbRes []*entity.Comment, parentId uint, userMap map[i
 			Content:        item.Content,
 			Children:       children,
 			ParentUsername: parentUsername,
+			Ip:             item.Ip,
+			Ua:             item.Ua,
+			Os:             item.OS,
 		})
 		children = []*pb.Comment{}
 	}

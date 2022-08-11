@@ -131,6 +131,10 @@ type Comment struct {
 	ArticleId int    `gorm:"not null; comment: 文章ID; index; " json:"article_id"`
 	Content   string `gorm:"not null; comment: 评论内容; type:TEXT" json:"content"`
 	ParentId  uint   `gorm:"comment: 父评论ID; index;" json:"parent_id"`
+	Ip        string
+	Ua        string
+	Location  string
+	OS        string
 }
 
 func (Comment) TableName() string {

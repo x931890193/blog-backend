@@ -21,10 +21,10 @@ func (a *Article) GetArticleListOrderClickTime(limit int) ([]*Article, error) {
 }
 
 func GetArticleMap(limit int) (map[int]*Article, error) {
-	var (
-		res        []*Article
-		articleMap map[int]*Article
-	)
+
+	var res []*Article
+	articleMap := map[int]*Article{}
+
 	err := conn.MysqlConn.Model(Article{}).Order("click_times Desc").Limit(limit).Find(&res).Error
 	if err != nil {
 		return nil, err

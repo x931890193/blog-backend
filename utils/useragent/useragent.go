@@ -54,6 +54,7 @@ type UserAgent struct {
 		} `json:"producer"`
 	} `json:"robot"`
 	Vendor string `json:"vendor"`
+	Ip     string `json:"ip"`
 }
 
 func (ua UserAgent) String() string {

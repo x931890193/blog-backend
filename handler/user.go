@@ -252,7 +252,74 @@ func Routers(c *gin.Context) {
 			Component: "Layout",
 			Meta:      &pb.ComponentMeta{Title: "网站管理", Icon: "system"},
 			Path:      "/system",
-			Children:  []*pb.Component{},
+			Children: []*pb.Component{
+				{
+					Component: "system/carousel/index",
+					Name:      "carousel",
+					Path:      "carousel",
+					Meta: &pb.ComponentMeta{
+						Title:      "轮播图",
+						NoCache:    false,
+						Icon:       "example",
+						ActiveMenu: "/system/carousel",
+					},
+				},
+				{
+					Component: "system/link/index",
+					Name:      "link",
+					Path:      "link",
+					Meta: &pb.ComponentMeta{
+						Title:      "友链",
+						NoCache:    false,
+						Icon:       "people",
+						ActiveMenu: "/system/link",
+					},
+				},
+				{
+					Component: "system/notice/index",
+					Name:      "notice",
+					Path:      "notice",
+					Meta: &pb.ComponentMeta{
+						Title:      "公告",
+						NoCache:    false,
+						Icon:       "online",
+						ActiveMenu: "/system/notice",
+					},
+				},
+				{
+					Component: "system/role/index",
+					Name:      "role",
+					Path:      "role",
+					Meta: &pb.ComponentMeta{
+						Title:      "角色管理",
+						NoCache:    false,
+						Icon:       "user",
+						ActiveMenu: "/system/role",
+					},
+				},
+				{
+					Component: "system/setting/index",
+					Name:      "setting",
+					Path:      "setting",
+					Meta: &pb.ComponentMeta{
+						Title:      "网站设置",
+						NoCache:    false,
+						Icon:       "system",
+						ActiveMenu: "/system/setting",
+					},
+				},
+				{
+					Component: "system/user/index",
+					Name:      "user",
+					Path:      "user",
+					Meta: &pb.ComponentMeta{
+						Title:      "用户管理",
+						NoCache:    false,
+						Icon:       "user",
+						ActiveMenu: "/system/user",
+					},
+				},
+			},
 		},
 		{
 			Component: "Layout",

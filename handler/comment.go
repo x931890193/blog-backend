@@ -24,7 +24,7 @@ func AddComment(c *gin.Context) {
 		logger.Logger.Info("user not login!")
 		user = service.NewTempUser()
 	}
-	data, err := service.AddComment(&req, user)
+	data, err := service.AddComment(&req, user, c)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
