@@ -176,6 +176,7 @@ message Article {
   uint32 _id = 12;
   uint32 __v = 13;
   repeated uint32 tags = 14;
+  string title = 15;
 }
 
 message ArticleListResp {
@@ -183,6 +184,12 @@ message ArticleListResp {
   string msg = 2;
   repeated Article list = 3;
   Pagination pagination = 4;
+}
+
+message ArticleOneResp {
+  uint32 code = 1;
+  string msg = 2;
+  Article obj = 3;
 }
 
 message CaptchaResp {

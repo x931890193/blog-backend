@@ -32,7 +32,7 @@ type AdminCategoryListRequest struct {
 	params        interface{}
 }
 
-func AdminCategoryList(c *gin.Context) {
+func CategoryList(c *gin.Context) {
 	res, err := service.GetCategoryList()
 	if err != nil {
 		return

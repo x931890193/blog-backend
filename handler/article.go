@@ -34,7 +34,7 @@ func GetArticleList(c *gin.Context) {
 	}
 	resp.List = articles
 	resp.Pagination = &pb.Pagination{
-		CountTotal: 10,
+		CountTotal: uint32(len(articles)),
 	}
 	c.ProtoBuf(http.StatusOK, &resp)
 }
@@ -59,9 +59,9 @@ func AdminAddArticle(c *gin.Context) {
 
 }
 
-func AdminGetArticle(c *gin.Context) {
-	id := c.Param("id")
-	resp := &pb.AdminArticleOneResp{}
+func GetArticle(c *gin.Context) {
+	id := c.Query("id")
+	resp := &pb.ArticleOneResp{}
 	atoi, err := strconv.Atoi(id)
 	if err != nil {
 		resp.Code = uint32(ParamsError)
@@ -69,7 +69,7 @@ func AdminGetArticle(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, resp)
 		return
 	}
-	resp, err = service.GetAdminOne(atoi)
+	resp, err = service.GetOne(atoi)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -77,7 +77,6 @@ func AdminGetArticle(c *gin.Context) {
 		return
 	}
 	c.ProtoBuf(http.StatusOK, resp)
-	return
 }
 
 type AdminArticleListRequest struct {

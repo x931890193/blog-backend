@@ -391,3 +391,13 @@ func LoginOut(c *gin.Context) {
 	token := c.GetHeader("token")
 	cache.Client.Del(token)
 }
+
+func AboutMe(c *gin.Context) {
+	resp := pb.AboutResp{}
+	resp.CatchMe = &pb.CatchMe{
+		Git: "https://github.com/x931890193",
+		Job: "http://resume.mongona.com/",
+	}
+	resp.LikeNum = "99999"
+	c.ProtoBuf(http.StatusOK, &resp)
+}

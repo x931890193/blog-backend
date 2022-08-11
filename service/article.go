@@ -15,11 +15,12 @@ func ArticleList(pageSize, currentPage int) ([]*pb.Article, error) {
 	var res []*pb.Article
 	for _, item := range articles {
 		res = append(res, &pb.Article{
+			Title:            item.Title,
 			BrowseCount:      uint32(item.ClickTimes),
-			ClassId:          1,
+			ClassId:          uint32(item.ID),
 			CollectCount:     1,
 			CommentCount:     1,
-			Content:          item.Content,
+			Content:          item.Summary,
 			CreateDate:       item.CreatedAt.Format("2006-01-02 15:04:05"),
 			IsHot:            true,
 			IsRecommend:      true,
@@ -113,5 +114,35 @@ func GetAdminOne(id int) (*pb.AdminArticleOneResp, error) {
 		Weight:        uint32(one.Weight),
 		TagTitleList:  tagTitleList,
 		Content:       one.Content,
+	}, nil
+}
+
+func GetOne(id int) (*pb.ArticleOneResp, error) {
+	a := &entity.Article{BaseModel: entity.BaseModel{ID: id}}
+	one, err := a.GetOne()
+	if err != nil {
+		return nil, err
+	}
+	tagTitleList := []string{}
+	err = json.Unmarshal([]byte(one.Tags), &tagTitleList)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ArticleOneResp{
+		Obj: &pb.Article{
+			Title:            one.Title,
+			BrowseCount:      uint32(one.ClickTimes),
+			ClassId:          uint32(one.ID),
+			CollectCount:     1,
+			CommentCount:     1,
+			Content:          one.Content,
+			CreateDate:       one.CreatedAt.Format("2006-01-02 15:04:05"),
+			IsHot:            true,
+			IsRecommend:      true,
+			LastModifiedDate: one.UpdatedAt.Format("2006-01-02 15:04:05"),
+			LikeCount:        1,
+			XId:              uint32(one.ID),
+			XV:               1,
+		},
 	}, nil
 }
