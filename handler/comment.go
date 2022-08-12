@@ -64,6 +64,7 @@ func GetCommentList(c *gin.Context) {
 		resp.Code = uint32(ParamsError)
 		resp.Msg = ConvertMsg(ParamsError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)
+		return
 	}
 	comments, err := service.GetCommentList(req.ArticleId, int(req.PageSize), int(req.CurrentPage))
 	if err != nil {

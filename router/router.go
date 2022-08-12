@@ -38,7 +38,7 @@ func SetupServer() *gin.Engine {
 		admin.POST("/article/:id", handler.AdminEditArticle)
 		admin.GET("/article/list", handler.AdminArticleList)
 		admin.POST("/article/category/add", handler.AddCategory)
-		admin.POST("/article/category/edit", handler.LoginOut)
+		admin.POST("/article/category/edit", handler.EditCategory)
 		admin.GET("/article/category/list", handler.CategoryList)
 	}
 	// article

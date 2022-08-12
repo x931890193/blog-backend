@@ -20,6 +20,7 @@ func GetCaptcha(c *gin.Context) {
 		resp.Code = uint32(LogicError)
 		resp.Msg = ConvertMsg(LogicError, "验证码生成错误～")
 		c.ProtoBuf(http.StatusOK, &resp)
+		return
 	}
 	resp.Id = id
 	resp.Img = base64img

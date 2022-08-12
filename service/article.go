@@ -4,6 +4,7 @@ import (
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
 	"encoding/json"
+	"sort"
 )
 
 func ArticleList(pageSize, currentPage int) ([]*pb.Article, error) {
@@ -184,7 +185,7 @@ func GetArticleWithClassAndTags(categoryId uint) (*pb.ListByClassResp, error) {
 	articleList := []*pb.ListByClassResp_ArticleList{}
 	catgoryList := []*pb.ListByClassResp_ClassList{}
 	catgoryMap := map[int]*pb.ListByClassResp_ClassList{}
-	categories, err := category.GetAllCategory()
+	categories, err := category.GetAllCategory(0, 0)
 	for _, c := range categories {
 		catgoryMap[c.ID] = &pb.ListByClassResp_ClassList{
 			XId:   uint32(c.ID),
@@ -229,6 +230,7 @@ func GetArticleWithClassAndTags(categoryId uint) (*pb.ListByClassResp, error) {
 		})
 	}
 	res.ArticleList = articleList
+	sort.Slice(catgoryList, func(i, j int) bool { return catgoryList[i].XId < catgoryList[j].XId })
 	res.ClassList = catgoryList
 	return res, nil
 }

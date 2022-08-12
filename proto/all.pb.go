@@ -2801,6 +2801,124 @@ func (x *ListByClassResp) GetTags() []*Tags {
 	return nil
 }
 
+type AdminEditCategoryRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id          uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title       string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+}
+
+func (x *AdminEditCategoryRequest) Reset() {
+	*x = AdminEditCategoryRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_all_proto_msgTypes[35]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AdminEditCategoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdminEditCategoryRequest) ProtoMessage() {}
+
+func (x *AdminEditCategoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_all_proto_msgTypes[35]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdminEditCategoryRequest.ProtoReflect.Descriptor instead.
+func (*AdminEditCategoryRequest) Descriptor() ([]byte, []int) {
+	return file_all_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *AdminEditCategoryRequest) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *AdminEditCategoryRequest) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *AdminEditCategoryRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+type AdminEditCategoryResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code uint32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg  string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+}
+
+func (x *AdminEditCategoryResp) Reset() {
+	*x = AdminEditCategoryResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_all_proto_msgTypes[36]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AdminEditCategoryResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdminEditCategoryResp) ProtoMessage() {}
+
+func (x *AdminEditCategoryResp) ProtoReflect() protoreflect.Message {
+	mi := &file_all_proto_msgTypes[36]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdminEditCategoryResp.ProtoReflect.Descriptor instead.
+func (*AdminEditCategoryResp) Descriptor() ([]byte, []int) {
+	return file_all_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *AdminEditCategoryResp) GetCode() uint32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *AdminEditCategoryResp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
 type ListYear_ListItem struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2814,7 +2932,7 @@ type ListYear_ListItem struct {
 func (x *ListYear_ListItem) Reset() {
 	*x = ListYear_ListItem{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[35]
+		mi := &file_all_proto_msgTypes[37]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2827,7 +2945,7 @@ func (x *ListYear_ListItem) String() string {
 func (*ListYear_ListItem) ProtoMessage() {}
 
 func (x *ListYear_ListItem) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[35]
+	mi := &file_all_proto_msgTypes[37]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2881,7 +2999,7 @@ type AdminCategoryListRespBlogBase struct {
 func (x *AdminCategoryListRespBlogBase) Reset() {
 	*x = AdminCategoryListRespBlogBase{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[36]
+		mi := &file_all_proto_msgTypes[38]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2894,7 +3012,7 @@ func (x *AdminCategoryListRespBlogBase) String() string {
 func (*AdminCategoryListRespBlogBase) ProtoMessage() {}
 
 func (x *AdminCategoryListRespBlogBase) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[36]
+	mi := &file_all_proto_msgTypes[38]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2975,7 +3093,7 @@ type AdminCategoryListRespCategoryBase struct {
 func (x *AdminCategoryListRespCategoryBase) Reset() {
 	*x = AdminCategoryListRespCategoryBase{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[37]
+		mi := &file_all_proto_msgTypes[39]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2988,7 +3106,7 @@ func (x *AdminCategoryListRespCategoryBase) String() string {
 func (*AdminCategoryListRespCategoryBase) ProtoMessage() {}
 
 func (x *AdminCategoryListRespCategoryBase) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[37]
+	mi := &file_all_proto_msgTypes[39]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3058,7 +3176,7 @@ type AdminArticleListRespAdminArticleListCategory struct {
 func (x *AdminArticleListRespAdminArticleListCategory) Reset() {
 	*x = AdminArticleListRespAdminArticleListCategory{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[38]
+		mi := &file_all_proto_msgTypes[40]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3071,7 +3189,7 @@ func (x *AdminArticleListRespAdminArticleListCategory) String() string {
 func (*AdminArticleListRespAdminArticleListCategory) ProtoMessage() {}
 
 func (x *AdminArticleListRespAdminArticleListCategory) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[38]
+	mi := &file_all_proto_msgTypes[40]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3121,7 +3239,7 @@ type AdminArticleListRespAdminArticleListBase struct {
 func (x *AdminArticleListRespAdminArticleListBase) Reset() {
 	*x = AdminArticleListRespAdminArticleListBase{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[39]
+		mi := &file_all_proto_msgTypes[41]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3134,7 +3252,7 @@ func (x *AdminArticleListRespAdminArticleListBase) String() string {
 func (*AdminArticleListRespAdminArticleListBase) ProtoMessage() {}
 
 func (x *AdminArticleListRespAdminArticleListBase) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[39]
+	mi := &file_all_proto_msgTypes[41]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3233,7 +3351,7 @@ type ListByClassResp_List struct {
 func (x *ListByClassResp_List) Reset() {
 	*x = ListByClassResp_List{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[40]
+		mi := &file_all_proto_msgTypes[42]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3246,7 +3364,7 @@ func (x *ListByClassResp_List) String() string {
 func (*ListByClassResp_List) ProtoMessage() {}
 
 func (x *ListByClassResp_List) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[40]
+	mi := &file_all_proto_msgTypes[42]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3296,7 +3414,7 @@ type ListByClassResp_ClassList struct {
 func (x *ListByClassResp_ClassList) Reset() {
 	*x = ListByClassResp_ClassList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[41]
+		mi := &file_all_proto_msgTypes[43]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3309,7 +3427,7 @@ func (x *ListByClassResp_ClassList) String() string {
 func (*ListByClassResp_ClassList) ProtoMessage() {}
 
 func (x *ListByClassResp_ClassList) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[41]
+	mi := &file_all_proto_msgTypes[43]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3358,7 +3476,7 @@ type ListByClassResp_ArticleList struct {
 func (x *ListByClassResp_ArticleList) Reset() {
 	*x = ListByClassResp_ArticleList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[42]
+		mi := &file_all_proto_msgTypes[44]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3371,7 +3489,7 @@ func (x *ListByClassResp_ArticleList) String() string {
 func (*ListByClassResp_ArticleList) ProtoMessage() {}
 
 func (x *ListByClassResp_ArticleList) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[42]
+	mi := &file_all_proto_msgTypes[44]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3819,9 +3937,19 @@ var file_all_proto_rawDesc = []byte{
 	0x61, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04, 0x79, 0x65, 0x61, 0x72, 0x12, 0x2f,
 	0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x42, 0x79, 0x43, 0x6c, 0x61, 0x73, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x42,
-	0x0a, 0x5a, 0x08, 0x2e, 0x2e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x52, 0x65, 0x73, 0x70, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x22,
+	0x62, 0x0a, 0x18, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x45, 0x64, 0x69, 0x74, 0x43, 0x61, 0x74, 0x65,
+	0x67, 0x6f, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x69, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x74,
+	0x69, 0x74, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c,
+	0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74,
+	0x69, 0x6f, 0x6e, 0x22, 0x3d, 0x0a, 0x15, 0x41, 0x64, 0x6d, 0x69, 0x6e, 0x45, 0x64, 0x69, 0x74,
+	0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x12, 0x12, 0x0a, 0x04,
+	0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65,
+	0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d,
+	0x73, 0x67, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3836,7 +3964,7 @@ func file_all_proto_rawDescGZIP() []byte {
 	return file_all_proto_rawDescData
 }
 
-var file_all_proto_msgTypes = make([]protoimpl.MessageInfo, 43)
+var file_all_proto_msgTypes = make([]protoimpl.MessageInfo, 45)
 var file_all_proto_goTypes = []interface{}{
 	(*LoginAdminRequest)(nil),                            // 0: proto.LoginAdminRequest
 	(*LoginAdminResp)(nil),                               // 1: proto.LoginAdminResp
@@ -3873,14 +4001,16 @@ var file_all_proto_goTypes = []interface{}{
 	(*AdminArticleOneResp)(nil),                          // 32: proto.AdminArticleOneResp
 	(*Tags)(nil),                                         // 33: proto.Tags
 	(*ListByClassResp)(nil),                              // 34: proto.ListByClassResp
-	(*ListYear_ListItem)(nil),                            // 35: proto.ListYear.ListItem
-	(*AdminCategoryListRespBlogBase)(nil),                // 36: proto.AdminCategoryListResp.blogBase
-	(*AdminCategoryListRespCategoryBase)(nil),            // 37: proto.AdminCategoryListResp.categoryBase
-	(*AdminArticleListRespAdminArticleListCategory)(nil), // 38: proto.AdminArticleListResp.adminArticleListCategory
-	(*AdminArticleListRespAdminArticleListBase)(nil),     // 39: proto.AdminArticleListResp.adminArticleListBase
-	(*ListByClassResp_List)(nil),                         // 40: proto.ListByClassResp.List
-	(*ListByClassResp_ClassList)(nil),                    // 41: proto.ListByClassResp.ClassList
-	(*ListByClassResp_ArticleList)(nil),                  // 42: proto.ListByClassResp.ArticleList
+	(*AdminEditCategoryRequest)(nil),                     // 35: proto.AdminEditCategoryRequest
+	(*AdminEditCategoryResp)(nil),                        // 36: proto.AdminEditCategoryResp
+	(*ListYear_ListItem)(nil),                            // 37: proto.ListYear.ListItem
+	(*AdminCategoryListRespBlogBase)(nil),                // 38: proto.AdminCategoryListResp.blogBase
+	(*AdminCategoryListRespCategoryBase)(nil),            // 39: proto.AdminCategoryListResp.categoryBase
+	(*AdminArticleListRespAdminArticleListCategory)(nil), // 40: proto.AdminArticleListResp.adminArticleListCategory
+	(*AdminArticleListRespAdminArticleListBase)(nil),     // 41: proto.AdminArticleListResp.adminArticleListBase
+	(*ListByClassResp_List)(nil),                         // 42: proto.ListByClassResp.List
+	(*ListByClassResp_ClassList)(nil),                    // 43: proto.ListByClassResp.ClassList
+	(*ListByClassResp_ArticleList)(nil),                  // 44: proto.ListByClassResp.ArticleList
 }
 var file_all_proto_depIdxs = []int32{
 	5,  // 0: proto.Comment.children:type_name -> proto.Comment
@@ -3890,7 +4020,7 @@ var file_all_proto_depIdxs = []int32{
 	10, // 4: proto.AboutResp.catchMe:type_name -> proto.CatchMe
 	13, // 5: proto.TopCommentResp.browseList:type_name -> proto.BrowseList
 	14, // 6: proto.TopCommentResp.topCommentList:type_name -> proto.TopCommentList
-	35, // 7: proto.ListYear.list:type_name -> proto.ListYear.ListItem
+	37, // 7: proto.ListYear.list:type_name -> proto.ListYear.ListItem
 	17, // 8: proto.ListByClass.articleList:type_name -> proto.ListYear
 	16, // 9: proto.ListByClass.classList:type_name -> proto.ClassList
 	19, // 10: proto.ArticleListResp.list:type_name -> proto.Article
@@ -3899,14 +4029,14 @@ var file_all_proto_depIdxs = []int32{
 	23, // 13: proto.Component.meta:type_name -> proto.ComponentMeta
 	24, // 14: proto.Component.children:type_name -> proto.Component
 	24, // 15: proto.AdminRouterResp.data:type_name -> proto.Component
-	37, // 16: proto.AdminCategoryListResp.rows:type_name -> proto.AdminCategoryListResp.categoryBase
-	39, // 17: proto.AdminArticleListResp.rows:type_name -> proto.AdminArticleListResp.adminArticleListBase
-	41, // 18: proto.ListByClassResp.classList:type_name -> proto.ListByClassResp.ClassList
-	42, // 19: proto.ListByClassResp.articleList:type_name -> proto.ListByClassResp.ArticleList
+	39, // 16: proto.AdminCategoryListResp.rows:type_name -> proto.AdminCategoryListResp.categoryBase
+	41, // 17: proto.AdminArticleListResp.rows:type_name -> proto.AdminArticleListResp.adminArticleListBase
+	43, // 18: proto.ListByClassResp.classList:type_name -> proto.ListByClassResp.ClassList
+	44, // 19: proto.ListByClassResp.articleList:type_name -> proto.ListByClassResp.ArticleList
 	33, // 20: proto.ListByClassResp.tags:type_name -> proto.Tags
-	36, // 21: proto.AdminCategoryListResp.categoryBase.blogList:type_name -> proto.AdminCategoryListResp.blogBase
-	38, // 22: proto.AdminArticleListResp.adminArticleListBase.category:type_name -> proto.AdminArticleListResp.adminArticleListCategory
-	40, // 23: proto.ListByClassResp.ArticleList.list:type_name -> proto.ListByClassResp.List
+	38, // 21: proto.AdminCategoryListResp.categoryBase.blogList:type_name -> proto.AdminCategoryListResp.blogBase
+	40, // 22: proto.AdminArticleListResp.adminArticleListBase.category:type_name -> proto.AdminArticleListResp.adminArticleListCategory
+	42, // 23: proto.ListByClassResp.ArticleList.list:type_name -> proto.ListByClassResp.List
 	24, // [24:24] is the sub-list for method output_type
 	24, // [24:24] is the sub-list for method input_type
 	24, // [24:24] is the sub-list for extension type_name
@@ -4341,7 +4471,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListYear_ListItem); i {
+			switch v := v.(*AdminEditCategoryRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4353,7 +4483,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminCategoryListRespBlogBase); i {
+			switch v := v.(*AdminEditCategoryResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4365,7 +4495,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminCategoryListRespCategoryBase); i {
+			switch v := v.(*ListYear_ListItem); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4377,7 +4507,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminArticleListRespAdminArticleListCategory); i {
+			switch v := v.(*AdminCategoryListRespBlogBase); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4389,7 +4519,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminArticleListRespAdminArticleListBase); i {
+			switch v := v.(*AdminCategoryListRespCategoryBase); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4401,7 +4531,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListByClassResp_List); i {
+			switch v := v.(*AdminArticleListRespAdminArticleListCategory); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4413,7 +4543,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListByClassResp_ClassList); i {
+			switch v := v.(*AdminArticleListRespAdminArticleListBase); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -4425,6 +4555,30 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListByClassResp_List); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_all_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListByClassResp_ClassList); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_all_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListByClassResp_ArticleList); i {
 			case 0:
 				return &v.state
@@ -4443,7 +4597,7 @@ func file_all_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_all_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   43,
+			NumMessages:   45,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

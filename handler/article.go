@@ -13,8 +13,8 @@ import (
 type ArticleListRequest struct {
 	Like        uint `form:"like"`
 	Collect     uint `form:"collect"`
-	PageSize    uint `form:"pageSize"`
-	CurrentPage uint `form:"currentPage"`
+	PageSize    int  `form:"pageSize"`
+	CurrentPage int  `form:"currentPage"`
 }
 
 func GetArticleList(c *gin.Context) {
@@ -26,8 +26,9 @@ func GetArticleList(c *gin.Context) {
 		resp.Code = uint32(ParamsError)
 		resp.Msg = ConvertMsg(ParamsError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)
+		return
 	}
-	articles, err := service.ArticleList(int(req.PageSize), int(req.CurrentPage))
+	articles, err := service.ArticleList(req.PageSize, req.CurrentPage)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -118,12 +119,14 @@ func AdminArticleList(c *gin.Context) {
 		resp.Code = uint32(ParamsError)
 		resp.Msg = ConvertMsg(ParamsError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)
+		return
 	}
 	list, err := service.ArticleListOrigin(req.pageSize, req.PageNum)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)
+		return
 	}
 	resp.Total = uint32(len(list))
 	for _, l := range list {

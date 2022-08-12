@@ -14,9 +14,9 @@ func AddCategory(title, des string, support bool) (*entity.Category, error) {
 	return one, nil
 }
 
-func GetCategoryList() (*pb.AdminCategoryListResp, error) {
+func GetCategoryList(pageSize, currentPage int) (*pb.AdminCategoryListResp, error) {
 	category := entity.Category{}
-	list, err := category.GetAllCategory()
+	list, err := category.GetAllCategory(pageSize, currentPage)
 	if err != nil {
 		return nil, err
 	}
@@ -33,4 +33,17 @@ func GetCategoryList() (*pb.AdminCategoryListResp, error) {
 		})
 	}
 	return resp, nil
+}
+
+func UpdateCategoryById(id int, update *pb.AdminEditCategoryRequest) error {
+	category := entity.Category{}
+	category.ID = id
+	category.Name = update.Title
+	category.DisplayName = update.Description
+	category.SeoDesc = update.Description
+	err := category.UpdateById()
+	if err != nil {
+		return err
+	}
+	return nil
 }

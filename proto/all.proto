@@ -351,3 +351,14 @@ message ListByClassResp {
   repeated Tags tags = 5;
 
 }
+
+message AdminEditCategoryRequest {
+  uint32 id = 1;
+  string title = 2;
+  string description = 3;
+}
+
+message AdminEditCategoryResp {
+  uint32 code = 1;
+  string msg = 2;
+}

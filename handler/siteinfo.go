@@ -14,6 +14,7 @@ func GetSiteInfo(c *gin.Context) {
 		resp.Code = uint32(ParamsError)
 		resp.Msg = ConvertMsg(ParamsError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)
+		return
 	}
 
 	resp.Author = siteInfo.Author
