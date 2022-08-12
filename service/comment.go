@@ -154,38 +154,39 @@ func GetTopComment() (*pb.TopCommentResp, error) {
 	var (
 		comment        entity.Comment
 		commentUserIds []int
+		articleIDs     []int
+		article        *entity.Article
 	)
 	res := &pb.TopCommentResp{BrowseList: []*pb.BrowseList{}, TopCommentList: []*pb.TopCommentList{}}
-	articleMap, err := entity.GetArticleMap(10)
-	if err != nil {
-		return nil, err
-	}
 	topCommentList, err := comment.GetTopComment(10)
 	if err != nil {
 		return nil, err
 	}
 	for _, item := range topCommentList {
 		commentUserIds = append(commentUserIds, item.UserId)
+		articleIDs = append(articleIDs, item.ArticleId)
 	}
+
 	userMap, err := GetUsersMapByIds(commentUserIds)
+	if err != nil {
+		return nil, err
+	}
+	articleMap, err := article.GetArticleMapsByIds(articleIDs)
+	if err != nil {
+		return nil, err
+	}
+	topArticles, err := article.GetArticleListOrderClickTime(10)
 	if err != nil {
 		return nil, err
 	}
 	for _, commentItem := range topCommentList {
 		user := &entity.User{}
-		article := &entity.Article{}
 		if _, ok := userMap[commentItem.UserId]; !ok {
 			user = NewTempUser()
 		}
-
-		if _, ok := articleMap[commentItem.ArticleId]; !ok {
+		article, ok := articleMap[commentItem.ArticleId]
+		if !ok {
 			article = NewTempArticle(commentItem.ArticleId)
-		} else {
-			res.BrowseList = append(res.BrowseList, &pb.BrowseList{
-				ArticleId: strconv.Itoa(commentItem.ArticleId),
-				Title:     article.Title,
-				Count:     uint32(article.ClickTimes),
-			})
 		}
 		res.TopCommentList = append(res.TopCommentList, &pb.TopCommentList{
 			ArticleId: strconv.Itoa(commentItem.ArticleId),
@@ -195,6 +196,13 @@ func GetTopComment() (*pb.TopCommentResp, error) {
 			Content:   commentItem.Content,
 		})
 
+	}
+	for _, a := range topArticles {
+		res.BrowseList = append(res.BrowseList, &pb.BrowseList{
+			ArticleId: strconv.Itoa(a.ID),
+			Title:     a.Title,
+			Count:     uint32(a.ClickTimes),
+		})
 	}
 	return res, nil
 }

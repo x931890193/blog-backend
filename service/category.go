@@ -15,7 +15,8 @@ func AddCategory(title, des string, support bool) (*entity.Category, error) {
 }
 
 func GetCategoryList() (*pb.AdminCategoryListResp, error) {
-	list, err := entity.AdminGetList()
+	category := entity.Category{}
+	list, err := category.GetAllCategory()
 	if err != nil {
 		return nil, err
 	}

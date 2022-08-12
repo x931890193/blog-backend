@@ -5,6 +5,7 @@ import (
 	"blog-backend/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func AddCategory(c *gin.Context) {
@@ -39,4 +40,21 @@ func CategoryList(c *gin.Context) {
 	}
 	c.ProtoBuf(http.StatusOK, res)
 
+}
+
+func GetArticleByClass(c *gin.Context) {
+	classId := c.Query("classId")
+	atoi, err := strconv.Atoi(classId)
+	if err != nil {
+		atoi = 0
+	}
+	resp, err := service.GetArticleWithClassAndTags(uint(atoi))
+	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, resp)
+		return
+	}
+
+	c.ProtoBuf(http.StatusOK, resp)
 }

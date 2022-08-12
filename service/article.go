@@ -146,3 +146,89 @@ func GetOne(id int) (*pb.ArticleOneResp, error) {
 		},
 	}, nil
 }
+
+func GetOneAndUpdateClick(id int) (*pb.ArticleOneResp, error) {
+	a := &entity.Article{BaseModel: entity.BaseModel{ID: id}}
+	one, err := a.GetOneAndUpte()
+	if err != nil {
+		return nil, err
+	}
+	tagTitleList := []string{}
+	err = json.Unmarshal([]byte(one.Tags), &tagTitleList)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ArticleOneResp{
+		Obj: &pb.Article{
+			Title:            one.Title,
+			BrowseCount:      uint32(one.ClickTimes),
+			ClassId:          uint32(one.ID),
+			CollectCount:     1,
+			CommentCount:     1,
+			Content:          one.Content,
+			CreateDate:       one.CreatedAt.Format("2006-01-02 15:04:05"),
+			IsHot:            true,
+			IsRecommend:      true,
+			LastModifiedDate: one.UpdatedAt.Format("2006-01-02 15:04:05"),
+			LikeCount:        1,
+			XId:              uint32(one.ID),
+			XV:               1,
+		},
+	}, nil
+}
+
+func GetArticleWithClassAndTags(categoryId uint) (*pb.ListByClassResp, error) {
+	article := entity.Article{}
+	category := entity.Category{}
+	res := &pb.ListByClassResp{}
+	articleList := []*pb.ListByClassResp_ArticleList{}
+	catgoryList := []*pb.ListByClassResp_ClassList{}
+	catgoryMap := map[int]*pb.ListByClassResp_ClassList{}
+	categories, err := category.GetAllCategory()
+	for _, c := range categories {
+		catgoryMap[c.ID] = &pb.ListByClassResp_ClassList{
+			XId:   uint32(c.ID),
+			Name:  c.Name,
+			Count: 0,
+		}
+	}
+	articles, err := article.GetAllArticle(0)
+	if err != nil {
+		return nil, err
+	}
+	articleYearMap := map[int][]*pb.ListByClassResp_List{}
+	for _, a := range articles {
+		year := a.CreatedAt.Year()
+		_, ok := articleYearMap[year]
+		if !ok {
+			articleYearMap[year] = []*pb.ListByClassResp_List{}
+		}
+		if item, exist := catgoryMap[int(a.CategoryId)]; exist {
+			item.Count++
+		}
+		if categoryId != 0 && a.CategoryId != categoryId {
+			continue
+		}
+		articleYearMap[year] = append(articleYearMap[year], &pb.ListByClassResp_List{
+			Title:      a.Title,
+			XId:        uint32(a.ID),
+			CreateDate: a.CreatedAt.Format("2006-01-02 15:04:05"),
+		})
+	}
+	for k, v := range articleYearMap {
+		articleList = append(articleList, &pb.ListByClassResp_ArticleList{
+			Year: uint32(k),
+			List: v,
+		})
+	}
+	for _, v := range catgoryMap {
+		catgoryList = append(catgoryList, &pb.ListByClassResp_ClassList{
+			XId:   v.XId,
+			Name:  v.Name,
+			Count: v.Count,
+		})
+	}
+	res.ArticleList = articleList
+	res.ClassList = catgoryList
+	return res, nil
+}

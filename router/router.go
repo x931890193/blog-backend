@@ -34,7 +34,7 @@ func SetupServer() *gin.Engine {
 		admin.GET("/routers", handler.Routers)
 		admin.POST("/logout", handler.LoginOut)
 		admin.POST("/article/add", handler.AdminAddArticle)
-		admin.GET("/article/:id", handler.GetArticle)
+		admin.GET("/article/:id", handler.AdminGetArticle)
 		admin.POST("/article/:id", handler.AdminEditArticle)
 		admin.GET("/article/list", handler.AdminArticleList)
 		admin.POST("/article/category/add", handler.AddCategory)
@@ -46,7 +46,7 @@ func SetupServer() *gin.Engine {
 	{
 		article.GET("/list", handler.GetArticleList)
 		article.GET("/category/list", handler.CategoryList)
-		article.GET("/getListByClass") // 归档标签
+		article.GET("/getListByClass", handler.GetArticleByClass) // 归档标签
 		article.GET("/getInfo", handler.GetArticle)
 	}
 	// comment
@@ -60,7 +60,7 @@ func SetupServer() *gin.Engine {
 	// resource
 	resource := router.Group("/resource")
 	{
-		resource.GET("/site_info")
+		resource.GET("/site_info", handler.GetSiteInfo)
 		resource.GET("/about", handler.AboutMe)
 	}
 	// user

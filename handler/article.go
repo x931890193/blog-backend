@@ -34,7 +34,10 @@ func GetArticleList(c *gin.Context) {
 	}
 	resp.List = articles
 	resp.Pagination = &pb.Pagination{
-		CountTotal: uint32(len(articles)),
+		CountTotal:  uint32(len(articles)),
+		TotalPage:   10,
+		CurrentPage: uint32(req.PageSize + 1),
+		PageSize:    uint32(req.PageSize),
 	}
 	c.ProtoBuf(http.StatusOK, &resp)
 }
@@ -59,6 +62,27 @@ func AdminAddArticle(c *gin.Context) {
 
 }
 
+func AdminGetArticle(c *gin.Context) {
+	id := c.Param("id")
+	resp := &pb.AdminArticleOneResp{}
+	atoi, err := strconv.Atoi(id)
+	if err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, resp)
+		return
+	}
+	resp, err = service.GetAdminOne(atoi)
+	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, resp)
+		return
+	}
+	c.ProtoBuf(http.StatusOK, resp)
+	return
+}
+
 func GetArticle(c *gin.Context) {
 	id := c.Query("id")
 	resp := &pb.ArticleOneResp{}
@@ -69,7 +93,7 @@ func GetArticle(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, resp)
 		return
 	}
-	resp, err = service.GetOne(atoi)
+	resp, err = service.GetOneAndUpdateClick(atoi)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())

@@ -11,6 +11,42 @@ func (a *Article) GetArticleById() (*Article, error) {
 	return &article, nil
 }
 
+func (a *Article) GetArticleByIds(ids []int) ([]*Article, error) {
+	articles := []*Article{}
+	err := conn.MysqlConn.Model(Article{}).Where("id in >", ids).First(&articles).Error
+	if err != nil {
+		return nil, err
+	}
+	return articles, nil
+}
+
+func (a *Article) GetArticleMapsByIds(ids []int) (map[int]*Article, error) {
+	articles := []*Article{}
+	res := map[int]*Article{}
+	err := conn.MysqlConn.Model(Article{}).Where("id in ?", ids).Find(&articles).Error
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range articles {
+		res[item.ID] = item
+	}
+	return res, nil
+}
+
+func (a *Article) GetAllArticle(categoryID uint) ([]*Article, error) {
+	var res []*Article
+	query := conn.MysqlConn.Model(Article{})
+	if categoryID != 0 {
+		query.Where("category_id=?", categoryID)
+	}
+	err := query.Find(&res).Error
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+
+}
+
 func (a *Article) GetArticleListOrderClickTime(limit int) ([]*Article, error) {
 	var res []*Article
 	err := conn.MysqlConn.Model(Article{}).Order("click_times Desc").Limit(limit).Find(&res).Error
@@ -55,6 +91,18 @@ func (a *Article) CreateOne() error {
 func (a *Article) GetOne() (*Article, error) {
 	var article Article
 	if err := conn.MysqlConn.Model(&a).Where("id=?", a.ID).First(&article).Error; err != nil {
+		return nil, err
+	}
+	return &article, nil
+}
+
+func (a *Article) GetOneAndUpte() (*Article, error) {
+	var article Article
+	if err := conn.MysqlConn.Model(&a).Where("id=?", a.ID).First(&article).Error; err != nil {
+		return nil, err
+	}
+	article.ClickTimes++
+	if err := conn.MysqlConn.Save(&article).Error; err != nil {
 		return nil, err
 	}
 	return &article, nil

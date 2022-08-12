@@ -1,22 +1,23 @@
 package handler
 
-//
-//func GetSiteInfo(c *gin.Context) {
-//	siteInfo := entity.GetSiteInfo()
-//	res := proto.BaseResponse{}
-//	if siteInfo != nil {
-//		res.Code = 1
-//		res.Msg = "999999"
-//	}
-//	c.ProtoBuf(http.StatusOK, &res)
-//}
-//
-//func About(c *gin.Context) {
-//	siteInfo := entity.GetSiteInfo()
-//	res := proto.BaseResponse{}
-//	if siteInfo != nil {
-//		res.Code = 1
-//		res.Msg = "999999"
-//	}
-//	c.ProtoBuf(http.StatusOK, &res)
-//}
+import (
+	pb "blog-backend/proto"
+	"blog-backend/service"
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
+
+func GetSiteInfo(c *gin.Context) {
+	resp := pb.SiteInfoResp{}
+	siteInfo, err := service.GetInfo()
+	if err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+	}
+
+	resp.Author = siteInfo.Author
+	resp.Beian = siteInfo.Beian
+	resp.Github = siteInfo.Github
+	c.ProtoBuf(http.StatusOK, &resp)
+}

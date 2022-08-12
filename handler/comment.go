@@ -36,6 +36,7 @@ func AddComment(c *gin.Context) {
 }
 
 func GetTopComments(c *gin.Context) {
+	resp := &pb.TopCommentResp{}
 	resp, err := service.GetTopComment()
 	if err != nil {
 		resp.Code = uint32(ParamsError)

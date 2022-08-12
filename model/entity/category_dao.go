@@ -10,7 +10,7 @@ func (c *Category) AddOneCategory() (*Category, error) {
 	return c, nil
 }
 
-func AdminGetList() ([]*Category, error) {
+func (c *Category) GetAllCategory() ([]*Category, error) {
 	var res []*Category
 	if err := conn.MysqlConn.Model(&Category{}).Find(&res).Error; err != nil {
 		return nil, err

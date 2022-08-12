@@ -321,3 +321,33 @@ message AdminArticleOneResp {
   string content = 12;
   uint32 id = 13;
 }
+
+
+message Tags  {
+  uint32 _id = 1;
+  string name = 2;
+}
+
+message ListByClassResp {
+
+  message List {
+    uint32 _id = 1;
+    string createDate = 2;
+    string title = 3;
+  }
+  message ClassList {
+    uint32 _id = 1;
+    string name = 2;
+    uint32 count = 3;
+  }
+  message ArticleList {
+    uint32 year = 1;
+    repeated List list = 2;
+  }
+  uint32 code = 1;
+  string msg = 2;
+  repeated ClassList classList = 3;
+  repeated ArticleList articleList = 4;
+  repeated Tags tags = 5;
+
+}
