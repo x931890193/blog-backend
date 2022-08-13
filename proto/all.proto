@@ -3,6 +3,10 @@ syntax = "proto3";
 option go_package = "../proto";
 package proto;
 
+message BaseResp {
+  uint32 code = 1;
+  string msg = 2;
+}
 
 message LoginAdminRequest{
   string username = 1;
@@ -19,11 +23,6 @@ message LoginAdminResp{
 
 message LogoutAdminRequest{
   string token = 1;
-}
-
-message LogoutAdminResp{
-  uint32 code = 1;
-  string msg = 2;
 }
 
 message AdminInfoResp {
@@ -230,12 +229,6 @@ message AdminCategoryAddRequest{
   bool support = 3;
 }
 
-message AdminCategoryAddResp{
-  uint32 code = 1;
-  string msg = 2;
-}
-
-
 message AdminCategoryListResp {
   message blogBase {
     string title = 1;
@@ -274,12 +267,6 @@ message AdminArticleAddRequest {
   string content = 10;
 }
 
-message AdminArticleAddResp {
-  uint32 code = 1;
-  string msg = 2;
-}
-
-
 message AdminArticleListResp {
   message adminArticleListCategory {
       string title = 1;
@@ -304,7 +291,6 @@ message AdminArticleListResp {
   repeated adminArticleListBase rows = 4;
 
 }
-
 
 message AdminArticleOneResp {
   uint32 code = 1;
@@ -358,7 +344,29 @@ message AdminEditCategoryRequest {
   string description = 3;
 }
 
-message AdminEditCategoryResp {
+message LinkBase {
+  string title = 1;
+  string description = 2;
+  string email = 3;
+  string url = 4;
+  string headerImg = 5;
+  bool display = 6;
+  uint32 id = 7;
+  string createTime = 8;
+}
+
+message LinkRequest {
+  string title = 3;
+  string description = 4;
+  string email = 5;
+  string url = 6;
+  string headerImg = 7;
+  string display = 8;
+}
+
+message LinkListResp {
   uint32 code = 1;
   string msg = 2;
+  uint32 total = 3;
+  repeated LinkBase rows = 4;
 }

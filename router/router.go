@@ -40,6 +40,9 @@ func SetupServer() *gin.Engine {
 		admin.POST("/article/category/add", handler.AddCategory)
 		admin.POST("/article/category/edit", handler.EditCategory)
 		admin.GET("/article/category/list", handler.CategoryList)
+		admin.POST("/link/add", handler.AddLink)
+		admin.POST("/link/edit", handler.AddLink)
+		admin.GET("/link/list", handler.LinkList)
 	}
 	// article
 	article := router.Group("/article")
@@ -77,9 +80,9 @@ func SetupServer() *gin.Engine {
 		reward.GET("/list")
 	}
 	// links
-	links := router.GET("/links")
+	links := router.Group("/link")
 	{
-		links.GET("/list")
+		links.GET("/list", handler.LinkList)
 	}
 
 	return router

@@ -20,6 +20,7 @@ func init() {
 		&Tags{},
 		&Request{},
 		&User{},
+		&Link{},
 	)
 	_ = conn.PgConn.AutoMigrate(
 		&SiteInfo{},
@@ -32,6 +33,7 @@ func init() {
 		&Tags{},
 		&Request{},
 		&User{},
+		&Link{},
 	)
 }
 
@@ -183,4 +185,13 @@ type Collection struct {
 
 func (Collection) TableName() string {
 	return "collection"
+}
+
+type Link struct {
+	BaseModel
+	Title       string `gorm:"not null; comment: 标题; index; type:VARCHAR(255)" json:"title"`
+	Description string `gorm:"not null; comment: 网站描述; type:VARCHAR(255)" json:"description"`
+	Email       string `gorm:"not null; unique; comment: 邮箱;" json:"email"`
+	Url         string `gorm:"not null" json:"url"`
+	HeaderImg   string `gorm:"type:VARCHAR(255)" json:"header_img"`
 }

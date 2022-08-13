@@ -10,7 +10,7 @@ import (
 
 func AddCategory(c *gin.Context) {
 	req := pb.AdminCategoryAddRequest{}
-	resp := pb.AdminCategoryAddResp{}
+	resp := pb.BaseResp{}
 	if err := c.Bind(&req); err != nil {
 		resp.Code = uint32(ParamsError)
 		resp.Msg = ConvertMsg(ParamsError, err.Error())
@@ -73,7 +73,7 @@ func GetArticleByClass(c *gin.Context) {
 
 func EditCategory(c *gin.Context) {
 	req := pb.AdminEditCategoryRequest{}
-	resp := pb.AdminEditCategoryResp{}
+	resp := pb.BaseResp{}
 	if err := c.Bind(&req); err != nil {
 		resp.Code = uint32(ParamsError)
 		resp.Msg = ConvertMsg(ParamsError, err.Error())

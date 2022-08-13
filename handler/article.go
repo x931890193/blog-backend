@@ -45,7 +45,7 @@ func GetArticleList(c *gin.Context) {
 
 func AdminAddArticle(c *gin.Context) {
 	req := pb.AdminArticleAddRequest{}
-	resp := pb.AdminArticleAddResp{}
+	resp := pb.BaseResp{}
 	if err := c.Bind(&req); err != nil {
 		resp.Code = uint32(ParamsError)
 		resp.Msg = ConvertMsg(ParamsError, err.Error())
@@ -149,7 +149,7 @@ func AdminArticleList(c *gin.Context) {
 func AdminEditArticle(c *gin.Context) {
 	id := c.Param("id")
 	req := pb.AdminArticleAddRequest{}
-	resp := pb.AdminArticleAddResp{}
+	resp := pb.BaseResp{}
 	atoi, err := strconv.Atoi(id)
 	if err != nil {
 		resp.Code = uint32(ParamsError)
