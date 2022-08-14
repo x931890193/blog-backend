@@ -11,7 +11,10 @@ import (
 	"time"
 )
 
-var jwtSecret = []byte("xxxs")
+var (
+	jwtSecret = []byte("xxxs")
+	Expire    = 7 * 24 * time.Hour
+)
 
 func (u *User) Authenticate() error {
 	// password base64
@@ -43,7 +46,7 @@ type Claims struct {
 func (u User) GenerateToken() (string, error) {
 	//设置token有效时间
 	nowTime := time.Now()
-	expireTime := nowTime.Add(7 * 24 * time.Hour)
+	expireTime := nowTime.Add(Expire)
 	claims := Claims{
 		UserInfo: u,
 		StandardClaims: jwt.StandardClaims{
@@ -78,4 +81,8 @@ func ParseToken(token string) (*Claims, error) {
 		}
 	}
 	return nil, err
+}
+
+func (u *User) GetOrCreate() {
+
 }

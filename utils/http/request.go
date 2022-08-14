@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type ReqContentType int
@@ -27,6 +28,7 @@ func (r ReqContentType) String() string {
 }
 
 const (
+	RequestTimeOut  = 5 * time.Second
 	UserAgent       = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
 	ContentTypeJson = iota + 1
 	ContentTypeProto
@@ -41,7 +43,8 @@ func Post(url string, data interface{}, contentType ReqContentType, extraHeaders
 	for k, v := range extraHeaders {
 		req.Header.Add(k, v)
 	}
-	resp, err := http.DefaultClient.Do(req)
+	client := http.Client{Timeout: RequestTimeOut}
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +72,8 @@ func Get(url string, params map[string]string, contentType ReqContentType, extra
 	for k, v := range extraHeaders {
 		req.Header.Add(k, v)
 	}
-	resp, err := http.DefaultClient.Do(req)
+	client := http.Client{Timeout: RequestTimeOut}
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}

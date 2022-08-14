@@ -3,6 +3,8 @@ package service
 import (
 	"blog-backend/model/entity"
 	"blog-backend/utils"
+	"blog-backend/utils/github"
+	"time"
 )
 
 func UserAuth(username, password string) (token string, err error) {
@@ -54,4 +56,25 @@ func GetUsersMapByIds(ids []int) (map[int]entity.User, error) {
 		userMap[user.ID] = user
 	}
 	return userMap, nil
+}
+
+func GetOrCreateGitHubUser(user *github.User) (*entity.User, error) {
+	obj := &entity.User{
+		UserName:      user.Name,
+		Password:      "",
+		Avatar:        user.AvatarUrl,
+		Label:         "",
+		Email:         user.Email,
+		GitHub:        user.Url,
+		IsAdmin:       false,
+		ReceiveUpdate: true,
+		ShowLink:      true,
+		SiteName:      "",
+		SiteLogo:      "",
+		SiteAddress:   "",
+		SiteDesc:      "",
+		LastLogin:     time.Time{},
+	}
+	obj.GetOrCreate()
+	return obj, nil
 }

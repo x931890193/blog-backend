@@ -70,6 +70,7 @@ func SetupServer() *gin.Engine {
 	user := router.Group("/user")
 	{
 		user.GET("")
+		user.GET("/github/oauth", handler.GitHubOauth)
 		user.POST("/login")
 		user.POST("/logout")
 		user.GET("/getUserInfo")

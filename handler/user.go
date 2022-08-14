@@ -2,9 +2,11 @@ package handler
 
 import (
 	"blog-backend/cache"
+	"blog-backend/model/entity"
 	pb "blog-backend/proto"
 	"blog-backend/service"
 	"blog-backend/utils/captcha"
+	"blog-backend/utils/github"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -401,4 +403,33 @@ func AboutMe(c *gin.Context) {
 	}
 	resp.LikeNum = "99999"
 	c.ProtoBuf(http.StatusOK, &resp)
+}
+
+// GitHubOauth GitHub 回调
+func GitHubOauth(c *gin.Context) {
+	githubToken, err := github.GetAccessToken(c.Query("code"))
+	if err != nil {
+		c.Redirect(302, "/")
+		return
+	}
+	githubUser, err := github.GetUserInfo(githubToken.AccessToken)
+	if err != nil {
+		c.Redirect(302, "/")
+		return
+	}
+	user, err := service.GetOrCreateGitHubUser(githubUser)
+	if err != nil {
+		return
+	}
+	if err != nil {
+		c.Redirect(302, "/")
+		return
+	}
+	token, err := user.GenerateToken()
+	if err != nil {
+		return
+	}
+	c.SetSameSite(http.SameSiteNoneMode)
+	c.SetCookie("blog-token", token, int(entity.Expire), "/", "127.0.0.1", false, false)
+	c.Redirect(302, "http://localhost:8087/#/message")
 }
