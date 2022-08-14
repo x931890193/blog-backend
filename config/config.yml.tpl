@@ -22,3 +22,7 @@ Qiniu:
   accessKey: ""
   secretKey: ""
   bucket: ""
+
+GitHub:
+  client_id: "",
+  client_secret: "",

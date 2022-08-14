@@ -1,6 +1,7 @@
 package github
 
 import (
+	"blog-backend/config"
 	"blog-backend/logger"
 	"blog-backend/utils/http"
 	"encoding/json"
@@ -65,8 +66,8 @@ type User struct {
 
 func GetAccessToken(code string) (*accessTokenGetResp, error) {
 	params := map[string]string{
-		"client_id":     "21f4188b819898fac2d1",
-		"client_secret": "cc6606ff8c9d526f5e9baf21ea8cb36ae8efdd2f",
+		"client_id":     config.Cfg.Github.ClientId,
+		"client_secret": config.Cfg.Github.ClientSecret,
 		"code":          code,
 		"redirect_uri":  "",
 	}
