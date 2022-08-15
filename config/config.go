@@ -79,11 +79,17 @@ type config struct {
 		ClientId     string `yaml:"client_id"`
 		ClientSecret string `yaml:"client_secret"`
 	} `yaml:"Github"`
+	Mail struct {
+		SMTPHost     string `yaml:"smtp_host"`
+		SMTPPort     string `yaml:"smtp_port"`
+		SMTPUsername string `yaml:"smtp_username"`
+		SMTPPassword string `yaml:"smtp_password"`
+		MaxClient    int    `yaml:"max_client"`
+	} `yaml:"Mail"`
 }
 
 func init() {
 	getCurrentFile()
-
 	path := filepath.Join(BasePath, "config", ".config.yml")
 	f, err := ioutil.ReadFile(path)
 	if err != nil {
