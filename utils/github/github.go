@@ -66,8 +66,8 @@ type User struct {
 
 func GetAccessToken(code string) (*accessTokenGetResp, error) {
 	params := map[string]string{
-		"client_id":     config.Cfg.Github.ClientId,
-		"client_secret": config.Cfg.Github.ClientSecret,
+		"client_id":     config.Cfg.GitHub.ClientId,
+		"client_secret": config.Cfg.GitHub.ClientSecret,
 		"code":          code,
 		"redirect_uri":  "",
 	}

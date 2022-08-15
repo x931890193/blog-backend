@@ -21,6 +21,7 @@ func init() {
 		&Request{},
 		&User{},
 		&Link{},
+		&Resource{},
 	)
 	_ = conn.PgConn.AutoMigrate(
 		&SiteInfo{},
@@ -34,6 +35,7 @@ func init() {
 		&Request{},
 		&User{},
 		&Link{},
+		&Resource{},
 	)
 }
 
@@ -144,13 +146,14 @@ func (Comment) TableName() string {
 }
 
 type User struct {
-	BaseModel
+	BaseModel     `json:"-"`
 	UserName      string `gorm:"not null; unique; comment: 用户名;" json:"username"`
 	Password      string `gorm:"not null;comment: 密码;" json:"-"`
 	Avatar        string `gorm:"not null; comment: 头像;" json:"avatar"`
 	Label         string `gorm:"not null; comment: 标签;" json:"label"`
 	Email         string `gorm:"not null; unique; comment: 邮箱;" json:"email"`
-	GitHub        string `gorm:"not null; comment: github地址;" json:"github"`
+	GitHubId      int    `gorm:"not null; comment: githubID; column:github_id" json:"github_id"`
+	GitHubUrl     string `gorm:"not null; comment: github地址; column:github_url" json:"github_url"`
 	IsAdmin       bool   `gorm:"default: false;" json:"is_admin"`
 	ReceiveUpdate bool   `gorm:"default:true" json:"receive_update"`
 	LastLogin     time.Time
@@ -195,4 +198,14 @@ type Link struct {
 
 func (Link) TableName() string {
 	return "link"
+}
+
+type Resource struct {
+	BaseModel
+	Key  string `gorm:"not null" json:"key"`
+	Type int    `gorm:"not null; comment: 资源类型" json:"type"`
+}
+
+func (Resource) TableName() string {
+	return "resource"
 }

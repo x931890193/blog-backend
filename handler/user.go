@@ -49,8 +49,8 @@ func AdminLogin(c *gin.Context) {
 	}
 	token, err := service.UserAuth(requestData.Username, requestData.Password)
 	if err != nil {
-		resp.Code = uint32(ParamsError)
-		resp.Msg = ConvertMsg(ParamsError, "用户名或密码错误")
+		resp.Code = uint32(AuthError)
+		resp.Msg = ConvertMsg(AuthError, err.Error())
 	} else {
 		resp.Token = token
 	}
@@ -61,7 +61,7 @@ func AdminInfo(c *gin.Context) {
 	token, _ := c.Get("admin")
 	s := token.(string)
 	resp := pb.AdminInfoResp{}
-	userInfo, err := service.AdminInfo(s)
+	userInfo, err := service.ParseToken(s)
 	if err != nil {
 		resp.Code = uint32(AuthError)
 		resp.Msg = ConvertMsg(AuthError, err.Error())
@@ -391,8 +391,9 @@ func Routers(c *gin.Context) {
 }
 
 func LoginOut(c *gin.Context) {
-	token := c.GetHeader("token")
-	cache.Client.Del(token)
+	tokenAdmin := c.GetHeader("admin")
+	tokenUser := c.GetHeader("user")
+	cache.Client.Del(tokenAdmin, tokenUser)
 }
 
 func AboutMe(c *gin.Context) {
@@ -429,4 +430,21 @@ func GitHubOauth(c *gin.Context) {
 	c.SetSameSite(http.SameSiteNoneMode)
 	c.SetCookie("blog-token", token, int(entity.Expire), "/", "127.0.0.1", false, false)
 	c.Redirect(302, "http://localhost:8087/#/message")
+}
+
+func UserInfo(c *gin.Context) {
+	token, _ := c.Get("user")
+	s := token.(string)
+	resp := pb.UserInfoResp{}
+	userInfo, err := service.ParseToken(s)
+	if err != nil {
+		resp.Code = uint32(AuthError)
+		resp.Msg = ConvertMsg(AuthError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+	}
+	resp.UserId = uint32(userInfo.BaseModel.ID)
+	resp.Status = userInfo.IsDelete
+	resp.Username = userInfo.UserName
+	resp.Avatar = userInfo.Avatar
+	c.ProtoBuf(http.StatusOK, &resp)
 }

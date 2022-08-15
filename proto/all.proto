@@ -370,3 +370,18 @@ message LinkListResp {
   uint32 total = 3;
   repeated LinkBase rows = 4;
 }
+
+message UserInfoResp {
+  uint32 code = 1;
+  string msg = 2;
+  uint32 userId =3;
+  string username = 4;
+  bool  status = 5;
+  string avatar = 6;
+}
+
+message UploadFileResp {
+  uint32 code = 1;
+  string msg = 2;
+  string url = 3;
+}

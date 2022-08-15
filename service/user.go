@@ -4,6 +4,7 @@ import (
 	"blog-backend/model/entity"
 	"blog-backend/utils"
 	"blog-backend/utils/github"
+	"errors"
 	"time"
 )
 
@@ -13,6 +14,9 @@ func UserAuth(username, password string) (token string, err error) {
 	if err != nil {
 		return "", err
 	}
+	if !user.IsAdmin {
+		return "", errors.New("你不是管理员哦～～～")
+	}
 	token, err = user.GenerateToken()
 	if err != nil {
 		return "", err
@@ -20,7 +24,7 @@ func UserAuth(username, password string) (token string, err error) {
 	return token, nil
 }
 
-func AdminInfo(token string) (*entity.User, error) {
+func ParseToken(token string) (*entity.User, error) {
 	parseToken, err := entity.ParseToken(token)
 	if err != nil {
 		return nil, err
@@ -60,16 +64,17 @@ func GetUsersMapByIds(ids []int) (map[int]entity.User, error) {
 
 func GetOrCreateGitHubUser(user *github.User) (*entity.User, error) {
 	obj := &entity.User{
-		UserName:      user.Name,
-		Password:      "",
-		Avatar:        user.AvatarUrl,
-		Label:         "",
-		Email:         user.Email,
-		GitHub:        user.Url,
-		IsAdmin:       false,
-		ReceiveUpdate: true,
-		LastLogin:     time.Time{},
+		GitHubId:  user.Id,
+		UserName:  user.Name,
+		Avatar:    user.AvatarUrl,
+		Email:     user.Email,
+		GitHubUrl: user.Url,
+		LastLogin: time.Now(),
 	}
-	obj.GetOrCreate()
+	err := obj.GetOrCreate()
+	if err != nil {
+		return nil, err
+	}
+
 	return obj, nil
 }

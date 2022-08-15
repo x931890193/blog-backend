@@ -24,6 +24,7 @@ func SetupServer() *gin.Engine {
 	router.HandleMethodNotAllowed = true
 	router.GET("/", handler.Hello)
 	router.Use(middleware.RequestMiddleware())
+	router.Use(middleware.BaseAuthMiddleware())
 	admin := router.Group("/admin")
 	{
 		admin.POST("/generate", handler.GenerateAdmin)
@@ -65,6 +66,7 @@ func SetupServer() *gin.Engine {
 	{
 		resource.GET("/site_info", handler.GetSiteInfo)
 		resource.GET("/about", handler.AboutMe)
+		resource.POST("/upload", handler.UploadFile)
 	}
 	// user
 	user := router.Group("/user")
@@ -72,8 +74,8 @@ func SetupServer() *gin.Engine {
 		user.GET("")
 		user.GET("/github/oauth", handler.GitHubOauth)
 		user.POST("/login")
-		user.POST("/logout")
-		user.GET("/getUserInfo")
+		user.POST("/logout", handler.LoginOut)
+		user.GET("/getUserInfo", handler.UserInfo)
 	}
 	// reward
 	reward := router.Group("/reward")

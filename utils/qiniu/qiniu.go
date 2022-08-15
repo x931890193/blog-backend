@@ -66,7 +66,7 @@ func UploadLocalFile(key string, localFile string) {
 
 }
 
-func UploadStream(key string, data []byte) {
+func UploadStream(key string, data []byte) *storage.PutRet {
 	getLastUpToken()
 	formUploader := storage.NewFormUploader(cfg)
 	ret := storage.PutRet{}
@@ -75,7 +75,8 @@ func UploadStream(key string, data []byte) {
 	err := formUploader.Put(context.Background(), &ret, upToken, key, bytes.NewReader(data), dataLen, &putExtra)
 	if err != nil {
 		logger.Logger.Error(fmt.Sprintf("upload to qiniu error: %v", err.Error()))
-		return
+		return nil
 	}
 	logger.Logger.Info(fmt.Sprintf("upload to qiniu success, key: %v, hash: %v", ret.Key, ret.Hash))
+	return &ret
 }

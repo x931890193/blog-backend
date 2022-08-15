@@ -19,7 +19,7 @@ func AddComment(c *gin.Context) {
 		return
 	}
 	token := c.Request.Header.Get("Token")
-	user, err := service.AdminInfo(token)
+	user, err := service.ParseToken(token)
 	if err != nil {
 		logger.Logger.Info("user not login!")
 		user = service.NewTempUser()

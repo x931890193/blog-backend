@@ -75,10 +75,10 @@ type config struct {
 		SecretKey string `yaml:"secretKey"`
 		Bucket    string `yaml:"bucket"`
 	} `yaml:"Qiniu"`
-	Github struct {
+	GitHub struct {
 		ClientId     string `yaml:"client_id"`
 		ClientSecret string `yaml:"client_secret"`
-	} `yaml:"Github"`
+	} `yaml:"GitHub"`
 	Mail struct {
 		SMTPHost     string `yaml:"smtp_host"`
 		SMTPPort     string `yaml:"smtp_port"`

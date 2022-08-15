@@ -18,9 +18,8 @@ var (
 
 func (u *User) Authenticate() error {
 	// password base64
-	var user User
 	password := crypt.Sha256(u.Password)
-	err := conn.MysqlConn.Model(User{}).Where("user_name=? and password=?", u.UserName, password).Update("last_login", time.Now()).First(&user).Error
+	err := conn.MysqlConn.Model(u).Where("user_name=? and password=?", u.UserName, password).Update("last_login", time.Now()).First(u).Error
 	if err != nil {
 		return err
 	}
@@ -83,6 +82,15 @@ func ParseToken(token string) (*Claims, error) {
 	return nil, err
 }
 
-func (u *User) GetOrCreate() {
-
+func (u *User) GetOrCreate() error {
+	toUpdate := map[string]interface{}{
+		"last_login": time.Now(),
+		"avatar":     u.Avatar,
+		"email":      u.Email,
+		"github_url": u.GitHubUrl,
+	}
+	if err := conn.MysqlConn.Model(u).Where("github_id=?", u.GitHubId).FirstOrCreate(u).UpdateColumns(toUpdate).Error; err != nil {
+		return err
+	}
+	return nil
 }
