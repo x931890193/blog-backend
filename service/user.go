@@ -68,11 +68,6 @@ func GetOrCreateGitHubUser(user *github.User) (*entity.User, error) {
 		GitHub:        user.Url,
 		IsAdmin:       false,
 		ReceiveUpdate: true,
-		ShowLink:      true,
-		SiteName:      "",
-		SiteLogo:      "",
-		SiteAddress:   "",
-		SiteDesc:      "",
 		LastLogin:     time.Time{},
 	}
 	obj.GetOrCreate()

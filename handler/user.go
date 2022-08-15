@@ -419,9 +419,6 @@ func GitHubOauth(c *gin.Context) {
 	}
 	user, err := service.GetOrCreateGitHubUser(githubUser)
 	if err != nil {
-		return
-	}
-	if err != nil {
 		c.Redirect(302, "/")
 		return
 	}

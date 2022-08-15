@@ -153,11 +153,6 @@ type User struct {
 	GitHub        string `gorm:"not null; comment: github地址;" json:"github"`
 	IsAdmin       bool   `gorm:"default: false;" json:"is_admin"`
 	ReceiveUpdate bool   `gorm:"default:true" json:"receive_update"`
-	ShowLink      bool   `gorm:"default:true" json:"show_link"`
-	SiteName      string `gorm:"not null;" json:"site_name"`
-	SiteLogo      string `gorm:"not null;" json:"site_logo"`
-	SiteAddress   string `gorm:"not null;" json:"site_address"`
-	SiteDesc      string `gorm:"not null;" json:"site_desc"`
 	LastLogin     time.Time
 }
 
@@ -189,9 +184,15 @@ func (Collection) TableName() string {
 
 type Link struct {
 	BaseModel
+	UserId      uint
 	Title       string `gorm:"not null; comment: 标题; index; type:VARCHAR(255)" json:"title"`
 	Description string `gorm:"not null; comment: 网站描述; type:VARCHAR(255)" json:"description"`
 	Email       string `gorm:"not null; unique; comment: 邮箱;" json:"email"`
 	Url         string `gorm:"not null" json:"url"`
 	HeaderImg   string `gorm:"type:VARCHAR(255)" json:"header_img"`
+	ShowLink    bool   `gorm:"default:true" json:"show_link"`
+}
+
+func (Link) TableName() string {
+	return "link"
 }
