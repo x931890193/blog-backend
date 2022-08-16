@@ -18,8 +18,9 @@ func AddComment(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	token := c.Request.Header.Get("Token")
-	user, err := service.ParseToken(token)
+	token, _ := c.Get("user")
+	s := token.(string)
+	user, err := service.ParseToken(s)
 	if err != nil {
 		logger.Logger.Info("user not login!")
 		user = service.NewTempUser()

@@ -56,7 +56,7 @@ func AddComment(request *pb.CommentAddRequest, user *entity.User, c *gin.Context
 	return &pbComment, nil
 }
 
-func getAllChildrenComment(dbRes []*entity.Comment, parentId uint, userMap map[int]entity.User) []*pb.Comment {
+func getAllChildrenComment(dbRes []*entity.Comment, parentId uint, userMap map[int]entity.User, commentIdUserIdMap map[int]int) []*pb.Comment {
 	var tmp []*pb.Comment
 	children := []*pb.Comment{}
 	for _, item := range dbRes {
@@ -66,23 +66,27 @@ func getAllChildrenComment(dbRes []*entity.Comment, parentId uint, userMap map[i
 		}
 		userName := ""
 		parentUsername := ""
+		avatar := ""
 		label := ""
 		if user, ok := userMap[item.UserId]; ok {
 			userName = user.UserName
+			avatar = user.Avatar
 			label = config.UserTags[user.Label]
 		} else {
 			tUser := NewTempUser()
 			userName = tUser.UserName
 			label = config.UserTags[tUser.Label]
 		}
-		if user, ok := userMap[int(item.ParentId)]; ok {
+
+		if user, ok := userMap[commentIdUserIdMap[int(item.ParentId)]]; ok {
 			parentUsername = user.UserName
 		} else {
 			tUser := NewTempUser()
 			parentUsername = tUser.UserName
 		}
-		children = append(children, getAllChildrenComment(dbRes, uint(item.ID), userMap)...)
+		children = append(children, getAllChildrenComment(dbRes, uint(item.ID), userMap, commentIdUserIdMap)...)
 		tmp = append(tmp, &pb.Comment{
+			Avatar:         avatar,
 			XId:            strconv.Itoa(item.ID),
 			Username:       userName,
 			Label:          label,
@@ -101,8 +105,9 @@ func getAllChildrenComment(dbRes []*entity.Comment, parentId uint, userMap map[i
 
 func GetCommentList(ArticleId string, pageSize, CurrentPage int) (*pb.CommentListResp, error) {
 	var (
-		res            []*pb.Comment
-		commentUserIds []int
+		res                []*pb.Comment
+		commentUserIds     []int
+		commentIdUserIdMap = map[int]int{}
 	)
 	article := &entity.Article{}
 	if id, ok := config.ArticleIdmap[ArticleId]; ok {
@@ -120,14 +125,14 @@ func GetCommentList(ArticleId string, pageSize, CurrentPage int) (*pb.CommentLis
 		return nil, err
 	}
 	for _, item := range dbRes {
-		//commentMap[item.ID] = item
+		commentIdUserIdMap[item.ID] = item.UserId
 		commentUserIds = append(commentUserIds, item.UserId)
 	}
 	userMap, err := GetUsersMapByIds(commentUserIds)
 	if err != nil {
 		return nil, err
 	}
-	res = getAllChildrenComment(dbRes, 0, userMap)
+	res = getAllChildrenComment(dbRes, 0, userMap, commentIdUserIdMap)
 	resp := pb.CommentListResp{}
 	resp.List = res
 	resp.Pagination = &pb.Pagination{

@@ -88,6 +88,16 @@ func SetupServer() *gin.Engine {
 	{
 		links.GET("/list", handler.LinkList)
 	}
+	// like
+	like := router.Group("/like")
+	{
+		like.GET("/getInfo")
+	}
+	// collect
+	collect := router.Group("collect")
+	{
+		collect.GET("/getInfo")
+	}
 
 	return router
 }

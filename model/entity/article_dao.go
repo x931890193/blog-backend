@@ -96,7 +96,7 @@ func (a *Article) GetOne() (*Article, error) {
 	return &article, nil
 }
 
-func (a *Article) GetOneAndUpte() (*Article, error) {
+func (a *Article) GetOneAndUpdate() (*Article, error) {
 	var article Article
 	if err := conn.MysqlConn.Model(&a).Where("id=?", a.ID).First(&article).Error; err != nil {
 		return nil, err
