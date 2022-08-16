@@ -98,6 +98,6 @@ func SetupServer() *gin.Engine {
 	{
 		collect.GET("/getInfo")
 	}
-
+	router.GET("/ws", handler.WebSocket)
 	return router
 }
