@@ -5,6 +5,7 @@ import (
 	"blog-backend/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 )
 
 func AddLink(c *gin.Context) {
@@ -28,7 +29,8 @@ func AddLink(c *gin.Context) {
 
 func LinkList(c *gin.Context) {
 	var resp *pb.LinkListResp
-	resp, err := service.LinkList()
+	isAdmin := strings.Contains(c.Request.URL.String(), "admin")
+	resp, err := service.LinkList(isAdmin)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())

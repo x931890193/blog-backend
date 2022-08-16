@@ -1,6 +1,7 @@
 package crypt
 
 import (
+	"crypto/md5"
 	"encoding/base64"
 	"fmt"
 )
@@ -17,4 +18,11 @@ func B64Decode(src string) (string, error) {
 		return "", err
 	}
 	return string(decodeString), err
+}
+
+func Md5(any []byte) (string, error) {
+	srcCode := md5.Sum(any)
+	// md5.Sum函数加密后返回的是字节数组，需要转换成16进制形式
+	code := fmt.Sprintf("%x", srcCode)
+	return code, nil
 }

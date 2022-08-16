@@ -74,6 +74,7 @@ type config struct {
 		AccessKey string `yaml:"accessKey"`
 		SecretKey string `yaml:"secretKey"`
 		Bucket    string `yaml:"bucket"`
+		Host      string `yaml:"host"`
 	} `yaml:"Qiniu"`
 	GitHub struct {
 		ClientId     string `yaml:"client_id"`

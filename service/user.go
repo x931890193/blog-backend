@@ -1,10 +1,12 @@
 package service
 
 import (
+	"blog-backend/config"
 	"blog-backend/model/entity"
-	"blog-backend/utils"
+	pb "blog-backend/proto"
 	"blog-backend/utils/github"
 	"errors"
+	"math/rand"
 	"time"
 )
 
@@ -30,6 +32,7 @@ func ParseToken(token string) (*entity.User, error) {
 		return nil, err
 	}
 	userInfo := parseToken.UserInfo
+	userInfo.BaseModel = parseToken.BaseInfo
 	return &userInfo, err
 
 }
@@ -38,7 +41,7 @@ func NewTempUser() *entity.User {
 	user := &entity.User{}
 	user.UserName = "游客"
 	user.ID = -1
-	user.Label = utils.GetRandomTag()
+	user.Label = rand.Intn(len(config.UserTags))
 	return user
 }
 
@@ -77,4 +80,17 @@ func GetOrCreateGitHubUser(user *github.User) (*entity.User, error) {
 	}
 
 	return obj, nil
+}
+
+func UpdateUser(req *pb.EditUserInfoRequest) (*entity.User, error) {
+	user := entity.User{}
+	user.ID = int(req.UserId)
+	err := user.Update(map[string]interface{}{
+		"label":          req.Label,
+		"receive_update": req.ReceiveUpdate,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

@@ -15,13 +15,11 @@ func BaseAuthMiddleware() gin.HandlerFunc {
 		setUser := true
 		tokenSlice := strings.Split(token, " ")
 		if len(tokenSlice) != 2 {
-			logger.Logger.Error(fmt.Sprintf("鉴权参数错误！%v", c.Request.Header))
 			setUser = false
 		} else {
 			token = tokenSlice[1]
 			res, err := cache.Client.Get(token).Result()
 			if err != nil || res == "" {
-				logger.Logger.Error(fmt.Sprintf("鉴权参数错误！%v", c.Request.Header))
 				setUser = false
 			}
 		}

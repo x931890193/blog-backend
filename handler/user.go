@@ -441,10 +441,72 @@ func UserInfo(c *gin.Context) {
 		resp.Code = uint32(AuthError)
 		resp.Msg = ConvertMsg(AuthError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)
+		return
 	}
 	resp.UserId = uint32(userInfo.BaseModel.ID)
-	resp.Status = userInfo.IsDelete
+	link, err := service.GetLink(resp.UserId)
+	if err != nil {
+		return
+	}
+	resp.Status = 3
+	resp.ReceiveUpdate = userInfo.ReceiveUpdate
+	if userInfo.IsAdmin {
+		resp.Status = 1
+	}
 	resp.Username = userInfo.UserName
+	resp.Label = uint32(userInfo.Label)
 	resp.Avatar = userInfo.Avatar
+	resp.VerifyStatus = link.GetLinkStatus()
+	resp.State = link.ShowLink
+	resp.Linkname = link.Title
+	resp.LinkUrl = link.Url
+	resp.LogoUrl = link.HeaderImg
+	resp.LinkDesc = link.Description
+	c.ProtoBuf(http.StatusOK, &resp)
+}
+
+func Edit(c *gin.Context) {
+	req := pb.EditUserInfoRequest{}
+	resp := pb.UserInfoResp{}
+	if err := c.Bind(&req); err != nil {
+		c.ProtoBuf(http.StatusOK, &pb.BaseResp{
+			Code: uint32(ParamsError),
+			Msg:  ConvertMsg(ParamsError, err.Error()),
+		})
+		return
+	}
+	user, err := service.UpdateUser(&req)
+	if err != nil {
+		c.ProtoBuf(http.StatusOK, &pb.BaseResp{
+			Code: uint32(ParamsError),
+			Msg:  ConvertMsg(ParamsError, err.Error()),
+		})
+		return
+	}
+	resp.UserId = req.UserId
+	link, err := service.UpdateLink(&req)
+	if err != nil {
+		c.ProtoBuf(http.StatusOK, &pb.BaseResp{
+			Code: uint32(ParamsError),
+			Msg:  ConvertMsg(ParamsError, err.Error()),
+		})
+		return
+	}
+	resp.Status = 3
+	resp.ReceiveUpdate = user.ReceiveUpdate
+	if user.IsAdmin {
+		resp.Status = 1
+	}
+	resp.Username = user.UserName
+	resp.Label = uint32(user.Label)
+	resp.Avatar = user.Avatar
+	resp.VerifyStatus = link.GetLinkStatus()
+	resp.LogoUrl = link.HeaderImg
+	resp.State = link.ShowLink
+	resp.Linkname = link.Title
+	resp.LinkUrl = link.Url
+	resp.LogoUrl = link.HeaderImg
+	resp.LinkDesc = link.Description
+	resp.Token, _ = user.GenerateToken()
 	c.ProtoBuf(http.StatusOK, &resp)
 }

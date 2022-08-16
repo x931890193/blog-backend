@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"blog-backend/config"
 	"blog-backend/logger"
 	pb "blog-backend/proto"
+	"blog-backend/service"
 	"blog-backend/utils/qiniu"
 	"bufio"
 	"errors"
@@ -60,8 +62,19 @@ func UploadFile(c *gin.Context) {
 			return
 		}
 	}
-	res := qiniu.UploadStream(file.Filename, buf)
-	resp.Url = "https://cdn.mongona.com/" + res.Key
-	fmt.Println(resp)
+	resource, err := service.CheckResourceMa5(buf)
+	if resource != nil && err != nil {
+		resp.Url = config.Cfg.Qiniu.Host + resource.Key
+	} else {
+		res := qiniu.UploadStream(file.Filename, buf)
+		resp.Url = config.Cfg.Qiniu.Host + res.Key
+		resource.Key = res.Key
+		err := resource.Save()
+		if err != nil {
+			resp.Code = uint32(LogicError)
+			resp.Msg = ConvertMsg(LogicError, err.Error())
+		}
+	}
+
 	c.ProtoBuf(http.StatusOK, &resp)
 }

@@ -20,7 +20,7 @@ func AddLink(req *pb.LinkRequest) error {
 	return nil
 }
 
-func LinkList() (*pb.LinkListResp, error) {
+func LinkList(admin bool) (*pb.LinkListResp, error) {
 	link := entity.Link{}
 	list, err := link.GetAllList()
 	if err != nil {
@@ -28,6 +28,9 @@ func LinkList() (*pb.LinkListResp, error) {
 	}
 	item := []*pb.LinkBase{}
 	for _, l := range list {
+		if !admin && l.VerifyStatus != entity.VerifyPass {
+			continue
+		}
 		item = append(item, &pb.LinkBase{
 			Title:       l.Title,
 			Description: l.Description,
@@ -43,4 +46,30 @@ func LinkList() (*pb.LinkListResp, error) {
 		Total: uint32(len(item)),
 		Rows:  item,
 	}, nil
+}
+
+func GetLink(userId uint32) (*entity.Link, error) {
+	link := &entity.Link{BaseModel: entity.BaseModel{ID: int(userId)}}
+	err := link.GetLinByUserId()
+	if err != nil {
+		return nil, err
+	}
+	return link, nil
+}
+
+func UpdateLink(req *pb.EditUserInfoRequest) (*entity.Link, error) {
+	link := entity.Link{}
+	link.UserId = uint(req.UserId)
+	err := link.UpdateOrCreate(map[string]interface{}{
+		"title":         req.Linkname,
+		"description":   req.LinkDesc,
+		"url":           req.LinkUrl,
+		"header_img":    req.LogoUrl,
+		"show_link":     req.State,
+		"verify_status": entity.VerifyInt,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &link, nil
 }

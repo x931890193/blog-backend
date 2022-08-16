@@ -150,7 +150,7 @@ type User struct {
 	UserName      string `gorm:"not null; unique; comment: 用户名;" json:"username"`
 	Password      string `gorm:"not null;comment: 密码;" json:"-"`
 	Avatar        string `gorm:"not null; comment: 头像;" json:"avatar"`
-	Label         string `gorm:"not null; comment: 标签;" json:"label"`
+	Label         int    `gorm:"not null; comment: 标签; default: 0;" json:"label"`
 	Email         string `gorm:"not null; unique; comment: 邮箱;" json:"email"`
 	GitHubId      int    `gorm:"not null; comment: githubID; column:github_id" json:"github_id"`
 	GitHubUrl     string `gorm:"not null; comment: github地址; column:github_url" json:"github_url"`
@@ -187,13 +187,14 @@ func (Collection) TableName() string {
 
 type Link struct {
 	BaseModel
-	UserId      uint
-	Title       string `gorm:"not null; comment: 标题; index; type:VARCHAR(255)" json:"title"`
-	Description string `gorm:"not null; comment: 网站描述; type:VARCHAR(255)" json:"description"`
-	Email       string `gorm:"not null; unique; comment: 邮箱;" json:"email"`
-	Url         string `gorm:"not null" json:"url"`
-	HeaderImg   string `gorm:"type:VARCHAR(255)" json:"header_img"`
-	ShowLink    bool   `gorm:"default:true" json:"show_link"`
+	UserId       uint
+	Title        string `gorm:"not null; comment: 标题; index; type:VARCHAR(255)" json:"title"`
+	Description  string `gorm:"not null; comment: 网站描述; type:VARCHAR(255)" json:"description"`
+	Email        string `gorm:"not null; unique; comment: 邮箱;" json:"email"`
+	Url          string `gorm:"not null" json:"url"`
+	HeaderImg    string `gorm:"type:VARCHAR(255)" json:"header_img"`
+	ShowLink     bool   `gorm:"default:true" json:"show_link"`
+	VerifyStatus int    `gorm:"default:0" json:"verify_status"`
 }
 
 func (Link) TableName() string {
@@ -202,6 +203,7 @@ func (Link) TableName() string {
 
 type Resource struct {
 	BaseModel
+	Uuid string `gorm:"not null" json:"uuid"`
 	Key  string `gorm:"not null" json:"key"`
 	Type int    `gorm:"not null; comment: 资源类型" json:"type"`
 }

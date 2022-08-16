@@ -22,6 +22,7 @@ Qiniu:
   accessKey: aa
   secretKey: aa
   bucket: aa
+  host: https://cdn.xx.com/
 
 GitHub:
   client_id: aa,

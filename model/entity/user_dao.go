@@ -38,6 +38,7 @@ func GetUsersByIDs(ids []int) ([]User, error) {
 // Claims Claim是一些实体（通常指的用户）的状态和额外的元数据
 type Claims struct {
 	UserInfo User
+	BaseInfo BaseModel
 	jwt.StandardClaims
 }
 
@@ -48,6 +49,7 @@ func (u User) GenerateToken() (string, error) {
 	expireTime := nowTime.Add(Expire)
 	claims := Claims{
 		UserInfo: u,
+		BaseInfo: u.BaseModel,
 		StandardClaims: jwt.StandardClaims{
 			// 过期时间
 			ExpiresAt: expireTime.Unix(),
@@ -90,6 +92,13 @@ func (u *User) GetOrCreate() error {
 		"github_url": u.GitHubUrl,
 	}
 	if err := conn.MysqlConn.Model(u).Where("github_id=?", u.GitHubId).FirstOrCreate(u).UpdateColumns(toUpdate).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *User) Update(v map[string]interface{}) error {
+	if err := conn.MysqlConn.Model(u).Where("id=?", u.ID).UpdateColumns(v).Find(u).Error; err != nil {
 		return err
 	}
 	return nil

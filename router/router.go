@@ -76,6 +76,7 @@ func SetupServer() *gin.Engine {
 		user.POST("/login")
 		user.POST("/logout", handler.LoginOut)
 		user.GET("/getUserInfo", handler.UserInfo)
+		user.POST("/edit", handler.Edit)
 	}
 	// reward
 	reward := router.Group("/reward")

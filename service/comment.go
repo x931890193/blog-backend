@@ -48,7 +48,7 @@ func AddComment(request *pb.CommentAddRequest, user *entity.User, c *gin.Context
 		XId:        strconv.Itoa(int(one.ID)),
 		Avatar:     user.Avatar,
 		Username:   user.UserName,
-		Label:      user.Label,
+		Label:      config.UserTags[user.Label],
 		CreateDate: one.CreatedAt.Format("2006-01-02 15:04:05"),
 		Content:    one.Content,
 		Children:   []*pb.Comment{},
@@ -69,11 +69,11 @@ func getAllChildrenComment(dbRes []*entity.Comment, parentId uint, userMap map[i
 		label := ""
 		if user, ok := userMap[item.UserId]; ok {
 			userName = user.UserName
-			label = user.Label
+			label = config.UserTags[user.Label]
 		} else {
 			tUser := NewTempUser()
 			userName = tUser.UserName
-			label = tUser.Label
+			label = config.UserTags[tUser.Label]
 		}
 		if user, ok := userMap[int(item.ParentId)]; ok {
 			parentUsername = user.UserName

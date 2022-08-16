@@ -376,12 +376,32 @@ message UserInfoResp {
   string msg = 2;
   uint32 userId =3;
   string username = 4;
-  bool  status = 5;
+  uint32 status = 5;
   string avatar = 6;
+  string linkname = 7;
+  string linkUrl = 8;
+  string linkDesc = 9;
+  string logoUrl= 10;
+  bool state = 11;
+  uint32 label = 12;
+  bool receive_update = 13;
+  string token = 14;
+  string verify_status = 15;
 }
 
 message UploadFileResp {
   uint32 code = 1;
   string msg = 2;
   string url = 3;
+}
+
+message EditUserInfoRequest {
+    uint32 userId = 1;
+    uint32 label = 2;
+    bool state =3;
+    string linkUrl = 4;
+    string linkname = 5;
+    string linkDesc = 6;
+    bool receive_update = 7;
+    string logoUrl = 8;
 }
