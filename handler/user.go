@@ -396,16 +396,6 @@ func LoginOut(c *gin.Context) {
 	cache.Client.Del(tokenAdmin, tokenUser)
 }
 
-func AboutMe(c *gin.Context) {
-	resp := pb.AboutResp{}
-	resp.CatchMe = &pb.CatchMe{
-		Git: "https://github.com/x931890193",
-		Job: "http://resume.mongona.com/",
-	}
-	resp.LikeNum = "99999"
-	c.ProtoBuf(http.StatusOK, &resp)
-}
-
 // GitHubOauth GitHub 回调
 func GitHubOauth(c *gin.Context) {
 	githubToken, err := github.GetAccessToken(c.Query("code"))

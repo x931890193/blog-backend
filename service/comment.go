@@ -4,6 +4,7 @@ import (
 	"blog-backend/config"
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
+	"blog-backend/utils/mail"
 	"blog-backend/utils/useragent"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -43,6 +44,10 @@ func AddComment(request *pb.CommentAddRequest, user *entity.User, c *gin.Context
 	one, err := comment.AddOneComment(user)
 	if err != nil {
 		return nil, err
+	}
+	if one.ParentId != 0 {
+		go SendEmailWhenComment(&comment, one.ParentId, user)
+
 	}
 	pbComment := pb.Comment{
 		XId:        strconv.Itoa(int(one.ID)),
@@ -210,4 +215,42 @@ func GetTopComment() (*pb.TopCommentResp, error) {
 		})
 	}
 	return res, nil
+}
+
+func SendEmailWhenComment(comment *entity.Comment, originCommentId uint, me *entity.User) {
+	originComment := &entity.Comment{}
+	queryComments, err := originComment.GetListByQuery(map[string]interface{}{
+		"id": originCommentId,
+	})
+	if err != nil {
+		return
+	}
+	if len(queryComments) > 0 {
+		originComment = queryComments[0]
+	} else {
+		// TODO
+		return
+	}
+	u := entity.User{}
+	users, err := u.GetListByQuery(map[string]interface{}{
+		"receive_update": true,
+		"id":             originComment.UserId,
+	})
+	if err != nil {
+		// TOOD
+		return
+	}
+	for _, user := range users {
+		newUpdate := mail.Comment{
+			Site:          "",
+			Username:      u.UserName,
+			Who:           me.UserName,
+			Time:          comment.CreatedAt.Format("2006-01-02 15:04:05"),
+			OriginComment: originComment.Content,
+			NewComment:    comment.Content,
+			Url:           "", //
+		}
+		mail.SendEmail([]string{user.Email}, comment.Content, newUpdate, nil)
+	}
+
 }

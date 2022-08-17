@@ -48,3 +48,11 @@ func (c *Comment) GetTopComment(limit int) ([]*Comment, error) {
 	}
 	return res, nil
 }
+
+func (c *Comment) GetListByQuery(v map[string]interface{}) ([]*Comment, error) {
+	comments := []*Comment{}
+	if err := conn.MysqlConn.Model(c).Where(v).Find(&comments).Error; err != nil {
+		return nil, err
+	}
+	return comments, nil
+}

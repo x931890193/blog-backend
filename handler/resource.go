@@ -69,7 +69,7 @@ func UploadFile(c *gin.Context) {
 		res := qiniu.UploadStream(file.Filename, buf)
 		resp.Url = config.Cfg.Qiniu.Host + res.Key
 		resource.Key = res.Key
-		err := resource.Save()
+		err := service.SaveResource(resource)
 		if err != nil {
 			resp.Code = uint32(LogicError)
 			resp.Msg = ConvertMsg(LogicError, err.Error())

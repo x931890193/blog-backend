@@ -1,9 +1,7 @@
 package mail
 
 import (
-	"blog-backend/utils/struct_util"
 	"fmt"
-	"os"
 	"sync"
 	"testing"
 )
@@ -28,14 +26,9 @@ func TestSendEmail(t *testing.T) {
 		Summary:  "哔哩哔哩源码分析哔哩哔哩源码分析哔哩哔哩源码分析哔哩哔哩源码分析哔哩哔哩源码分析哔哩哔哩源码分析",
 		Url:      "https://www.baidu.com",
 	}
-	bodyMap, err := struct_util.StructToMap(newUpdate, "json", "StructToMap")
-	if err != nil {
-		return
-	}
-	body := os.Expand(NewUpdateTpl, func(k string) string { return bodyMap[k].(string) })
 	for i := 0; i < 1; i++ {
 		wg.Add(1)
-		go SendEmail([]string{"ysudqfs@163.com"}, newUpdate.Title, body, wg)
+		go SendEmail([]string{"ysudqfs@163.com"}, newUpdate.Title, newUpdate, wg)
 	}
 	wg.Wait()
 }

@@ -44,6 +44,8 @@ func SetupServer() *gin.Engine {
 		admin.POST("/link/add", handler.AddLink)
 		admin.POST("/link/edit", handler.AddLink)
 		admin.GET("/link/list", handler.LinkList)
+		admin.GET("/about/get", handler.AdminGetSiteInfo)
+		admin.POST("/about/edit", handler.AdminAddOrUpdateAbout)
 	}
 	// article
 	article := router.Group("/article")
@@ -65,7 +67,7 @@ func SetupServer() *gin.Engine {
 	resource := router.Group("/resource")
 	{
 		resource.GET("/site_info", handler.GetSiteInfo)
-		resource.GET("/about", handler.AboutMe)
+		resource.GET("/about", handler.CatchMe)
 		resource.POST("/upload", handler.UploadFile)
 	}
 	// user

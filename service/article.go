@@ -3,8 +3,10 @@ package service
 import (
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
+	"blog-backend/utils/mail"
 	"encoding/json"
 	"sort"
+	"sync"
 )
 
 func ArticleList(pageSize, currentPage int) ([]*pb.Article, error) {
@@ -48,7 +50,7 @@ func AddArticle(request *pb.AdminArticleAddRequest) error {
 	article := entity.Article{
 		CategoryId:    uint(request.CategoryId),
 		Tags:          string(tags),
-		UserId:        0,
+		UserId:        1,
 		Title:         request.Title,
 		Summary:       request.Summary,
 		Content:       request.Content,
@@ -63,6 +65,7 @@ func AddArticle(request *pb.AdminArticleAddRequest) error {
 	if err != nil {
 		return err
 	}
+	go SendEmailWhenArticle(&article)
 	return nil
 }
 
@@ -233,4 +236,28 @@ func GetArticleWithClassAndTags(categoryId uint) (*pb.ListByClassResp, error) {
 	sort.Slice(catgoryList, func(i, j int) bool { return catgoryList[i].XId < catgoryList[j].XId })
 	res.ClassList = catgoryList
 	return res, nil
+}
+
+func SendEmailWhenArticle(article *entity.Article) {
+	u := entity.User{}
+	users, err := u.GetListByQuery(map[string]interface{}{
+		"receive_update": true,
+	})
+	if err != nil {
+		return
+	}
+	wg := &sync.WaitGroup{}
+	for _, user := range users {
+		newUpdate := mail.NewUpdate{
+			Username: user.UserName,
+			Site:     "",
+			Time:     article.CreatedAt.Format("2006-01-02 15:04:05"),
+			Title:    article.Title,
+			Summary:  article.Summary,
+			Url:      "https://www.baidu.com",
+		}
+		wg.Add(1)
+		mail.SendEmail([]string{user.Email}, article.Title, newUpdate, wg)
+	}
+
 }

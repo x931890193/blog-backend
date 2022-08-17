@@ -103,3 +103,11 @@ func (u *User) Update(v map[string]interface{}) error {
 	}
 	return nil
 }
+
+func (u *User) GetListByQuery(v map[string]interface{}) ([]*User, error) {
+	users := []*User{}
+	if err := conn.MysqlConn.Model(u).Where(v).Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
+}

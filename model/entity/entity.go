@@ -40,22 +40,26 @@ func init() {
 }
 
 type BaseModel struct {
-	ID        int `gorm:"primary_key; index"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	IsDelete  bool `gorm:"default:false"`
+	ID        int       `gorm:"primary_key; index"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
+	IsDelete  bool      `gorm:"default:false"`
 }
 
 // SiteInfo 网站信息
 type SiteInfo struct {
 	BaseModel
-	Title           string `gorm:"not null; comment: 网站title; type:VARCHAR(255)" json:"title"`
-	Keywords        string `gorm:"not null; comment: 网站关键字; type:VARCHAR(255)" json:"keywords"`
-	Description     string `gorm:"not null; comment: 网站描述; type:VARCHAR(255)" json:"description"`
-	RecordNumber    string `gorm:"not null; comment: 备案号; type:VARCHAR(255)" json:"record_number"`
-	AliPayImage     string `gorm:"not null; comment: 支付宝收款图片; type:VARCHAR(255)" json:"alipay_image"`
-	WeChatPayImage  string `gorm:"not null; comment: 微信收款图片; type:VARCHAR(255)" json:"wechatpay_image"`
-	SelfDescription string `gorm:"not null; comment: 个人介绍; type:VARCHAR(255)" json:"self_description"`
+	Auth                string
+	Title               string `gorm:"comment: 网站title; type:VARCHAR(255)" json:"title"`
+	Keywords            string `gorm:"comment: 网站关键字; type:VARCHAR(255)" json:"keywords"`
+	Description         string `gorm:"comment: 网站描述; type:VARCHAR(255)" json:"description"`
+	RecordNumber        string `gorm:"comment: 备案号; type:VARCHAR(255)" json:"record_number"`
+	AliPayImage         string `gorm:"comment: 支付宝收款图片; type:VARCHAR(255)" json:"alipay_image"`
+	WeChatPayImage      string `gorm:"comment: 微信收款图片; type:VARCHAR(255)" json:"wechatpay_image"`
+	SelfDescription     string `gorm:"comment: 个人介绍; type:text" json:"self_description"`
+	SelfDescriptionHtml string `gorm:"comment: 个人介绍; type:text" json:"self_description_html"`
+	Git                 string `gorm:"type:CHAR(255)" json:"git"`
+	Job                 string `gorm:"type:CHAR(255)" json:"job"`
 }
 
 func (SiteInfo) TableName() string {

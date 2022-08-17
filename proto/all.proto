@@ -100,7 +100,8 @@ message AboutResp {
   string msg = 2;
   string likeNum = 3;
   CatchMe catchMe = 4;
-  repeated string descriptions = 5;
+  string descriptions = 5;
+  uint32 id = 6;
 
 }
 
@@ -110,6 +111,8 @@ message SiteInfoResp {
   string author = 3;
   string github = 4;
   string beian = 5;
+  string descriptions = 6;
+  uint32 id = 7;
 }
 
 message BrowseList {
@@ -404,4 +407,11 @@ message EditUserInfoRequest {
     string linkDesc = 6;
     bool receive_update = 7;
     string logoUrl = 8;
+}
+
+
+message UpdateAboutRequest {
+  string content = 1;
+  string htmlContent = 2;
+  uint32 id = 3;
 }
