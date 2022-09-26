@@ -415,3 +415,19 @@ message UpdateAboutRequest {
   string htmlContent = 2;
   uint32 id = 3;
 }
+
+message PanelGroupResp {
+  uint32 code = 1;
+  string msg = 2;
+  uint32 blogCount =  3;
+  uint32 visitorCount = 4;
+  uint32 userCount = 5;
+}
+
+message LineChartDataResp {
+  uint32 code = 1;
+  string msg = 2;
+  repeated uint32 axisData = 3;
+  repeated uint32 expectedData = 4;
+  repeated uint32 actualData = 5;
+}

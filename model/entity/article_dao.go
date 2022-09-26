@@ -114,3 +114,11 @@ func (a *Article) UpdateById() error {
 	}
 	return nil
 }
+
+func (a *Article) GetListByQuery(v map[string]interface{}) ([]*Article, error) {
+	articles := []*Article{}
+	if err := conn.MysqlConn.Model(a).Where(v).Find(&articles).Error; err != nil {
+		return nil, err
+	}
+	return articles, nil
+}
