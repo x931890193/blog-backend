@@ -3,7 +3,6 @@ package handler
 import (
 	pb "blog-backend/proto"
 	"blog-backend/service"
-	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -17,7 +16,7 @@ func GetSiteInfo(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	resp.Author = siteInfo.Auth
+	resp.Author = siteInfo.Author
 	resp.Beian = siteInfo.RecordNumber
 	resp.Github = siteInfo.Git
 	c.ProtoBuf(http.StatusOK, &resp)
@@ -46,9 +45,6 @@ func AdminAddOrUpdateAbout(c *gin.Context) {
 	req := pb.UpdateAboutRequest{}
 	resp := pb.BaseResp{}
 	if err := c.Bind(&req); err != nil {
-		if req.Id == 0 {
-			err = errors.New("not Enough Params")
-		}
 		resp.Code = uint32(ParamsError)
 		resp.Msg = ConvertMsg(ParamsError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)
@@ -76,14 +72,38 @@ func AdminGetSiteInfo(c *gin.Context) {
 		return
 	}
 	resp.Id = uint32(siteInfo.ID)
-	resp.Descriptions = siteInfo.SelfDescription
-	resp.Author = siteInfo.Auth
+	resp.SelfDescriptions = siteInfo.SelfDescription
+	resp.Descriptions = siteInfo.Description
+	resp.Author = siteInfo.Author
 	resp.Beian = siteInfo.RecordNumber
 	resp.Github = siteInfo.Git
+	resp.Title = siteInfo.Title
 	c.ProtoBuf(http.StatusOK, &resp)
 }
 
-func PanelGroupResp(c *gin.Context) {
+func AdminSetSiteInfo(c *gin.Context) {
+	req := pb.SiteInfoReq{}
+	resp := pb.BaseResp{}
+	if err := c.Bind(&req); err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	_, err := service.UpdateOrCreate(int(req.Id), map[string]interface{}{
+		"record_number": req.Beian,
+		"title":         req.Title,
+		"description":   req.Descriptions,
+	})
+	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+}
+
+func AdminPanelGroupResp(c *gin.Context) {
 	resp := pb.PanelGroupResp{}
 	res, err := service.GetPanelGroup()
 	if err != nil {
@@ -99,7 +119,7 @@ func PanelGroupResp(c *gin.Context) {
 	c.ProtoBuf(http.StatusOK, &resp)
 }
 
-func LineChartData(c *gin.Context) {
+func AdminLineChartData(c *gin.Context) {
 	resp := pb.LineChartDataResp{}
 	typeData := c.Param("type")
 	res, err := service.GetLineChartData(typeData)

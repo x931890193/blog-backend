@@ -47,12 +47,15 @@ func SetupServer() *gin.Engine {
 		admin.GET("/about/get", handler.AdminGetSiteInfo)
 		admin.POST("/about/edit", handler.AdminAddOrUpdateAbout)
 		// dashboard
-		admin.GET("/dashboard/panelGroup", handler.PanelGroupResp)
-		admin.GET("/dashboard/lineChartData/:type", handler.LineChartData)
+		admin.GET("/dashboard/panelGroup", handler.AdminPanelGroupResp)
+		admin.GET("/dashboard/lineChartData/:type", handler.AdminLineChartData)
 		admin.GET("/dashboard/access")
 		admin.GET("/dashboard/spiderData")
 		admin.GET("/dashboard/visitLog")
 		// dashboard end
+		admin.GET("/system/setting/siteSetting", handler.AdminGetSiteInfo)
+		admin.POST("/system/setting/siteSetting", handler.AdminSetSiteInfo)
+
 	}
 	// article
 	article := router.Group("/article")

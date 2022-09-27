@@ -49,7 +49,7 @@ type BaseModel struct {
 // SiteInfo 网站信息
 type SiteInfo struct {
 	BaseModel
-	Auth                string
+	Author              string
 	Title               string `gorm:"comment: 网站title; type:VARCHAR(255)" json:"title"`
 	Keywords            string `gorm:"comment: 网站关键字; type:VARCHAR(255)" json:"keywords"`
 	Description         string `gorm:"comment: 网站描述; type:VARCHAR(255)" json:"description"`

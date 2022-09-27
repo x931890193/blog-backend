@@ -26,8 +26,9 @@ func (s *SiteInfo) Get() error {
 	return nil
 }
 
+// UpdateOrCreate Assign amazing!!!!
 func (s *SiteInfo) UpdateOrCreate(v map[string]interface{}) error {
-	if err := conn.MysqlConn.Model(s).Where("id=?", s.ID).FirstOrCreate(v).Error; err != nil {
+	if err := conn.MysqlConn.Model(s).Where("id=?", s.ID).Assign(v).FirstOrCreate(&s).Error; err != nil {
 		return err
 	}
 	return nil
