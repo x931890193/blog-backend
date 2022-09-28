@@ -3680,6 +3680,140 @@ func (x *LineChartDataResp) GetActualData() []uint32 {
 	return nil
 }
 
+type LikeOrCollectRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id     uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Flag   bool   `protobuf:"varint,2,opt,name=flag,proto3" json:"flag,omitempty"`
+	IsLike bool   `protobuf:"varint,3,opt,name=isLike,proto3" json:"isLike,omitempty"`
+}
+
+func (x *LikeOrCollectRequest) Reset() {
+	*x = LikeOrCollectRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_all_proto_msgTypes[44]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LikeOrCollectRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LikeOrCollectRequest) ProtoMessage() {}
+
+func (x *LikeOrCollectRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_all_proto_msgTypes[44]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LikeOrCollectRequest.ProtoReflect.Descriptor instead.
+func (*LikeOrCollectRequest) Descriptor() ([]byte, []int) {
+	return file_all_proto_rawDescGZIP(), []int{44}
+}
+
+func (x *LikeOrCollectRequest) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *LikeOrCollectRequest) GetFlag() bool {
+	if x != nil {
+		return x.Flag
+	}
+	return false
+}
+
+func (x *LikeOrCollectRequest) GetIsLike() bool {
+	if x != nil {
+		return x.IsLike
+	}
+	return false
+}
+
+type IsLikeOrCollectResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code    uint32 `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg     string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	Like    bool   `protobuf:"varint,3,opt,name=like,proto3" json:"like,omitempty"`
+	Collect bool   `protobuf:"varint,4,opt,name=collect,proto3" json:"collect,omitempty"`
+}
+
+func (x *IsLikeOrCollectResp) Reset() {
+	*x = IsLikeOrCollectResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_all_proto_msgTypes[45]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *IsLikeOrCollectResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsLikeOrCollectResp) ProtoMessage() {}
+
+func (x *IsLikeOrCollectResp) ProtoReflect() protoreflect.Message {
+	mi := &file_all_proto_msgTypes[45]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsLikeOrCollectResp.ProtoReflect.Descriptor instead.
+func (*IsLikeOrCollectResp) Descriptor() ([]byte, []int) {
+	return file_all_proto_rawDescGZIP(), []int{45}
+}
+
+func (x *IsLikeOrCollectResp) GetCode() uint32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *IsLikeOrCollectResp) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *IsLikeOrCollectResp) GetLike() bool {
+	if x != nil {
+		return x.Like
+	}
+	return false
+}
+
+func (x *IsLikeOrCollectResp) GetCollect() bool {
+	if x != nil {
+		return x.Collect
+	}
+	return false
+}
+
 type ListYear_ListItem struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -3693,7 +3827,7 @@ type ListYear_ListItem struct {
 func (x *ListYear_ListItem) Reset() {
 	*x = ListYear_ListItem{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[44]
+		mi := &file_all_proto_msgTypes[46]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3706,7 +3840,7 @@ func (x *ListYear_ListItem) String() string {
 func (*ListYear_ListItem) ProtoMessage() {}
 
 func (x *ListYear_ListItem) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[44]
+	mi := &file_all_proto_msgTypes[46]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3760,7 +3894,7 @@ type AdminCategoryListRespBlogBase struct {
 func (x *AdminCategoryListRespBlogBase) Reset() {
 	*x = AdminCategoryListRespBlogBase{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[45]
+		mi := &file_all_proto_msgTypes[47]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3773,7 +3907,7 @@ func (x *AdminCategoryListRespBlogBase) String() string {
 func (*AdminCategoryListRespBlogBase) ProtoMessage() {}
 
 func (x *AdminCategoryListRespBlogBase) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[45]
+	mi := &file_all_proto_msgTypes[47]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3854,7 +3988,7 @@ type AdminCategoryListRespCategoryBase struct {
 func (x *AdminCategoryListRespCategoryBase) Reset() {
 	*x = AdminCategoryListRespCategoryBase{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[46]
+		mi := &file_all_proto_msgTypes[48]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3867,7 +4001,7 @@ func (x *AdminCategoryListRespCategoryBase) String() string {
 func (*AdminCategoryListRespCategoryBase) ProtoMessage() {}
 
 func (x *AdminCategoryListRespCategoryBase) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[46]
+	mi := &file_all_proto_msgTypes[48]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3937,7 +4071,7 @@ type AdminArticleListRespAdminArticleListCategory struct {
 func (x *AdminArticleListRespAdminArticleListCategory) Reset() {
 	*x = AdminArticleListRespAdminArticleListCategory{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[47]
+		mi := &file_all_proto_msgTypes[49]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3950,7 +4084,7 @@ func (x *AdminArticleListRespAdminArticleListCategory) String() string {
 func (*AdminArticleListRespAdminArticleListCategory) ProtoMessage() {}
 
 func (x *AdminArticleListRespAdminArticleListCategory) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[47]
+	mi := &file_all_proto_msgTypes[49]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4000,7 +4134,7 @@ type AdminArticleListRespAdminArticleListBase struct {
 func (x *AdminArticleListRespAdminArticleListBase) Reset() {
 	*x = AdminArticleListRespAdminArticleListBase{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[48]
+		mi := &file_all_proto_msgTypes[50]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4013,7 +4147,7 @@ func (x *AdminArticleListRespAdminArticleListBase) String() string {
 func (*AdminArticleListRespAdminArticleListBase) ProtoMessage() {}
 
 func (x *AdminArticleListRespAdminArticleListBase) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[48]
+	mi := &file_all_proto_msgTypes[50]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4112,7 +4246,7 @@ type ListByClassResp_List struct {
 func (x *ListByClassResp_List) Reset() {
 	*x = ListByClassResp_List{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[49]
+		mi := &file_all_proto_msgTypes[51]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4125,7 +4259,7 @@ func (x *ListByClassResp_List) String() string {
 func (*ListByClassResp_List) ProtoMessage() {}
 
 func (x *ListByClassResp_List) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[49]
+	mi := &file_all_proto_msgTypes[51]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4175,7 +4309,7 @@ type ListByClassResp_ClassList struct {
 func (x *ListByClassResp_ClassList) Reset() {
 	*x = ListByClassResp_ClassList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[50]
+		mi := &file_all_proto_msgTypes[52]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4188,7 +4322,7 @@ func (x *ListByClassResp_ClassList) String() string {
 func (*ListByClassResp_ClassList) ProtoMessage() {}
 
 func (x *ListByClassResp_ClassList) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[50]
+	mi := &file_all_proto_msgTypes[52]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4237,7 +4371,7 @@ type ListByClassResp_ArticleList struct {
 func (x *ListByClassResp_ArticleList) Reset() {
 	*x = ListByClassResp_ArticleList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_all_proto_msgTypes[51]
+		mi := &file_all_proto_msgTypes[53]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -4250,7 +4384,7 @@ func (x *ListByClassResp_ArticleList) String() string {
 func (*ListByClassResp_ArticleList) ProtoMessage() {}
 
 func (x *ListByClassResp_ArticleList) ProtoReflect() protoreflect.Message {
-	mi := &file_all_proto_msgTypes[51]
+	mi := &file_all_proto_msgTypes[53]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4815,8 +4949,20 @@ var file_all_proto_rawDesc = []byte{
 	0x64, 0x44, 0x61, 0x74, 0x61, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0d, 0x52, 0x0c, 0x65, 0x78, 0x70,
 	0x65, 0x63, 0x74, 0x65, 0x64, 0x44, 0x61, 0x74, 0x61, 0x12, 0x1e, 0x0a, 0x0a, 0x61, 0x63, 0x74,
 	0x75, 0x61, 0x6c, 0x44, 0x61, 0x74, 0x61, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0d, 0x52, 0x0a, 0x61,
-	0x63, 0x74, 0x75, 0x61, 0x6c, 0x44, 0x61, 0x74, 0x61, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2e, 0x2f,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x63, 0x74, 0x75, 0x61, 0x6c, 0x44, 0x61, 0x74, 0x61, 0x22, 0x52, 0x0a, 0x14, 0x4c, 0x69, 0x6b,
+	0x65, 0x4f, 0x72, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x69,
+	0x64, 0x12, 0x12, 0x0a, 0x04, 0x66, 0x6c, 0x61, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x04, 0x66, 0x6c, 0x61, 0x67, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x73, 0x4c, 0x69, 0x6b, 0x65, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x69, 0x73, 0x4c, 0x69, 0x6b, 0x65, 0x22, 0x69, 0x0a,
+	0x13, 0x49, 0x73, 0x4c, 0x69, 0x6b, 0x65, 0x4f, 0x72, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74,
+	0x52, 0x65, 0x73, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x12, 0x0a, 0x04, 0x6c, 0x69,
+	0x6b, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x04, 0x6c, 0x69, 0x6b, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x07, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2e, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -4831,7 +4977,7 @@ func file_all_proto_rawDescGZIP() []byte {
 	return file_all_proto_rawDescData
 }
 
-var file_all_proto_msgTypes = make([]protoimpl.MessageInfo, 52)
+var file_all_proto_msgTypes = make([]protoimpl.MessageInfo, 54)
 var file_all_proto_goTypes = []interface{}{
 	(*BaseResp)(nil),                                     // 0: proto.BaseResp
 	(*LoginAdminRequest)(nil),                            // 1: proto.LoginAdminRequest
@@ -4877,14 +5023,16 @@ var file_all_proto_goTypes = []interface{}{
 	(*UpdateAboutRequest)(nil),                           // 41: proto.UpdateAboutRequest
 	(*PanelGroupResp)(nil),                               // 42: proto.PanelGroupResp
 	(*LineChartDataResp)(nil),                            // 43: proto.LineChartDataResp
-	(*ListYear_ListItem)(nil),                            // 44: proto.ListYear.ListItem
-	(*AdminCategoryListRespBlogBase)(nil),                // 45: proto.AdminCategoryListResp.blogBase
-	(*AdminCategoryListRespCategoryBase)(nil),            // 46: proto.AdminCategoryListResp.categoryBase
-	(*AdminArticleListRespAdminArticleListCategory)(nil), // 47: proto.AdminArticleListResp.adminArticleListCategory
-	(*AdminArticleListRespAdminArticleListBase)(nil),     // 48: proto.AdminArticleListResp.adminArticleListBase
-	(*ListByClassResp_List)(nil),                         // 49: proto.ListByClassResp.List
-	(*ListByClassResp_ClassList)(nil),                    // 50: proto.ListByClassResp.ClassList
-	(*ListByClassResp_ArticleList)(nil),                  // 51: proto.ListByClassResp.ArticleList
+	(*LikeOrCollectRequest)(nil),                         // 44: proto.LikeOrCollectRequest
+	(*IsLikeOrCollectResp)(nil),                          // 45: proto.IsLikeOrCollectResp
+	(*ListYear_ListItem)(nil),                            // 46: proto.ListYear.ListItem
+	(*AdminCategoryListRespBlogBase)(nil),                // 47: proto.AdminCategoryListResp.blogBase
+	(*AdminCategoryListRespCategoryBase)(nil),            // 48: proto.AdminCategoryListResp.categoryBase
+	(*AdminArticleListRespAdminArticleListCategory)(nil), // 49: proto.AdminArticleListResp.adminArticleListCategory
+	(*AdminArticleListRespAdminArticleListBase)(nil),     // 50: proto.AdminArticleListResp.adminArticleListBase
+	(*ListByClassResp_List)(nil),                         // 51: proto.ListByClassResp.List
+	(*ListByClassResp_ClassList)(nil),                    // 52: proto.ListByClassResp.ClassList
+	(*ListByClassResp_ArticleList)(nil),                  // 53: proto.ListByClassResp.ArticleList
 }
 var file_all_proto_depIdxs = []int32{
 	5,  // 0: proto.Comment.children:type_name -> proto.Comment
@@ -4894,7 +5042,7 @@ var file_all_proto_depIdxs = []int32{
 	10, // 4: proto.AboutResp.catchMe:type_name -> proto.CatchMe
 	14, // 5: proto.TopCommentResp.browseList:type_name -> proto.BrowseList
 	15, // 6: proto.TopCommentResp.topCommentList:type_name -> proto.TopCommentList
-	44, // 7: proto.ListYear.list:type_name -> proto.ListYear.ListItem
+	46, // 7: proto.ListYear.list:type_name -> proto.ListYear.ListItem
 	18, // 8: proto.ListByClass.articleList:type_name -> proto.ListYear
 	17, // 9: proto.ListByClass.classList:type_name -> proto.ClassList
 	20, // 10: proto.ArticleListResp.list:type_name -> proto.Article
@@ -4903,15 +5051,15 @@ var file_all_proto_depIdxs = []int32{
 	24, // 13: proto.Component.meta:type_name -> proto.ComponentMeta
 	25, // 14: proto.Component.children:type_name -> proto.Component
 	25, // 15: proto.AdminRouterResp.data:type_name -> proto.Component
-	46, // 16: proto.AdminCategoryListResp.rows:type_name -> proto.AdminCategoryListResp.categoryBase
-	48, // 17: proto.AdminArticleListResp.rows:type_name -> proto.AdminArticleListResp.adminArticleListBase
-	50, // 18: proto.ListByClassResp.classList:type_name -> proto.ListByClassResp.ClassList
-	51, // 19: proto.ListByClassResp.articleList:type_name -> proto.ListByClassResp.ArticleList
+	48, // 16: proto.AdminCategoryListResp.rows:type_name -> proto.AdminCategoryListResp.categoryBase
+	50, // 17: proto.AdminArticleListResp.rows:type_name -> proto.AdminArticleListResp.adminArticleListBase
+	52, // 18: proto.ListByClassResp.classList:type_name -> proto.ListByClassResp.ClassList
+	53, // 19: proto.ListByClassResp.articleList:type_name -> proto.ListByClassResp.ArticleList
 	32, // 20: proto.ListByClassResp.tags:type_name -> proto.Tags
 	35, // 21: proto.LinkListResp.rows:type_name -> proto.LinkBase
-	45, // 22: proto.AdminCategoryListResp.categoryBase.blogList:type_name -> proto.AdminCategoryListResp.blogBase
-	47, // 23: proto.AdminArticleListResp.adminArticleListBase.category:type_name -> proto.AdminArticleListResp.adminArticleListCategory
-	49, // 24: proto.ListByClassResp.ArticleList.list:type_name -> proto.ListByClassResp.List
+	47, // 22: proto.AdminCategoryListResp.categoryBase.blogList:type_name -> proto.AdminCategoryListResp.blogBase
+	49, // 23: proto.AdminArticleListResp.adminArticleListBase.category:type_name -> proto.AdminArticleListResp.adminArticleListCategory
+	51, // 24: proto.ListByClassResp.ArticleList.list:type_name -> proto.ListByClassResp.List
 	25, // [25:25] is the sub-list for method output_type
 	25, // [25:25] is the sub-list for method input_type
 	25, // [25:25] is the sub-list for extension type_name
@@ -5454,7 +5602,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListYear_ListItem); i {
+			switch v := v.(*LikeOrCollectRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5466,7 +5614,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminCategoryListRespBlogBase); i {
+			switch v := v.(*IsLikeOrCollectResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5478,7 +5626,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminCategoryListRespCategoryBase); i {
+			switch v := v.(*ListYear_ListItem); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5490,7 +5638,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminArticleListRespAdminArticleListCategory); i {
+			switch v := v.(*AdminCategoryListRespBlogBase); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5502,7 +5650,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AdminArticleListRespAdminArticleListBase); i {
+			switch v := v.(*AdminCategoryListRespCategoryBase); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5514,7 +5662,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[49].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListByClassResp_List); i {
+			switch v := v.(*AdminArticleListRespAdminArticleListCategory); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5526,7 +5674,7 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[50].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListByClassResp_ClassList); i {
+			switch v := v.(*AdminArticleListRespAdminArticleListBase); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5538,6 +5686,30 @@ func file_all_proto_init() {
 			}
 		}
 		file_all_proto_msgTypes[51].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListByClassResp_List); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_all_proto_msgTypes[52].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListByClassResp_ClassList); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_all_proto_msgTypes[53].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListByClassResp_ArticleList); i {
 			case 0:
 				return &v.state
@@ -5556,7 +5728,7 @@ func file_all_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_all_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   52,
+			NumMessages:   54,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

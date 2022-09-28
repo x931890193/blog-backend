@@ -18,7 +18,10 @@ func AddComment(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	token, _ := c.Get("user")
+	token, exist := c.Get("user")
+	if !exist {
+		token = ""
+	}
 	s := token.(string)
 	user, err := service.ParseToken(s)
 	if err != nil {

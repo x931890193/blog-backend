@@ -111,10 +111,13 @@ type Article struct {
 	Summary       string `gorm:"not null; comment: 摘要; type:CHAR(255)" json:"summary"`
 	Content       string `gorm:"not null; comment: 文章内容; type:TEXT" json:"content"`
 	ClickTimes    uint   `gorm:"not null; default: 0; index;" json:"click_times"`
+	LikeCount     int    `gorm:"not null; default: 0; index;" json:"like_count"`
+	CollectCount  int    `gorm:"not null; default: 0; index;" json:"collect_count"`
+	CommentCount  int    `gorm:"not null; default: 0; index;" json:"comment_count"`
 	CanComment    bool   `gorm:"not null; default: 1;" json:"can_comment"`
 	Weight        uint   `gorm:"not null;" json:"weight"`
 	Support       bool   `gorm:"not null; default: true;" json:"support"`
-	HeaderImgType uint   `gorm:"not null; type:tinyint" json:"header_img_type"`
+	HeaderImgType uint   `gorm:"not null; type:int" json:"header_img_type"`
 	HeaderImg     string `gorm:"type:VARCHAR(255)" json:"header_img"`
 }
 

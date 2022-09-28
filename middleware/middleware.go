@@ -3,6 +3,7 @@ package middleware
 import (
 	"blog-backend/cache"
 	"blog-backend/logger"
+	"blog-backend/service"
 	"blog-backend/utils/useragent"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -42,6 +43,12 @@ func AuthMiddleware() gin.HandlerFunc {
 		token = tokenSlice[1]
 		res, err := cache.Client.Get(token).Result()
 		if err != nil || res == "" {
+			logger.Logger.Error(fmt.Sprintf("鉴权参数错误！%v", c.Request.Header))
+			c.AbortWithStatus(403)
+			return
+		}
+		userInfo, err := service.ParseToken(token)
+		if err != nil || !userInfo.IsAdmin {
 			logger.Logger.Error(fmt.Sprintf("鉴权参数错误！%v", c.Request.Header))
 			c.AbortWithStatus(403)
 			return

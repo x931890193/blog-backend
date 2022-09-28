@@ -391,9 +391,16 @@ func Routers(c *gin.Context) {
 }
 
 func LoginOut(c *gin.Context) {
-	tokenAdmin := c.GetHeader("admin")
-	tokenUser := c.GetHeader("user")
-	cache.Client.Del(tokenAdmin, tokenUser)
+	p := cache.Client.Pipeline()
+	tokenAdmin, adminExist := c.Get("admin")
+	if adminExist {
+		p.Del(tokenAdmin.(string))
+	}
+	tokenUser, userExist := c.Get("user")
+	if userExist {
+		p.Del(tokenUser.(string))
+	}
+	c.ProtoBuf(http.StatusOK, &pb.BaseResp{})
 }
 
 // GitHubOauth GitHub 回调
@@ -423,9 +430,15 @@ func GitHubOauth(c *gin.Context) {
 }
 
 func UserInfo(c *gin.Context) {
-	token, _ := c.Get("user")
-	s := token.(string)
 	resp := pb.UserInfoResp{}
+	token, exist := c.Get("user")
+	if !exist {
+		resp.Code = uint32(AuthError)
+		resp.Msg = ConvertMsg(AuthError, "")
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	s := token.(string)
 	userInfo, err := service.ParseToken(s)
 	if err != nil {
 		resp.Code = uint32(AuthError)

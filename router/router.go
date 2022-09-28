@@ -83,9 +83,7 @@ func SetupServer() *gin.Engine {
 	// user
 	user := router.Group("/user")
 	{
-		user.GET("")
 		user.GET("/github/oauth", handler.GitHubOauth)
-		user.POST("/login")
 		user.POST("/logout", handler.LoginOut)
 		user.GET("/getUserInfo", handler.UserInfo)
 		user.POST("/edit", handler.Edit)
@@ -100,15 +98,12 @@ func SetupServer() *gin.Engine {
 	{
 		links.GET("/list", handler.LinkList)
 	}
-	// like
-	like := router.Group("/like")
+	// like collect
+	like := router.Group("/likeOrCollect")
 	{
-		like.GET("/getInfo")
-	}
-	// collect
-	collect := router.Group("collect")
-	{
-		collect.GET("/getInfo")
+
+		like.POST("/edit", handler.EditLikeAndCollect)
+		like.GET("/getInfo", handler.LikeAndCollect)
 	}
 	router.GET("/ws", handler.WebSocket)
 	return router

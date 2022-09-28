@@ -442,3 +442,16 @@ message LineChartDataResp {
   repeated uint32 expectedData = 4;
   repeated uint32 actualData = 5;
 }
+
+message LikeOrCollectRequest {
+  uint32 id = 1;
+  bool flag = 2;
+  bool isLike = 3;
+}
+
+message IsLikeOrCollectResp {
+  uint32 code = 1;
+  string msg = 2;
+  bool like = 3;
+  bool collect = 4;
+}
