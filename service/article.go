@@ -153,7 +153,7 @@ func GetOne(id int) (*pb.ArticleOneResp, error) {
 
 func GetOneAndUpdateClick(id int) (*pb.ArticleOneResp, error) {
 	a := &entity.Article{BaseModel: entity.BaseModel{ID: id}}
-	one, err := a.GetOneAndUpdate()
+	one, err := a.GetOneAndUpdate(true)
 	if err != nil {
 		return nil, err
 	}

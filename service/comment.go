@@ -21,6 +21,10 @@ func AddComment(request *pb.CommentAddRequest, user *entity.User, c *gin.Context
 		if err != nil {
 			return nil, err
 		}
+		_, err := article.GetOneAndUpdate(false)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	parentId, err := strconv.Atoi(request.ParentId)

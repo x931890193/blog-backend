@@ -96,12 +96,16 @@ func (a *Article) GetOne() (*Article, error) {
 	return &article, nil
 }
 
-func (a *Article) GetOneAndUpdate() (*Article, error) {
+func (a *Article) GetOneAndUpdate(isClick bool) (*Article, error) {
 	var article Article
 	if err := conn.MysqlConn.Model(&a).Where("id=?", a.ID).First(&article).Error; err != nil {
 		return nil, err
 	}
-	article.ClickTimes++
+	if isClick {
+		article.ClickTimes++
+	} else {
+		article.CommentCount++
+	}
 	if err := conn.MysqlConn.Save(&article).Error; err != nil {
 		return nil, err
 	}
