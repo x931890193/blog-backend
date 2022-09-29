@@ -17,6 +17,42 @@ type ArticleListRequest struct {
 	CurrentPage int  `form:"currentPage"`
 }
 
+func getArticleListWithUserId(c *gin.Context, req ArticleListRequest, resp *pb.ArticleListResp, userId int) {
+	articles, count, err := service.ArticleListWithUser(req.PageSize, req.CurrentPage, userId, req.Like, req.Collect)
+	if err != nil {
+		if err != nil {
+			resp.Code = uint32(DbError)
+			resp.Msg = ConvertMsg(DbError, err.Error())
+			c.ProtoBuf(http.StatusOK, resp)
+		}
+	}
+	resp.List = articles
+	resp.Pagination = &pb.Pagination{
+		CountTotal:  uint32(count),
+		TotalPage:   uint32(count) / uint32(req.PageSize),
+		CurrentPage: uint32(req.CurrentPage),
+		PageSize:    uint32(req.PageSize),
+	}
+	c.ProtoBuf(http.StatusOK, resp)
+}
+
+func getArticleList(c *gin.Context, req ArticleListRequest, resp *pb.ArticleListResp) {
+	articles, err := service.ArticleList(req.PageSize, req.CurrentPage)
+	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, resp)
+	}
+	resp.List = articles
+	resp.Pagination = &pb.Pagination{
+		CountTotal:  service.GetArticleTotalCount(),
+		TotalPage:   service.GetArticleTotalCount() / uint32(req.PageSize),
+		CurrentPage: uint32(req.CurrentPage + 1),
+		PageSize:    uint32(req.PageSize),
+	}
+	c.ProtoBuf(http.StatusOK, resp)
+}
+
 func GetArticleList(c *gin.Context) {
 	req := ArticleListRequest{}
 	resp := pb.ArticleListResp{}
@@ -28,19 +64,33 @@ func GetArticleList(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	articles, err := service.ArticleList(req.PageSize, req.CurrentPage)
-	if err != nil {
-		resp.Code = uint32(DbError)
-		resp.Msg = ConvertMsg(DbError, err.Error())
+	token, exist := c.Get("user")
+	if exist {
+		tokenStr := token.(string)
+		userinfo, err := service.ParseToken(tokenStr)
+		if err != nil {
+			if err != nil {
+				resp.Code = uint32(ParamsError)
+				resp.Msg = ConvertMsg(ParamsError, err.Error())
+				c.ProtoBuf(http.StatusOK, &resp)
+			}
+		}
+		userId := userinfo.ID
+		if req.Like == 1 {
+			getArticleListWithUserId(c, req, &resp, userId)
+			return
+		} else if req.Collect == 1 {
+			getArticleListWithUserId(c, req, &resp, userId)
+			return
+		}
+		getArticleList(c, req, &resp)
+		return
+
+	} else {
+		getArticleList(c, req, &resp)
+		return
 	}
-	resp.List = articles
-	resp.Pagination = &pb.Pagination{
-		CountTotal:  uint32(len(articles)),
-		TotalPage:   10,
-		CurrentPage: uint32(req.PageSize + 1),
-		PageSize:    uint32(req.PageSize),
-	}
-	c.ProtoBuf(http.StatusOK, &resp)
+
 }
 
 func AdminAddArticle(c *gin.Context) {

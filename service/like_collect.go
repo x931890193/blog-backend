@@ -66,15 +66,15 @@ func GetLikeAndCollect(userId int, articleId int) (isLike, isCollect bool, err e
 	if err != nil {
 		return false, false, err
 	}
-	if one != nil {
+	if one.UserId != 0 {
 		isLike = !one.IsDelete
 	}
 	collect := entity.Collection{ArticleId: uint(articleId), UserId: uint(userId)}
 	collection, err := collect.GetOne()
 	if err != nil {
-		isCollect = false
+		return false, false, err
 	}
-	if collection != nil {
+	if collection.UserId != 0 {
 		isCollect = !collection.IsDelete
 	}
 	return isLike, isCollect, nil

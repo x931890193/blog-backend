@@ -1,12 +1,14 @@
 package service
 
 import (
+	"blog-backend/cache"
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
 	"blog-backend/utils/mail"
 	"encoding/json"
 	"sort"
 	"sync"
+	"time"
 )
 
 func ArticleList(pageSize, currentPage int) ([]*pb.Article, error) {
@@ -34,6 +36,61 @@ func ArticleList(pageSize, currentPage int) ([]*pb.Article, error) {
 		})
 	}
 	return res, nil
+}
+
+func ArticleListWithUser(pageSize, currentPage int, userId int, like, collect uint) ([]*pb.Article, int, error) {
+	article := entity.Article{}
+	likeEntity := entity.Like{UserId: uint(userId)}
+	collectEntity := entity.Collection{UserId: uint(userId)}
+
+	if like == 1 {
+		likes, err := likeEntity.GetListByUserid()
+		if err != nil {
+			return nil, 0, err
+		}
+		ids := []uint{}
+		for _, item := range likes {
+			ids = append(ids, item.ArticleId)
+		}
+		return articleListWithUser(article, pageSize, currentPage, ids)
+	} else if collect == 1 {
+		collects, err := collectEntity.GetListByUserid()
+		if err != nil {
+			return nil, 0, err
+		}
+		ids := []uint{}
+		for _, item := range collects {
+			ids = append(ids, item.ArticleId)
+		}
+		return articleListWithUser(article, pageSize, currentPage, ids)
+	}
+	return nil, 0, nil
+}
+
+func articleListWithUser(article entity.Article, pageSize, currentPage int, ids []uint) ([]*pb.Article, int, error) {
+	articles, err := article.GetArticleListByIdsWithPage(pageSize, currentPage, ids)
+	if err != nil {
+		return nil, 0, err
+	}
+	var res []*pb.Article
+	for _, item := range articles {
+		res = append(res, &pb.Article{
+			Title:            item.Title,
+			BrowseCount:      uint32(item.ClickTimes),
+			ClassId:          uint32(item.ID),
+			CollectCount:     uint32(item.CollectCount),
+			CommentCount:     uint32(item.CommentCount),
+			Content:          item.Summary,
+			CreateDate:       item.CreatedAt.Format("2006-01-02 15:04:05"),
+			IsHot:            true,
+			IsRecommend:      true,
+			LastModifiedDate: item.UpdatedAt.Format("2006-01-02 15:04:05"),
+			LikeCount:        uint32(item.LikeCount),
+			XId:              uint32(item.ID),
+			XV:               1,
+		})
+	}
+	return res, len(ids), nil
 }
 
 func ArticleListOrigin(pageSize, currentPage int) ([]*entity.Article, error) {
@@ -260,4 +317,17 @@ func SendEmailWhenArticle(article *entity.Article) {
 		mail.SendEmail([]string{user.Email}, article.Title, newUpdate, wg)
 	}
 
+}
+
+func GetArticleTotalCount() uint32 {
+	count, err := cache.Client.Get("ArticleTotalCount").Int()
+	if err != nil {
+		article := entity.Article{}
+		total, err := article.GetTotal()
+		if err != nil {
+			return 0
+		}
+		cache.Client.Set("ArticleTotalCount", total, time.Duration(-1))
+	}
+	return uint32(count)
 }

@@ -13,11 +13,21 @@ func (a *Article) GetArticleById() (*Article, error) {
 
 func (a *Article) GetArticleByIds(ids []int) ([]*Article, error) {
 	articles := []*Article{}
-	err := conn.MysqlConn.Model(Article{}).Where("id in >", ids).First(&articles).Error
+	err := conn.MysqlConn.Model(Article{}).Where("id in ?", ids).Find(&articles).Error
 	if err != nil {
 		return nil, err
 	}
 	return articles, nil
+}
+
+func (a *Article) GetArticleListByIdsWithPage(pageSize, CurrentPage int, ids []uint) ([]*Article, error) {
+	var res []*Article
+	limitStart := (CurrentPage - 1) * pageSize
+	err := conn.MysqlConn.Model(Article{}).Where("id in ?", ids).Order("created_at Desc").Limit(pageSize).Offset(limitStart).Find(&res).Error
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 func (a *Article) GetArticleMapsByIds(ids []int) (map[int]*Article, error) {
@@ -125,4 +135,12 @@ func (a *Article) GetListByQuery(v map[string]interface{}) ([]*Article, error) {
 		return nil, err
 	}
 	return articles, nil
+}
+
+func (a *Article) GetTotal() (int64, error) {
+	var c int64
+	if err := conn.MysqlConn.Model(a).Count(&c).Error; err != nil {
+		return 0, err
+	}
+	return c, nil
 }
