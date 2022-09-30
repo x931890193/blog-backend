@@ -34,3 +34,10 @@ Mail:
   smtp_username: xxx@gmail.com
   smtp_username: xxxx
   max_client: 100
+
+AliPay:
+  # 应用私钥
+  private_key: xx
+  # 支付宝公钥
+  public_key: xx
+  app_id: xx

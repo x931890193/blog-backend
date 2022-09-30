@@ -11,6 +11,7 @@ require (
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/qiniu/go-sdk/v7 v7.13.0
 	github.com/sirupsen/logrus v1.9.0
+	github.com/smartwalle/alipay/v3 v3.1.7
 	go.elastic.co/ecslogrus v1.0.0
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
@@ -46,6 +47,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
+	github.com/smartwalle/crypto4go v1.0.2 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d // indirect

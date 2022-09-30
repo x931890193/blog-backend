@@ -87,6 +87,11 @@ type config struct {
 		SMTPPassword string `yaml:"smtp_password"`
 		MaxClient    int    `yaml:"max_client"`
 	} `yaml:"Mail"`
+	AliPay struct {
+		PrivateKey string `yaml:"private_key"`
+		PublicKey  string `yaml:"public_key"`
+		AppId      string `yaml:"app_id"`
+	} `yaml:"AliPay"`
 }
 
 func init() {
