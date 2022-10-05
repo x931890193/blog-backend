@@ -455,3 +455,33 @@ message IsLikeOrCollectResp {
   bool like = 3;
   bool collect = 4;
 }
+
+
+message RewardResp {
+  message Rewards {
+      string payTime = 1;
+      string name = 2;
+      string money = 3;
+  }
+  uint32 code = 1;
+  string msg = 2;
+  string wechatImage = 3;
+  string aliPayImage = 4;
+  repeated Rewards rewards = 5;
+}
+
+
+message QiNiuListResp {
+  message qiNiuItem {
+    string name = 1;
+    string url = 2;
+    string createTime = 3;
+    string id = 4;
+
+
+  }
+  uint32 code = 1;
+  string msg = 2;
+  uint32 total = 3;
+  repeated categoryBase rows = 4;
+}

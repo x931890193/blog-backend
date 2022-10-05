@@ -55,6 +55,10 @@ func SetupServer() *gin.Engine {
 		// dashboard end
 		admin.GET("/system/setting/siteSetting", handler.AdminGetSiteInfo)
 		admin.POST("/system/setting/siteSetting", handler.AdminSetSiteInfo)
+		// tool
+		admin.POST("/tool/qiNiu/upload", handler.UploadFile)
+
+		// end tool
 
 	}
 	// article
@@ -91,7 +95,7 @@ func SetupServer() *gin.Engine {
 	// reward
 	reward := router.Group("/reward")
 	{
-		reward.GET("/list")
+		reward.GET("/list", handler.RewardList)
 	}
 	// links
 	links := router.Group("/link")
@@ -105,6 +109,7 @@ func SetupServer() *gin.Engine {
 		like.POST("/edit", handler.EditLikeAndCollect)
 		like.GET("/getInfo", handler.LikeAndCollect)
 	}
+
 	router.GET("/ws", handler.WebSocket)
 	return router
 }

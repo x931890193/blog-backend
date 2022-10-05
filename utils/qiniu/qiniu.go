@@ -80,3 +80,21 @@ func UploadStream(key string, data []byte) *storage.PutRet {
 	logger.Logger.Info(fmt.Sprintf("upload to qiniu success, key: %v, hash: %v", ret.Key, ret.Hash))
 	return &ret
 }
+
+//func GetList(prefix, delimiter, marker string, limit int) {
+//	manager := storage.NewBucketManager(mac, cfg)
+//	entries, prefixes, nextMarker, hasNext, err := manager.ListFiles(config.Cfg.Qiniu.Bucket, prefix, delimiter, marker, limit)
+//	if err != nil {
+//		return
+//	}
+//
+//}
+
+func Delete(key string) error {
+	manager := storage.NewBucketManager(mac, cfg)
+	err := manager.Delete(config.Cfg.Qiniu.Bucket, key)
+	if err != nil {
+		return err
+	}
+	return nil
+}
