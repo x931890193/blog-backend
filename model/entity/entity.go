@@ -66,14 +66,23 @@ func (SiteInfo) TableName() string {
 	return "siteinfo"
 }
 
+// Request 各种日志
 type Request struct {
 	BaseModel
-	IP         string `gorm:"not null; default:'127.0.0.1'" json:"ip"`
-	Referer    string `gorm:"type: text" json:"referer"`
-	URL        string `gorm:"not null" json:"url"`
-	Major      int
-	RemoteAddr string `gorm:"not null" json:"remote_addr"`
-	UserAgent  useragent.UserAgent
+	IP          string `gorm:"not null; default:'127.0.0.1'" json:"ip"`
+	Referer     string `gorm:"type: text" json:"referer"`
+	URL         string `gorm:"not null" json:"url"`
+	Major       int
+	RemoteAddr  string `gorm:"not null" json:"remote_addr"`
+	UserAgent   useragent.UserAgent
+	OpType      string
+	Method      string
+	IsLogin     bool
+	RequestTime uint
+}
+
+func (Request) TableName() string {
+	return "request"
 }
 
 // Tags 各种标签

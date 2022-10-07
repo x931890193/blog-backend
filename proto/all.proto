@@ -483,5 +483,11 @@ message QiNiuListResp {
   uint32 code = 1;
   string msg = 2;
   uint32 total = 3;
-  repeated categoryBase rows = 4;
+//  repeated categoryBase rows = 4;
+}
+
+message LogResp {
+  uint32 code = 1;
+  string msg = 2;
+  repeated string rows = 3;
 }
