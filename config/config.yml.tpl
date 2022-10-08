@@ -41,3 +41,7 @@ AliPay:
   # 支付宝公钥
   public_key: xx
   app_id: xx
+
+ WechatPay:
+   app_iD:
+   app_secret:

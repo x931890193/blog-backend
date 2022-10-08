@@ -92,6 +92,10 @@ type config struct {
 		PublicKey  string `yaml:"public_key"`
 		AppId      string `yaml:"app_id"`
 	} `yaml:"AliPay"`
+	WechatPay struct {
+		AppID     string `yaml:"app_iD"`
+		AppSecret string `yaml:"app_secret"`
+	} `yaml:"WechatPay"`
 }
 
 func init() {
