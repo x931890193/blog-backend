@@ -13,6 +13,10 @@ import (
 	"time"
 )
 
+const (
+	AccessToken = "access_token"
+)
+
 type tokenRes struct {
 	AccessToken string `json:"access_token"`
 	ExpiresIn   int    `json:"expires_in"`
@@ -67,7 +71,7 @@ type orderReq struct {
 }
 
 func getAccessToken() (string, error) {
-	tokenCache, err := cache.Client.Get("access_token").Result()
+	tokenCache, err := cache.Client.Get(AccessToken).Result()
 	if tokenCache != "" {
 		return tokenCache, nil
 	}
@@ -97,7 +101,7 @@ func getAccessToken() (string, error) {
 		logger.Logger.Error(err.Error())
 		return "", err
 	}
-	err = cache.Client.Set("access_token", res.AccessToken, time.Second*time.Duration(res.ExpiresIn)).Err()
+	err = cache.Client.Set(AccessToken, res.AccessToken, time.Second*time.Duration(res.ExpiresIn)).Err()
 	if err != nil {
 		return "", err
 	}
