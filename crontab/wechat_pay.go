@@ -42,6 +42,30 @@ type flowResp struct {
 	TotalPage int         `json:"total_page"`
 }
 
+type address struct {
+	UserName string `json:"user_name"`
+}
+
+type addressInfo struct {
+	AddressInfo address `json:"address_info"`
+}
+
+type deliveryInfo struct {
+	DeliveryInfo addressInfo `json:"delivery_info"`
+}
+
+type orderDetail struct {
+	OrderDetail deliveryInfo `json:"order_detail"`
+}
+
+type orderResp struct {
+	Order orderDetail `json:"order"`
+}
+
+type orderReq struct {
+	OrderId int64 `json:"order_id"`
+}
+
 func getAccessToken() (string, error) {
 	tokenCache, err := cache.Client.Get("access_token").Result()
 	if tokenCache != "" {
@@ -78,6 +102,42 @@ func getAccessToken() (string, error) {
 		return "", err
 	}
 	return res.AccessToken, nil
+}
+
+func getUsername(orderId int64) (string, error) {
+	token, err := getAccessToken()
+	if err != nil {
+		return "", err
+	}
+	reqData := orderReq{orderId}
+	reqJson, _ := json.Marshal(reqData)
+	r := bytes.NewReader(reqJson)
+	url := fmt.Sprintf("https://api.weixin.qq.com/product/order/get?access_token=%s", token)
+	req, _ := http.NewRequest("POST", url, r)
+	client := http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		logger.Logger.Error(err.Error())
+		return "", err
+	}
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			logger.Logger.Error(err.Error())
+		}
+	}(resp.Body)
+	if resp.StatusCode != 200 {
+		logger.Logger.Error(err.Error())
+		return "", err
+	}
+	body, _ := ioutil.ReadAll(resp.Body)
+	res := orderResp{}
+	err = json.Unmarshal(body, &res)
+	if err != nil {
+		logger.Logger.Error(err.Error())
+		return "", err
+	}
+	return res.Order.OrderDetail.DeliveryInfo.AddressInfo.UserName, nil
 }
 
 func GetFlow(pageNum, PageSize int) {
