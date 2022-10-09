@@ -33,6 +33,7 @@ services:
       TZ: 'Asia/Shanghai'
     volumes:
       - "./log:/src/config/log"
+      - "./config/.config.yml:/src/build/.config.yml"
       - "/usr/share/zoneinfo/Asia/Shanghai:/usr/share/zoneinfo/Asia/Shanghai"
       - "/etc/localtime:/etc/localtime:ro"
     links:
