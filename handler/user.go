@@ -425,8 +425,9 @@ func GitHubOauth(c *gin.Context) {
 		return
 	}
 	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("blog-token", token, int(entity.Expire), "/", "127.0.0.1", false, false)
-	c.Redirect(302, "http://localhost:8087/#/message")
+	c.SetCookie("blog-token", token, int(entity.Expire), "/", c.Request.Host, false, false)
+	refer := c.Request.Header.Get("Referer")
+	c.Redirect(302, refer)
 }
 
 func UserInfo(c *gin.Context) {

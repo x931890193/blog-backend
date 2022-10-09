@@ -3,7 +3,6 @@ package entity
 import (
 	"blog-backend/logger"
 	"blog-backend/model/conn"
-	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -20,13 +19,10 @@ func (r *Reward) GetList() ([]Reward, error) {
 	return res, nil
 }
 
-// Create insert ignore into
-func (r *Reward) Create(db *gorm.DB) error {
-	return db.Clauses(clause.Insert{Modifier: "IGNORE"}).Create(r).Error
-}
-
 func (r *Reward) InsertMany(orders []Reward) {
-	if err := conn.MysqlConn.Model(&Reward{}).CreateInBatches(orders, len(orders)).Error; err != nil {
+	// insert ignore into
+	db := conn.MysqlConn.Clauses(clause.Insert{Modifier: "IGNORE"})
+	if err := db.Model(&Reward{}).CreateInBatches(orders, len(orders)).Error; err != nil {
 		logger.Logger.Error(err)
 	}
 }
