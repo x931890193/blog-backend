@@ -12,7 +12,7 @@ import (
 var Logger *logrus.Entry
 
 func init() {
-	fileName := filepath.Join(config.BasePath, "log", "blog.log")
+	fileName := filepath.Join(config.BasePath, "log")
 	log := logrus.New()
 
 	if os.Getenv("PROGRAM_ENV") == "prod" {
@@ -29,13 +29,11 @@ func init() {
 		}
 		log.SetFormatter(&ecslogrus.Formatter{})
 		log.SetOutput(logger)
-		Logger = log.WithField("psm", "blog")
 	} else {
 		log.SetFormatter(&logrus.TextFormatter{
 			DisableColors: false,
 			FullTimestamp: true,
 		})
-		Logger = log.WithField("psm", "blog")
-
 	}
+	Logger = log.WithField("psm", "blog")
 }

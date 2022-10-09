@@ -1,0 +1,58 @@
+version: "2.2"
+
+services:
+  redis:
+    image: "redis"
+    container_name: redis
+    volumes:
+      - "./config/redis.conf:/etc/redis/redis.conf"
+    command: redis-server --appendonly yes #一个容器启动时要运行的命令
+    restart: always # 自动重启
+
+  mysql:
+    image: "mysql:5.7.26"
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_USER: "root"
+      LANG: "C.UTF-8"
+    volumes:
+      - "./config/mysql.conf:/etc/mysql/mysql.conf.d/mysqld.cnf"
+      - "./config/:/docker-entrypoint-initdb.d/"
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    restart: always # 自动重启
+
+  blog-backend:
+    image: blog-backend:0.1
+    container_name: blog
+    depends_on:
+      - redis
+      - mysql
+    restart: always
+    environment:
+      TZ: 'Asia/Shanghai'
+    volumes:
+      - "./log:/src/config/log"
+      - "/usr/share/zoneinfo/Asia/Shanghai:/usr/share/zoneinfo/Asia/Shanghai"
+      - "/etc/localtime:/etc/localtime:ro"
+    links:
+      - redis
+      - mysql
+
+  nginx:
+    image: axizdkr/tengine
+    container_name: nginx
+    volumes:
+      - "./config/nginx.conf:/etc/nginx/conf.d/nginx.conf"
+      - "/usr/share/zoneinfo/Asia/Shanghai:/usr/share/zoneinfo/Asia/Shanghai"
+      - "/etc/localtime:/etc/localtime:ro"
+    depends_on:
+      - blog-backend
+    ports:
+      - mode: host
+        protocol: tcp
+        published: 1025
+        target: 1025
+    environment:
+      TZ: 'Asia/Shanghai'
+    restart: always

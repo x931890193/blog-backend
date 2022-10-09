@@ -5,7 +5,7 @@ ENV TZ=Asia/Shanghai \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64 \
-    PROGRAM_ENV=pro
+    PROGRAM_ENV=prod
 
 WORKDIR /src/build
 

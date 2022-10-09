@@ -23,6 +23,7 @@ func init() {
 		&Link{},
 		&Resource{},
 	)
+	return
 	_ = conn.PgConn.AutoMigrate(
 		&SiteInfo{},
 		&Reward{},

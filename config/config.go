@@ -1,13 +1,10 @@
-/*
-config settings
-*/
-
 package config
 
 import (
 	"errors"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -101,6 +98,9 @@ type config struct {
 func init() {
 	getCurrentFile()
 	path := filepath.Join(BasePath, "config", ".config.yml")
+	if os.Getenv("PROGRAM_ENV") == "prod" {
+		path = ".config.yml"
+	}
 	f, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err.Error())

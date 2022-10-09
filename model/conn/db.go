@@ -7,6 +7,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"os"
 	"time"
 )
 
@@ -17,16 +18,22 @@ var err error
 
 func init() {
 	initMysqlDB()
-	initPgDb()
+	//initPgDb()
 }
 
 // initMysqlDB 初始化 MysqlDB 连接
 func initMysqlDB() {
 	conf := config.Cfg
+	password := config.Cfg.Db.Password
+	host := conf.Db.Host
+	if os.Getenv("PROGRAM_ENV") == "prod" {
+		password = "123456"
+		host = "mysql"
+	}
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
 		conf.Db.User,
-		conf.Db.Password,
-		conf.Db.Host,
+		password,
+		host,
 		conf.Db.Port,
 		conf.Db.Db)
 	MysqlConn, err = gorm.Open(mysql.New(mysql.Config{
