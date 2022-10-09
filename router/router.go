@@ -112,5 +112,6 @@ func SetupServer() *gin.Engine {
 	}
 
 	router.GET("/ws", handler.WebSocket)
+	router.GET("/qrcode", handler.Qrcode)
 	return router
 }
