@@ -462,6 +462,7 @@ message RewardResp {
       string payTime = 1;
       string name = 2;
       string money = 3;
+      string source = 4;
   }
   uint32 code = 1;
   string msg = 2;

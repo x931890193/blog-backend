@@ -10,6 +10,7 @@ require (
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/qiniu/go-sdk/v7 v7.13.0
+	github.com/robfig/cron v1.2.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smartwalle/alipay/v3 v3.1.7
 	go.elastic.co/ecslogrus v1.0.0

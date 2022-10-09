@@ -136,6 +136,7 @@ func (Article) TableName() string {
 
 type Reward struct {
 	BaseModel
+	OrderId       string  `gorm:"not null; unique; comment: 订单号;" json:"order_id"`
 	Who           string  `gorm:"not null; comment: 赞赏人; not null" json:"who"`
 	Amount        float64 `gorm:"not null; comment: 金额; not null" json:"amount"`
 	PaymentMethod uint    `gorm:"not null; comment: 支付方式; index" json:"payment_method"`

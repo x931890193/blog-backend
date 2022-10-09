@@ -2,21 +2,37 @@ package main
 
 import (
 	"blog-backend/config"
+	"blog-backend/crontab"
 	"blog-backend/logger"
 	_ "blog-backend/model/conn"
 	_ "blog-backend/model/entity"
 	"blog-backend/router"
 	"context"
 	"fmt"
+	"github.com/robfig/cron"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 )
 
+func initCrontabTask() {
+	c := cron.New()
+	spec := "0 */24 * * * ?"
+	if err := c.AddFunc(spec, crontab.SaveAliOrder); err != nil {
+		logger.Logger.Error(err)
+	}
+	if err := c.AddFunc(spec, crontab.SaveWechatOrder); err != nil {
+		logger.Logger.Error(err)
+	}
+	c.Start()
+	select {}
+}
+
 func main() {
 	engine := router.SetupServer()
 	conf := config.Cfg
+	go initCrontabTask()
 	serverUrl := fmt.Sprintf("%s:%s", conf.Server.Host, conf.Server.Port)
 	server := &http.Server{Addr: serverUrl, Handler: engine}
 	fmt.Println(fmt.Sprintf("server listen: http://%s", serverUrl))
