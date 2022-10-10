@@ -32,7 +32,7 @@ services:
     environment:
       TZ: 'Asia/Shanghai'
     volumes:
-      - "./log:/src/config/log"
+      - "./log:/src/build/log"
       - "./config/.config.yml:/src/build/.config.yml"
       - "/usr/share/zoneinfo/Asia/Shanghai:/usr/share/zoneinfo/Asia/Shanghai"
       - "/etc/localtime:/etc/localtime:ro"

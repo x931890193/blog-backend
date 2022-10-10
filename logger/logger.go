@@ -12,7 +12,7 @@ import (
 var Logger *logrus.Entry
 
 func init() {
-	fileName := filepath.Join(config.BasePath, "log")
+	fileName := filepath.Join(config.BasePath, "log", "blog.log")
 	log := logrus.New()
 
 	if os.Getenv("PROGRAM_ENV") == "prod" {
