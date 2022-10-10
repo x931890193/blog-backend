@@ -20,10 +20,10 @@ func initCrontabTask() {
 	c := cron.New()
 	spec := "0 */24 * * * ?"
 	if err := c.AddFunc(spec, crontab.SaveAliOrder); err != nil {
-		logger.Logger.Error(err)
+		logger.Logger.Error(err.Error())
 	}
 	if err := c.AddFunc(spec, crontab.SaveWechatOrder); err != nil {
-		logger.Logger.Error(err)
+		logger.Logger.Error(err.Error())
 	}
 	c.Start()
 	select {}

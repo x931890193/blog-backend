@@ -353,6 +353,6 @@ func regexModel(models []Model, str string) (result string) {
 
 func checkErr(err error) {
 	if err != nil {
-		logger.Logger.Error(err)
+		logger.Logger.Error(err.Error())
 	}
 }

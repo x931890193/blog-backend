@@ -22,7 +22,7 @@ func (r ReqContentType) String() string {
 	case ContentTypeProto:
 		return "application/x-protobuf"
 	default:
-		logger.Logger.Errorf("to do ContentType")
+		logger.Logger.Error("to do ContentType")
 		return ""
 	}
 }

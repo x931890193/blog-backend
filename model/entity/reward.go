@@ -23,7 +23,7 @@ func (r *Reward) InsertMany(orders []Reward) {
 	// insert ignore into
 	db := conn.MysqlConn.Clauses(clause.Insert{Modifier: "IGNORE"})
 	if err := db.Model(&Reward{}).CreateInBatches(orders, len(orders)).Error; err != nil {
-		logger.Logger.Error(err)
+		logger.Logger.Error(err.Error())
 	}
 }
 

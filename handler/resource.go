@@ -54,11 +54,11 @@ func UploadFile(c *gin.Context) {
 		line, err := rd.ReadBytes('\n')
 		buf = append(buf, line...)
 		if err == io.EOF {
-			logger.Logger.Infof("%s文件读完", file.Filename)
+			logger.Logger.Info("%s文件读完" + file.Filename)
 			break
 		}
 		if err != nil {
-			logger.Logger.Infof("%s文件读完", err.Error())
+			logger.Logger.Info("%s文件读完" + err.Error())
 			return
 		}
 	}

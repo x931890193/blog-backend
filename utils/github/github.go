@@ -77,13 +77,13 @@ func GetAccessToken(code string) (*accessTokenGetResp, error) {
 	}
 	res, err := utils.Post(urlParameters, nil, utils.ContentTypeJson, map[string]string{"Accept": "application/json"})
 	if err != nil {
-		logger.Logger.Error("GetAccessToken: ", err.Error())
+		logger.Logger.Error(fmt.Sprintf("GetAccessToken: %s", err.Error()))
 		return nil, err
 	}
 	tokenRes := accessTokenGetResp{}
 	err = json.Unmarshal(res, &tokenRes)
 	if err != nil {
-		logger.Logger.Error("GetAccessToken: ", err.Error())
+		logger.Logger.Error(fmt.Sprintf("GetAccessToken: %s", err.Error()))
 		return nil, err
 	}
 	return &tokenRes, nil
@@ -92,13 +92,13 @@ func GetAccessToken(code string) (*accessTokenGetResp, error) {
 func GetUserInfo(token string) (*User, error) {
 	res, err := utils.Get(githubUserInfoUrl, nil, utils.ContentTypeJson, map[string]string{"Authorization": fmt.Sprintf("Bearer %v", token)})
 	if err != nil {
-		logger.Logger.Error("GetUserInfo: ", err.Error())
+		logger.Logger.Error(fmt.Sprintf("GetUserInfo: %s", err.Error()))
 		return nil, err
 	}
 	githubUser := &User{}
 	err = json.Unmarshal(res, githubUser)
 	if err != nil {
-		logger.Logger.Error("GetUserInfo: ", err.Error())
+		logger.Logger.Error(fmt.Sprintf("GetUserInfo: %s", err.Error()))
 		return nil, err
 	}
 	return githubUser, nil

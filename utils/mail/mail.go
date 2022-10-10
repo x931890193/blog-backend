@@ -42,7 +42,7 @@ type NewUpdate struct {
 func init() {
 	pool, err = email.NewPool(fmt.Sprintf("%v:%v", config.Cfg.Mail.SMTPHost, config.Cfg.Mail.SMTPPort), config.Cfg.Mail.MaxClient, smtp.PlainAuth("", config.Cfg.Mail.SMTPUsername, config.Cfg.Mail.SMTPPassword, config.Cfg.Mail.SMTPHost))
 	if err != nil {
-		logger.Logger.Fatal(err)
+		logger.Logger.Fatal(err.Error())
 	}
 }
 
@@ -69,7 +69,7 @@ func SendEmail(receivers []string, subject string, structTpl interface{}, wg *sy
 	}
 	err = pool.Send(e, 100*time.Second)
 	if err != nil {
-		logger.Logger.Fatal(err)
+		logger.Logger.Fatal(err.Error())
 	}
 	if wg != nil {
 		wg.Done()

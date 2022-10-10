@@ -46,7 +46,7 @@ func initMysqlDB() {
 	}), &gorm.Config{})
 
 	if err != nil {
-		logger.Logger.Error("connect to mysql database error: ", err.Error())
+		logger.Logger.Error(fmt.Sprintf("connect to mysql database error: %s", err.Error()))
 		panic(err.Error())
 	}
 	sqlDb, _ := MysqlConn.DB()

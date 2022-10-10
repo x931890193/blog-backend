@@ -29,7 +29,7 @@ func init() {
 func GetAccountBalance() {
 	balance, err := client.BillBalanceQuery(alipay.BillBalanceQuery{})
 	if err != nil {
-		logger.Logger.Error(err.Error(), " query")
+		logger.Logger.Error(err.Error() + " query")
 		return
 	}
 	fmt.Println("total :", balance.Content.TotalAmount)
@@ -38,7 +38,7 @@ func GetAccountBalance() {
 func GetAccountLog(startTime, endTime string) ([]*alipay.AccountLogItem, error) {
 	balance, err := client.BillAccountLogQuery(alipay.BillAccountLogQuery{StartTime: startTime, EndTime: endTime})
 	if err != nil {
-		logger.Logger.Error(err.Error(), " query")
+		logger.Logger.Error(err.Error() + " query")
 		return nil, err
 	}
 	return balance.Content.DetailList, nil
@@ -49,7 +49,7 @@ func SaveAliOrder() {
 	lastTime := now.Add(-time.Hour * 48)
 	res, err := GetAccountLog(lastTime.Format("2006-01-02 15:04:05"), now.Format("2006-01-02 15:04:05"))
 	if err != nil {
-		logger.Logger.Error(err)
+		logger.Logger.Error(err.Error())
 	}
 	rewards := []entity.Reward{}
 	for _, r := range res {

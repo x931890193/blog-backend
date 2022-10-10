@@ -192,7 +192,7 @@ func SaveWechatOrder() {
 			break
 		}
 		if err != nil {
-			logger.Logger.Error(err)
+			logger.Logger.Error(err.Error())
 			continue
 		}
 		for _, r := range res.OrderFlow {
