@@ -2,6 +2,7 @@ package handler
 
 import (
 	"blog-backend/cache"
+	"blog-backend/logger"
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
 	"blog-backend/service"
@@ -407,27 +408,30 @@ func LoginOut(c *gin.Context) {
 func GitHubOauth(c *gin.Context) {
 	githubToken, err := github.GetAccessToken(c.Query("code"))
 	if err != nil {
+		logger.Logger.Error(err.Error())
 		c.Redirect(302, "/")
 		return
 	}
 	githubUser, err := github.GetUserInfo(githubToken.AccessToken)
 	if err != nil {
+		logger.Logger.Error(err.Error())
 		c.Redirect(302, "/")
 		return
 	}
 	user, err := service.GetOrCreateGitHubUser(githubUser)
 	if err != nil {
+		logger.Logger.Error(err.Error())
 		c.Redirect(302, "/")
 		return
 	}
 	token, err := user.GenerateToken()
 	if err != nil {
+		logger.Logger.Error(err.Error())
 		return
 	}
 	c.SetSameSite(http.SameSiteNoneMode)
 	c.SetCookie("blog-token", token, int(entity.Expire), "/", c.Request.Host, false, false)
-	refer := c.Request.Header.Get("Referer")
-	c.Redirect(302, refer)
+	c.Redirect(302, "/#/user")
 }
 
 func UserInfo(c *gin.Context) {
