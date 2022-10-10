@@ -5,6 +5,7 @@ import (
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"os"
 	"path/filepath"
 )
 
@@ -12,6 +13,9 @@ var Logger *zap.Logger
 
 func init() {
 	fileName := filepath.Join(config.BasePath, "log", "blog.log")
+	if os.Getenv("PROGRAM_ENV") == "prod" {
+		fileName = filepath.Join("log", "blog.log")
+	}
 	InitLogger(fileName, "debug")
 }
 
