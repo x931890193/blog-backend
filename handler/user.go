@@ -430,7 +430,7 @@ func GitHubOauth(c *gin.Context) {
 		return
 	}
 	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("blog-token", token, int(entity.Expire), "/", c.Request.Host, false, false)
+	c.SetCookie("blog-token", token, int(entity.Expire), "/", c.Request.Host, true, false)
 	c.Redirect(302, "/#/user")
 }
 
