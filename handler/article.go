@@ -144,14 +144,14 @@ func GetArticle(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, resp)
 		return
 	}
-	resp, err = service.GetOneAndUpdateClick(atoi)
+	articleRes, err := service.GetOneAndUpdateClick(atoi)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
 		c.ProtoBuf(http.StatusOK, resp)
 		return
 	}
-	c.ProtoBuf(http.StatusOK, resp)
+	c.ProtoBuf(http.StatusOK, articleRes)
 }
 
 type AdminArticleListRequest struct {
