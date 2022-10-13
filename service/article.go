@@ -2,10 +2,12 @@ package service
 
 import (
 	"blog-backend/cache"
+	"blog-backend/config"
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
 	"blog-backend/utils/mail"
 	"encoding/json"
+	"fmt"
 	"sort"
 	"sync"
 	"time"
@@ -307,11 +309,11 @@ func SendEmailWhenArticle(article *entity.Article) {
 	for _, user := range users {
 		newUpdate := mail.NewUpdate{
 			Username: user.UserName,
-			Site:     "",
+			Site:     config.Host,
 			Time:     article.CreatedAt.Format("2006-01-02 15:04:05"),
 			Title:    article.Title,
 			Summary:  article.Summary,
-			Url:      "https://www.baidu.com",
+			Url:      fmt.Sprintf("%s/#/detail/%d", config.Host, article.ID),
 		}
 		wg.Add(1)
 		mail.SendEmail([]string{user.Email}, article.Title, newUpdate, wg)

@@ -24,6 +24,8 @@ var (
 		-3: "friendslink",
 	}
 	UserTags = []string{"天然呆", "小萌新", "学霸", "萌萌哒", "技术宅", "忠实粉"}
+
+	Host = "https://www.bytealien.com"
 )
 
 func substr(s string, pos, length int) string {

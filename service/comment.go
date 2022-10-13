@@ -2,6 +2,7 @@ package service
 
 import (
 	"blog-backend/config"
+	"blog-backend/logger"
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
 	"blog-backend/utils/mail"
@@ -50,7 +51,7 @@ func AddComment(request *pb.CommentAddRequest, user *entity.User, c *gin.Context
 		return nil, err
 	}
 	if one.ParentId != 0 {
-		go SendEmailWhenComment(&comment, one.ParentId, user)
+		go SendEmailWhenComment(&comment, one.ParentId, user, article.ID)
 
 	}
 	pbComment := pb.Comment{
@@ -221,7 +222,7 @@ func GetTopComment() (*pb.TopCommentResp, error) {
 	return res, nil
 }
 
-func SendEmailWhenComment(comment *entity.Comment, originCommentId uint, me *entity.User) {
+func SendEmailWhenComment(comment *entity.Comment, originCommentId uint, me *entity.User, articleId int) {
 	originComment := &entity.Comment{}
 	queryComments, err := originComment.GetListByQuery(map[string]interface{}{
 		"id": originCommentId,
@@ -241,18 +242,23 @@ func SendEmailWhenComment(comment *entity.Comment, originCommentId uint, me *ent
 		"id":             originComment.UserId,
 	})
 	if err != nil {
-		// TOOD
+		logger.Logger.Error(err.Error())
 		return
 	}
+
 	for _, user := range users {
+		url := fmt.Sprintf("%s/#/detail/%d", config.Host, articleId)
+		if articleId < 0 {
+			url = fmt.Sprintf("%s/#/%s", config.Host, config.ArticleIdmapReverse[articleId])
+		}
 		newUpdate := mail.Comment{
-			Site:          "",
+			Site:          config.Host,
 			Username:      u.UserName,
 			Who:           me.UserName,
 			Time:          comment.CreatedAt.Format("2006-01-02 15:04:05"),
 			OriginComment: originComment.Content,
 			NewComment:    comment.Content,
-			Url:           "", //
+			Url:           url,
 		}
 		mail.SendEmail([]string{user.Email}, comment.Content, newUpdate, nil)
 	}
