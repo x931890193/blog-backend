@@ -11,10 +11,11 @@ import (
 	"time"
 )
 
-var MysqlConn *gorm.DB
-var PgConn *gorm.DB
-
-var err error
+var (
+	MysqlConn *gorm.DB
+	PgConn    *gorm.DB
+	err       error
+)
 
 func init() {
 	initMysqlDB()
