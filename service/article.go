@@ -24,7 +24,7 @@ func ArticleList(pageSize, currentPage int) ([]*pb.Article, error) {
 		res = append(res, &pb.Article{
 			Title:            item.Title,
 			BrowseCount:      uint32(item.ClickTimes),
-			ClassId:          uint32(item.ID),
+			ClassId:          uint32(item.CategoryId),
 			CollectCount:     uint32(item.CollectCount),
 			CommentCount:     uint32(item.CommentCount),
 			Content:          item.Summary,
