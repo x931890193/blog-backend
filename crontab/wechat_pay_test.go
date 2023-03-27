@@ -1,13 +1,17 @@
 package crontab
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestGetFlow(t *testing.T) {
-	GetFlow(1, 100)
+	GetFlow(1, 500)
 }
 
 func TestGetUsername(t *testing.T) {
-	_, err := getUsername(3206623700662617344)
+	name, err := getUsername(3210457716765493248)
+	fmt.Println(111, name)
 	if err != nil {
 		return
 	}
@@ -15,4 +19,9 @@ func TestGetUsername(t *testing.T) {
 
 func TestSaveWechatOrder(t *testing.T) {
 	SaveWechatOrder()
+}
+
+func TestGetUserInfo(t *testing.T) {
+	res, _ := GetUserInfo("ocTxB5S4dlbQYJtwn_9lMDUtwKaU")
+	fmt.Println(res)
 }

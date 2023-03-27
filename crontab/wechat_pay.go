@@ -78,9 +78,14 @@ func getAccessToken() (string, error) {
 	if tokenCache != "" {
 		return tokenCache, nil
 	}
-	url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",
-		config.Cfg.WechatPay.AppID, config.Cfg.WechatPay.AppSecret)
-	req, _ := http.NewRequest("GET", url, nil)
+	url := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/stable_token")
+	reqBody, _ := json.Marshal(map[string]string{
+		"grant_type": "client_credential",
+		"appid":      config.Cfg.WechatPay.AppID,
+		"secret":     config.Cfg.WechatPay.AppSecret,
+	})
+	r := bytes.NewReader(reqBody)
+	req, _ := http.NewRequest("POST", url, r)
 	client := http.Client{Timeout: timeOut}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -145,6 +150,57 @@ func getUsername(orderId int64) (string, error) {
 		return "", err
 	}
 	return res.Order.OrderDetail.DeliveryInfo.AddressInfo.UserName, nil
+}
+
+type UserInfo struct {
+	Errcode  int    `json:"errcode"`
+	Errmsg   string `json:"errmsg"`
+	UnionId  string `json:"union_id"`
+	NickName string `json:"nick_name"`
+	Mobile   string `json:"mobile"`
+	Birthday string `json:"birthday"`
+	Avatar   string `json:"avatar"`
+	Email    string `json:"email"`
+	Sex      int    `json:"sex"`
+	Country  string `json:"country"`
+	AuthAt   int64  `json:"auth_at"`
+	Openid   string `json:"openid"`
+}
+
+func GetUserInfo(openid string) (*UserInfo, error) {
+	// noqa
+	token, err := getAccessToken()
+	if err != nil {
+		return nil, err
+	}
+	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/servicemarket/connector/shop/userinfo/get?access_token=%s", token)
+	reqJson, _ := json.Marshal(map[string]string{
+		"openid": openid,
+	})
+	r := bytes.NewReader(reqJson)
+	req, _ := http.NewRequest("POST", url, r)
+	req.Header.Add("User-Agent", "application/json")
+	c := http.Client{Timeout: timeOut}
+	resp, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			logger.Logger.Error(err.Error())
+		}
+	}(resp.Body)
+	if resp.StatusCode != 200 {
+		return nil, err
+	}
+	user := UserInfo{}
+	body, _ := ioutil.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, err
 }
 
 func GetFlow(pageNum, PageSize int) (*flowResp, error) {
