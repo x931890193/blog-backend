@@ -32,6 +32,8 @@ type AdminCategoryListRequest struct {
 	PageSize      int    `form:"pageSize"`
 	OrderByColumn string `form:"orderByColumn"`
 	IsAsc         string `form:"isAsc"`
+	Title         string `form:"title"`
+	Description   string `form:"description"`
 	Params        interface{}
 }
 
@@ -44,7 +46,7 @@ func CategoryList(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, resp)
 		return
 	}
-	resp, err := service.GetCategoryList(req.PageSize, req.PageNum)
+	resp, err := service.GetCategoryList(req.PageSize, req.PageNum, req.Title, req.Description)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -82,6 +84,24 @@ func EditCategory(c *gin.Context) {
 	}
 	err := service.UpdateCategoryById(int(req.Id), &req)
 	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	c.ProtoBuf(http.StatusOK, &resp)
+}
+
+func DeleteCategory(c *gin.Context) {
+	resp := pb.BaseResp{}
+	ids, err := parseIDs(c.Param("ids"))
+	if err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	if err := service.DeleteCategories(ids); err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)

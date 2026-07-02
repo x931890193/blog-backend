@@ -59,6 +59,11 @@ message Comment {
   string ua = 10;
   string location = 11;
   string os = 12;
+  bool display = 13;
+  uint32 good = 14;
+  uint32 bad = 15;
+  uint32 parentId = 16;
+  string url = 17;
 
 }
 
@@ -367,9 +372,13 @@ message LinkBase {
   bool display = 6;
   uint32 id = 7;
   string createTime = 8;
+  bool status = 9;
+  string verifyStatus = 10;
 }
 
 message LinkRequest {
+  uint32 id = 1;
+  bool showLink = 2;
   string title = 3;
   string description = 4;
   string email = 5;
@@ -383,6 +392,143 @@ message LinkListResp {
   string msg = 2;
   uint32 total = 3;
   repeated LinkBase rows = 4;
+}
+
+message AdminUserBase {
+  uint32 id = 1;
+  string userName = 2;
+  string nickName = 3;
+  string email = 4;
+  string phone = 5;
+  string status = 6;
+  string avatar = 7;
+  bool isAdmin = 8;
+  bool receiveUpdate = 9;
+  string githubUrl = 10;
+  string createTime = 11;
+  string lastLogin = 12;
+  repeated uint32 roleIds = 13;
+  string sex = 14;
+  string remark = 15;
+}
+
+message AdminUserListResp {
+  uint32 code = 1;
+  string msg = 2;
+  uint32 total = 3;
+  repeated AdminUserBase rows = 4;
+}
+
+message AdminUserOneResp {
+  uint32 code = 1;
+  string msg = 2;
+  AdminUserBase data = 3;
+  repeated uint32 roleIds = 4;
+}
+
+message AdminUserRequest {
+  uint32 id = 1;
+  string userName = 2;
+  string nickName = 3;
+  string email = 4;
+  string phone = 5;
+  string password = 6;
+  string status = 7;
+  string avatar = 8;
+  bool receiveUpdate = 9;
+  bool isAdmin = 10;
+}
+
+message AdminPasswordRequest {
+  uint32 id = 1;
+  string password = 2;
+}
+
+message AdminRoleBase {
+  uint32 id = 1;
+  string roleName = 2;
+  string roleKey = 3;
+  string status = 4;
+  string createTime = 5;
+}
+
+message AdminRoleListResp {
+  uint32 code = 1;
+  string msg = 2;
+  uint32 total = 3;
+  repeated AdminRoleBase rows = 4;
+}
+
+message AdminTableRow {
+  uint32 id = 1;
+  string title = 2;
+  string name = 3;
+  string description = 4;
+  string content = 5;
+  string type = 6;
+  string status = 7;
+  string createBy = 8;
+  string createTime = 9;
+  string url = 10;
+  string headerImg = 11;
+  bool display = 12;
+  bool target = 13;
+  uint32 click = 14;
+  string ip = 15;
+  string location = 16;
+  string browser = 17;
+  string os = 18;
+  string msg = 19;
+  string method = 20;
+  string path = 21;
+  string lastAccessUrl = 22;
+  string lastAccessTime = 23;
+  uint32 interceptCount = 24;
+  string roleName = 25;
+  string roleKey = 26;
+  uint32 roleSort = 27;
+  string remark = 28;
+  repeated uint32 menuIds = 29;
+  string jobName = 30;
+  string beanName = 31;
+  string methodName = 32;
+  string methodParams = 33;
+  string cronExpression = 34;
+  bool enabled = 35;
+  string bucket = 36;
+  string suffix = 37;
+  string size = 38;
+  string userName = 40;
+  string requestMethod = 41;
+  string businessType = 42;
+  string operateName = 43;
+  uint32 cost = 44;
+  string param = 45;
+  string jsonResult = 46;
+  string errorMsg = 47;
+  bool success = 48;
+  string exception = 49;
+  string result = 50;
+  repeated uint32 roleIds = 51;
+  string nickName = 52;
+  string avatar = 53;
+  uint32 parentId = 54;
+  uint32 good = 55;
+  uint32 bad = 56;
+  uint32 articleId = 57;
+}
+
+message AdminTableOneResp {
+  uint32 code = 1;
+  string msg = 2;
+  AdminTableRow data = 3;
+}
+
+message AdminTableListResp {
+  uint32 code = 1;
+  string msg = 2;
+  uint32 total = 3;
+  repeated AdminTableRow rows = 4;
 }
 
 message UserInfoResp {
@@ -438,9 +584,28 @@ message PanelGroupResp {
 message LineChartDataResp {
   uint32 code = 1;
   string msg = 2;
-  repeated uint32 axisData = 3;
+  repeated string axisData = 3;
   repeated uint32 expectedData = 4;
   repeated uint32 actualData = 5;
+}
+
+message DashboardChartItem {
+  string name = 1;
+  uint32 value = 2;
+}
+
+message DashboardAccessResp {
+  uint32 code = 1;
+  string msg = 2;
+  repeated string legend = 3;
+  repeated DashboardChartItem inner = 4;
+  repeated DashboardChartItem out = 5;
+}
+
+message DashboardSpiderResp {
+  uint32 code = 1;
+  string msg = 2;
+  repeated DashboardChartItem data = 3;
 }
 
 message LikeOrCollectRequest {
@@ -491,4 +656,5 @@ message LogResp {
   uint32 code = 1;
   string msg = 2;
   repeated string rows = 3;
+  uint32 total = 4;
 }

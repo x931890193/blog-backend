@@ -58,7 +58,7 @@ func AddComment(request *pb.CommentAddRequest, user *entity.User, c *gin.Context
 		XId:        strconv.Itoa(int(one.ID)),
 		Avatar:     user.Avatar,
 		Username:   user.UserName,
-		Label:      config.UserTags[user.Label],
+		Label:      userLabel(user.Label),
 		CreateDate: one.CreatedAt.Format("2006-01-02 15:04:05"),
 		Content:    one.Content,
 		Children:   []*pb.Comment{},
@@ -81,11 +81,11 @@ func getAllChildrenComment(dbRes []*entity.Comment, parentId uint, userMap map[i
 		if user, ok := userMap[item.UserId]; ok {
 			userName = user.UserName
 			avatar = user.Avatar
-			label = config.UserTags[user.Label]
+			label = userLabel(user.Label)
 		} else {
 			tUser := NewTempUser()
 			userName = tUser.UserName
-			label = config.UserTags[tUser.Label]
+			label = userLabel(tUser.Label)
 		}
 
 		if user, ok := userMap[commentIdUserIdMap[int(item.ParentId)]]; ok {
@@ -134,6 +134,10 @@ func GetCommentList(ArticleId string, pageSize, CurrentPage int) (*pb.CommentLis
 	if err != nil {
 		return nil, err
 	}
+	total, err := comment.CountRootComments()
+	if err != nil {
+		return nil, err
+	}
 	for _, item := range dbRes {
 		commentIdUserIdMap[item.ID] = item.UserId
 		commentUserIds = append(commentUserIds, item.UserId)
@@ -145,13 +149,158 @@ func GetCommentList(ArticleId string, pageSize, CurrentPage int) (*pb.CommentLis
 	res = getAllChildrenComment(dbRes, 0, userMap, commentIdUserIdMap)
 	resp := pb.CommentListResp{}
 	resp.List = res
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+	if CurrentPage <= 0 {
+		CurrentPage = 1
+	}
+	totalPage := int(total) / pageSize
+	if int(total)%pageSize != 0 {
+		totalPage++
+	}
 	resp.Pagination = &pb.Pagination{
-		CountTotal:  uint32(len(res)),
-		TotalPage:   uint32(len(res)),
+		CountTotal:  uint32(total),
+		TotalPage:   uint32(totalPage),
 		CurrentPage: uint32(CurrentPage),
+		PageSize:    uint32(pageSize),
 	}
 
 	return &resp, nil
+}
+
+func GetAdminCommentList(pageSize, currentPage int) (*pb.CommentListResp, error) {
+	dbRes, total, err := entity.GetAdminCommentList(pageSize, currentPage, "", "", "", "", "")
+	if err != nil {
+		return nil, err
+	}
+	commentUserIds := []int{}
+	for _, item := range dbRes {
+		commentUserIds = append(commentUserIds, item.UserId)
+	}
+	userMap, err := GetUsersMapByIds(commentUserIds)
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.CommentListResp{List: []*pb.Comment{}}
+	for _, item := range dbRes {
+		userName := "游客"
+		avatar := ""
+		label := ""
+		if user, ok := userMap[item.UserId]; ok {
+			userName = user.UserName
+			avatar = user.Avatar
+			label = userLabel(user.Label)
+		}
+		resp.List = append(resp.List, &pb.Comment{
+			XId:        strconv.Itoa(item.ID),
+			Avatar:     avatar,
+			Username:   userName,
+			Label:      label,
+			CreateDate: item.CreatedAt.Format("2006-01-02 15:04:05"),
+			Content:    item.Content,
+			Ip:         item.Ip,
+			Ua:         item.Ua,
+			Location:   item.Location,
+			Os:         item.OS,
+			Display:    item.Display,
+			Good:       uint32(item.Good),
+			Bad:        uint32(item.Bad),
+			ParentId:   uint32(item.ParentId),
+			Url:        strconv.Itoa(item.ArticleId),
+		})
+	}
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+	if currentPage <= 0 {
+		currentPage = 1
+	}
+	totalPage := int(total) / pageSize
+	if int(total)%pageSize != 0 {
+		totalPage++
+	}
+	resp.Pagination = &pb.Pagination{
+		CountTotal:  uint32(total),
+		TotalPage:   uint32(totalPage),
+		CurrentPage: uint32(currentPage),
+		PageSize:    uint32(pageSize),
+	}
+	return resp, nil
+}
+
+func GetAdminCommentTableList(pageSize, currentPage int, nickName, location, content, beginTime, endTime string) (*pb.AdminTableListResp, error) {
+	dbRes, total, err := entity.GetAdminCommentList(pageSize, currentPage, nickName, location, content, beginTime, endTime)
+	if err != nil {
+		return nil, err
+	}
+	commentUserIds := []int{}
+	articleIDs := []int{}
+	for _, item := range dbRes {
+		commentUserIds = append(commentUserIds, item.UserId)
+		if item.ArticleId > 0 {
+			articleIDs = append(articleIDs, item.ArticleId)
+		}
+	}
+	userMap, err := GetUsersMapByIds(commentUserIds)
+	if err != nil {
+		return nil, err
+	}
+	article := &entity.Article{}
+	articleMap, err := article.GetArticleMapsByIds(articleIDs)
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.AdminTableListResp{Total: uint32(total), Rows: []*pb.AdminTableRow{}}
+	for _, item := range dbRes {
+		userName := "游客"
+		avatar := ""
+		articleTitle := "未知文章"
+		if user, ok := userMap[item.UserId]; ok {
+			userName = user.UserName
+			avatar = user.Avatar
+		}
+		if article, ok := articleMap[item.ArticleId]; ok {
+			articleTitle = article.Title
+		} else if item.ArticleId < 0 {
+			articleTitle = NewTempArticle(item.ArticleId).Title
+		}
+		resp.Rows = append(resp.Rows, &pb.AdminTableRow{
+			Id:         uint32(item.ID),
+			Title:      articleTitle,
+			NickName:   userName,
+			UserName:   userName,
+			Avatar:     avatar,
+			Ip:         item.Ip,
+			Location:   item.Location,
+			Browser:    item.Ua,
+			Os:         item.OS,
+			Display:    item.Display,
+			Content:    item.Content,
+			Good:       uint32(item.Good),
+			Bad:        uint32(item.Bad),
+			ParentId:   uint32(item.ParentId),
+			ArticleId:  uint32(item.ArticleId),
+			Url:        "/#/detail?id=" + strconv.Itoa(item.ArticleId),
+			CreateTime: item.CreatedAt.Format("2006-01-02 15:04:05"),
+		})
+	}
+	return resp, nil
+}
+
+func DeleteComments(ids []int) error {
+	return entity.DeleteCommentsByIds(ids)
+}
+
+func UpdateCommentDisplay(id int, display bool) error {
+	return entity.UpdateCommentDisplay(id, display)
+}
+
+func userLabel(index int) string {
+	if index < 0 || index >= len(config.UserTags) {
+		return ""
+	}
+	return config.UserTags[index]
 }
 
 func NewTempArticle(id int) *entity.Article {
@@ -170,9 +319,13 @@ func GetTopComment() (*pb.TopCommentResp, error) {
 		comment        entity.Comment
 		commentUserIds []int
 		articleIDs     []int
-		article        *entity.Article
+		article        = &entity.Article{}
 	)
 	res := &pb.TopCommentResp{BrowseList: []*pb.BrowseList{}, TopCommentList: []*pb.TopCommentList{}}
+	siteInfo, err := GetSiteInfo()
+	if err == nil {
+		res.LoveCount = SiteLoveCountString(siteInfo)
+	}
 	topCommentList, err := comment.GetTopComment(10)
 	if err != nil {
 		return nil, err
@@ -196,7 +349,9 @@ func GetTopComment() (*pb.TopCommentResp, error) {
 	}
 	for _, commentItem := range topCommentList {
 		user := &entity.User{}
-		if _, ok := userMap[commentItem.UserId]; !ok {
+		if item, ok := userMap[commentItem.UserId]; ok {
+			user = &item
+		} else {
 			user = NewTempUser()
 		}
 		article, ok := articleMap[commentItem.ArticleId]

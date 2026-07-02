@@ -3,13 +3,14 @@ package service
 import (
 	"blog-backend/cache"
 	"blog-backend/model/entity"
-	"blog-backend/utils"
 	"blog-backend/utils/crypt"
 	"encoding/json"
 	"errors"
-	"sort"
+	"strconv"
 	"time"
 )
+
+const defaultSiteLoveCount = 99999
 
 func CheckResourceMa5(any []byte) (*entity.Resource, error) {
 	md5, err := crypt.Md5(any)
@@ -36,11 +37,12 @@ func GetSiteInfo() (*entity.SiteInfo, error) {
 	s := &entity.SiteInfo{}
 	var err error
 	res, err := cache.Client.Get("site").Result()
-	if err != nil && res != "" {
+	if err == nil && res != "" {
 		err = json.Unmarshal([]byte(res), &s)
 		if err != nil {
 			return s, err
 		}
+		return s, nil
 	}
 	err = s.Get()
 	if err != nil {
@@ -65,19 +67,46 @@ func UpdateOrCreate(id int, v map[string]interface{}) (*entity.SiteInfo, error) 
 	return &s, nil
 }
 
+func SiteLoveCount(siteInfo *entity.SiteInfo) int {
+	if siteInfo == nil || siteInfo.LoveCount <= 0 {
+		return defaultSiteLoveCount
+	}
+	return siteInfo.LoveCount
+}
+
+func SiteLoveCountString(siteInfo *entity.SiteInfo) string {
+	return strconv.Itoa(SiteLoveCount(siteInfo))
+}
+
+func IncreaseSiteLoveCount() (int, error) {
+	siteInfo, err := GetSiteInfo()
+	if err != nil {
+		return 0, err
+	}
+	id := siteInfo.ID
+	if id == 0 {
+		id = 1
+	}
+	next := SiteLoveCount(siteInfo) + 1
+	_, err = UpdateOrCreate(id, map[string]interface{}{
+		"love_count": next,
+	})
+	if err != nil {
+		return 0, err
+	}
+	return next, nil
+}
+
 func GetPanelGroup() (interface{}, error) {
-	articleObj := entity.Article{}
-	articles, err := articleObj.GetAllArticle(0)
+	articles, err := GetBlogList()
 	if err != nil {
 		return nil, err
 	}
-	user := entity.User{}
-	users, err := user.GetListByQuery(map[string]interface{}{"is_delete": false})
+	users, err := GetUserList()
 	if err != nil {
 		return nil, err
 	}
-	requestInfo := entity.Request{}
-	requestInfos, err := requestInfo.GetListByQuery(map[string]interface{}{})
+	requestInfos, err := GetVisitorList()
 	if err != nil {
 		return nil, err
 	}
@@ -132,53 +161,22 @@ func GetLineChartData(typeData string) (interface{}, error) {
 	dataMap := map[string]uint32{}
 	for _, item := range data {
 		dateTime := item.CreatedAt.Format("2006-01-02")
-		if _, ok := dataMap[dateTime]; ok {
-			dataMap[dateTime] += 1
-		} else {
-			dataMap[dateTime] = 1
-		}
+		dataMap[dateTime]++
 	}
-	expectedDate := map[string]uint32{}
-	actualDate := map[string]uint32{}
-
-	thisWeek := utils.GetFirstDateOfWeek()
-	lastWeek := utils.GetLastWeekFirstDate()
-	for k, _ := range dataMap {
-		if k >= lastWeek && k < thisWeek {
-			if _, ok := expectedDate[k]; ok {
-				expectedDate[k] += 1
-			} else {
-				expectedDate[k] = 1
-			}
-		} else if k >= thisWeek {
-			if _, ok := actualDate[k]; ok {
-				actualDate[k] += 1
-			} else {
-				actualDate[k] = 1
-			}
-		}
-	}
-	axisData := []uint32{}
-	expectedData := []uint32{}
+	axisData := []string{}
 	actualData := []uint32{}
-
-	sort.Slice(data, func(i, j int) bool {
-		return data[i].CreatedAt.Format("2006-01-02") < data[j].CreatedAt.Format("2006-01-02")
-	})
-
-	for _, u := range data {
-		k := u.CreatedAt.Format("2006-01-02")
-		axisData = append(axisData, dataMap[k])
-		if count, ok := actualDate[k]; ok {
-			actualData = append(actualData, count)
-		}
-		if count, ok := expectedDate[k]; ok {
-			expectedData = append(expectedData, count)
-		}
-
+	expectedData := []uint32{}
+	now := time.Now()
+	for i := 6; i >= 0; i-- {
+		day := now.AddDate(0, 0, -i)
+		key := day.Format("2006-01-02")
+		prevKey := day.AddDate(0, 0, -7).Format("2006-01-02")
+		axisData = append(axisData, day.Format("01-02"))
+		actualData = append(actualData, dataMap[key])
+		expectedData = append(expectedData, dataMap[prevKey])
 	}
 
-	return map[string][]uint32{
+	return map[string]interface{}{
 		"AxisData":     axisData,
 		"ExpectedData": expectedData,
 		"ActualData":   actualData,

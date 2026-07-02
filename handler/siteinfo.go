@@ -5,6 +5,8 @@ import (
 	"blog-backend/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 func GetSiteInfo(c *gin.Context) {
@@ -36,8 +38,36 @@ func CatchMe(c *gin.Context) {
 		Job: siteInfo.Job,
 	}
 	resp.Id = uint32(siteInfo.ID)
-	resp.LikeNum = "99999"
+	resp.LikeNum = service.SiteLoveCountString(siteInfo)
 	resp.Descriptions = siteInfo.SelfDescription
+	if strings.TrimSpace(resp.Descriptions) == "" {
+		resp.Descriptions = service.DefaultSelfDescription()
+	}
+	c.ProtoBuf(http.StatusOK, &resp)
+}
+
+func LoveSite(c *gin.Context) {
+	resp := pb.BaseResp{}
+	if c.Query("dryRun") == "1" {
+		siteInfo, err := service.GetSiteInfo()
+		if err != nil {
+			resp.Code = uint32(DbError)
+			resp.Msg = ConvertMsg(DbError, err.Error())
+			c.ProtoBuf(http.StatusOK, &resp)
+			return
+		}
+		resp.Msg = service.SiteLoveCountString(siteInfo)
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	loveCount, err := service.IncreaseSiteLoveCount()
+	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	resp.Msg = strconv.Itoa(loveCount)
 	c.ProtoBuf(http.StatusOK, &resp)
 }
 
@@ -60,6 +90,7 @@ func AdminAddOrUpdateAbout(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
+	c.ProtoBuf(http.StatusOK, &resp)
 }
 
 func AdminGetSiteInfo(c *gin.Context) {
@@ -73,6 +104,9 @@ func AdminGetSiteInfo(c *gin.Context) {
 	}
 	resp.Id = uint32(siteInfo.ID)
 	resp.SelfDescriptions = siteInfo.SelfDescription
+	if strings.TrimSpace(resp.SelfDescriptions) == "" {
+		resp.SelfDescriptions = service.DefaultSelfDescription()
+	}
 	resp.Descriptions = siteInfo.Description
 	resp.Author = siteInfo.Author
 	resp.Beian = siteInfo.RecordNumber
@@ -101,6 +135,7 @@ func AdminSetSiteInfo(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
+	c.ProtoBuf(http.StatusOK, &resp)
 }
 
 func AdminPanelGroupResp(c *gin.Context) {
@@ -128,9 +163,33 @@ func AdminLineChartData(c *gin.Context) {
 		resp.Msg = ConvertMsg(DbError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)
 	}
-	data := res.(map[string][]uint32)
-	resp.ActualData = data["ActualData"]
-	resp.ExpectedData = data["ExpectedData"]
-	resp.AxisData = data["AxisData"]
+	data := res.(map[string]interface{})
+	resp.AxisData, _ = data["AxisData"].([]string)
+	resp.ExpectedData, _ = data["ExpectedData"].([]uint32)
+	resp.ActualData, _ = data["ActualData"].([]uint32)
 	c.ProtoBuf(http.StatusOK, &resp)
+}
+
+func AdminDashboardAccess(c *gin.Context) {
+	resp := pb.DashboardAccessResp{}
+	result, err := service.AdminDashboardAccessData(500)
+	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	c.ProtoBuf(http.StatusOK, result)
+}
+
+func AdminDashboardSpiderData(c *gin.Context) {
+	resp := pb.DashboardSpiderResp{}
+	result, err := service.AdminDashboardSpiderData(500)
+	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	c.ProtoBuf(http.StatusOK, result)
 }

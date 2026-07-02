@@ -4,6 +4,7 @@ import (
 	"blog-backend/config"
 	"blog-backend/logger"
 	"blog-backend/model/entity"
+	"context"
 	"fmt"
 	"github.com/smartwalle/alipay/v3"
 	"strconv"
@@ -27,21 +28,21 @@ func init() {
 }
 
 func GetAccountBalance() {
-	balance, err := client.BillBalanceQuery(alipay.BillBalanceQuery{})
+	balance, err := client.BillBalanceQuery(context.Background(), alipay.BillBalanceQuery{})
 	if err != nil {
 		logger.Logger.Error(err.Error() + " query")
 		return
 	}
-	fmt.Println("total :", balance.Content.TotalAmount)
+	fmt.Println("total :", balance.TotalAmount)
 }
 
 func GetAccountLog(startTime, endTime string) ([]*alipay.AccountLogItem, error) {
-	balance, err := client.BillAccountLogQuery(alipay.BillAccountLogQuery{StartTime: startTime, EndTime: endTime})
+	balance, err := client.BillAccountLogQuery(context.Background(), alipay.BillAccountLogQuery{StartTime: startTime, EndTime: endTime})
 	if err != nil {
 		logger.Logger.Error(err.Error() + " query")
 		return nil, err
 	}
-	return balance.Content.DetailList, nil
+	return balance.DetailList, nil
 }
 
 func SaveAliOrder() {

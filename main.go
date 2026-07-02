@@ -25,6 +25,15 @@ func initCrontabTask() {
 	if err := c.AddFunc(spec, crontab.SaveWechatOrder); err != nil {
 		logger.Logger.Error(err.Error())
 	}
+	if config.Cfg.AIArticle.Enabled {
+		aiArticleSpec := config.Cfg.AIArticle.Spec
+		if aiArticleSpec == "" {
+			aiArticleSpec = "0 37 6 * * ?"
+		}
+		if err := c.AddFunc(aiArticleSpec, crontab.GenerateAIArticle); err != nil {
+			logger.Logger.Error(err.Error())
+		}
+	}
 	c.Start()
 	select {}
 }

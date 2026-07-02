@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func AddComment(c *gin.Context) {
@@ -22,7 +23,7 @@ func AddComment(c *gin.Context) {
 	if !exist {
 		token = ""
 	}
-	s := token.(string)
+	s, _ := token.(string)
 	user, err := service.ParseToken(s)
 	if err != nil {
 		logger.Logger.Info("user not login!")
@@ -64,7 +65,7 @@ func GetCommentList(c *gin.Context) {
 	resp := pb.CommentListResp{}
 
 	if err := c.ShouldBindQuery(&req); err != nil {
-		logger.Logger.Error(fmt.Sprintf("parse CommentListRequest error: ", c.Request.URL))
+		logger.Logger.Error(fmt.Sprintf("parse CommentListRequest error: %s", c.Request.URL.String()))
 		resp.Code = uint32(ParamsError)
 		resp.Msg = ConvertMsg(ParamsError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)
@@ -79,5 +80,84 @@ func GetCommentList(c *gin.Context) {
 	}
 	resp.List = comments.List
 	resp.Pagination = comments.Pagination
+	c.ProtoBuf(http.StatusOK, &resp)
+}
+
+type AdminCommentListRequest struct {
+	PageNum  int    `form:"pageNum"`
+	PageSize int    `form:"pageSize"`
+	NickName string `form:"nickName"`
+	Location string `form:"location"`
+	Content  string `form:"content"`
+}
+
+func AdminCommentList(c *gin.Context) {
+	req := AdminCommentListRequest{}
+	resp := pb.AdminTableListResp{}
+	if err := c.ShouldBindQuery(&req); err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	req.PageSize, req.PageNum = normalizePagination(req.PageSize, req.PageNum)
+	comments, err := service.GetAdminCommentTableList(
+		req.PageSize,
+		req.PageNum,
+		req.NickName,
+		req.Location,
+		req.Content,
+		c.Query("params[beginTime]"),
+		c.Query("params[endTime]"),
+	)
+	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	c.ProtoBuf(http.StatusOK, comments)
+}
+
+func AdminDeleteComment(c *gin.Context) {
+	resp := pb.BaseResp{}
+	ids, err := parseIDs(c.Param("ids"))
+	if err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	if err := service.DeleteComments(ids); err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	c.ProtoBuf(http.StatusOK, &resp)
+}
+
+func AdminChangeCommentDisplay(c *gin.Context) {
+	resp := pb.BaseResp{}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	display, err := strconv.ParseBool(c.Param("display"))
+	if err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	if err := service.UpdateCommentDisplay(id, display); err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
 	c.ProtoBuf(http.StatusOK, &resp)
 }

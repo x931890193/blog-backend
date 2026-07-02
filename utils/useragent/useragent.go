@@ -67,14 +67,23 @@ func (ua UserAgent) Value() (driver.Value, error) {
 }
 
 func (ua *UserAgent) Scan(value interface{}) error {
-	res, ok := value.(string)
-	if ok {
-		err := json.Unmarshal([]byte(res), &ua)
-		if err != nil {
-			return errors.New("CustomizeDataTypeError")
-		}
+	var res string
+	switch v := value.(type) {
+	case string:
+		res = v
+	case []byte:
+		res = string(v)
+	default:
+		return errors.New("CustomizeDataTypeError")
 	}
-	return errors.New("CustomizeDataTypeError")
+	if res == "" {
+		return nil
+	}
+	err := json.Unmarshal([]byte(res), ua)
+	if err != nil {
+		return errors.New("CustomizeDataTypeError")
+	}
+	return nil
 }
 
 func ParseByString(useragent string) UserAgent {

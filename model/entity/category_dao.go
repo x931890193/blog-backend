@@ -2,6 +2,7 @@ package entity
 
 import (
 	"blog-backend/model/conn"
+	"strings"
 )
 
 func (c *Category) AddOneCategory() (*Category, error) {
@@ -31,9 +32,39 @@ func (c *Category) GetAllCategory(pageSize, currentPage int) ([]*Category, error
 	return res, nil
 }
 
+func GetAdminCategoryList(pageSize, currentPage int, title, description string) ([]*Category, int64, error) {
+	var res []*Category
+	var total int64
+	query := conn.MysqlConn.Model(&Category{})
+	if v := strings.TrimSpace(title); v != "" {
+		query = query.Where("name LIKE ?", "%"+v+"%")
+	}
+	if v := strings.TrimSpace(description); v != "" {
+		query = query.Where("seo_desc LIKE ?", "%"+v+"%")
+	}
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	if pageSize > 0 && currentPage > 0 {
+		limitStart := (currentPage - 1) * pageSize
+		query = query.Limit(pageSize).Offset(limitStart)
+	}
+	if err := query.Order("created_at DESC").Find(&res).Error; err != nil {
+		return nil, 0, err
+	}
+	return res, total, nil
+}
+
 func (c *Category) UpdateById() error {
 	if err := conn.MysqlConn.Model(&Category{}).Where("id=?", c.ID).Updates(&c).Error; err != nil {
 		return err
 	}
 	return nil
+}
+
+func DeleteCategoriesByIds(ids []int) error {
+	if len(ids) == 0 {
+		return nil
+	}
+	return conn.MysqlConn.Delete(&Category{}, ids).Error
 }

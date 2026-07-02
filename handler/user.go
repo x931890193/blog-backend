@@ -8,12 +8,37 @@ import (
 	"blog-backend/service"
 	"blog-backend/utils/captcha"
 	"blog-backend/utils/github"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 )
 
 func GenerateAdmin(c *gin.Context) {
-
+	requestData := pb.LoginAdminRequest{}
+	resp := pb.LoginAdminResp{}
+	if err := c.Bind(&requestData); err != nil {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, err.Error())
+		c.ProtoBuf(http.StatusBadRequest, &resp)
+		return
+	}
+	user, err := service.GenerateAdmin(requestData.Username, requestData.Password)
+	if err != nil {
+		resp.Code = uint32(LogicError)
+		resp.Msg = ConvertMsg(LogicError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	token, err := user.GenerateToken()
+	if err != nil {
+		resp.Code = uint32(AuthError)
+		resp.Msg = ConvertMsg(AuthError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	resp.Token = token
+	c.ProtoBuf(http.StatusOK, &resp)
 }
 
 func GetCaptcha(c *gin.Context) {
@@ -252,17 +277,6 @@ func Routers(c *gin.Context) {
 					},
 				},
 				{
-					Component: "monitor/redis/index",
-					Name:      "redis",
-					Path:      "redis",
-					Meta: &pb.ComponentMeta{
-						Title:      "redis状态",
-						NoCache:    false,
-						Icon:       "password",
-						ActiveMenu: "/monitor/redis",
-					},
-				},
-				{
 					Component: "monitor/server/index",
 					Name:      "server",
 					Path:      "server",
@@ -406,32 +420,49 @@ func LoginOut(c *gin.Context) {
 
 // GitHubOauth GitHub 回调
 func GitHubOauth(c *gin.Context) {
-	githubToken, err := github.GetAccessToken(c.Query("code"))
+	code := strings.TrimSpace(c.Query("code"))
+	if code == "" {
+		githubOAuthFailed(c, errors.New("github oauth callback missing code"))
+		return
+	}
+	githubToken, err := github.GetAccessToken(code)
 	if err != nil {
-		logger.Logger.Error(err.Error())
-		c.Redirect(302, "/")
+		githubOAuthFailed(c, err)
 		return
 	}
 	githubUser, err := github.GetUserInfo(githubToken.AccessToken)
 	if err != nil {
-		logger.Logger.Error(err.Error())
-		c.Redirect(302, "/")
+		githubOAuthFailed(c, err)
 		return
 	}
 	user, err := service.GetOrCreateGitHubUser(githubUser)
 	if err != nil {
-		logger.Logger.Error(err.Error())
-		c.Redirect(302, "/")
+		githubOAuthFailed(c, err)
 		return
 	}
 	token, err := user.GenerateToken()
 	if err != nil {
-		logger.Logger.Error(err.Error())
+		githubOAuthFailed(c, err)
 		return
 	}
-	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("blog-token", token, int(entity.Expire), "/", c.Request.Host, true, false)
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("blog-token", token, int(entity.Expire.Seconds()), "/", "", isSecureRequest(c), false)
 	c.Redirect(302, "/#/user")
+}
+
+func githubOAuthFailed(c *gin.Context, err error) {
+	logger.Logger.Error("GitHubOauth: " + err.Error())
+	c.Redirect(302, "/#/user?oauth=failed")
+}
+
+func isSecureRequest(c *gin.Context) bool {
+	if c.Request.TLS != nil ||
+		strings.EqualFold(c.GetHeader("X-Forwarded-Proto"), "https") ||
+		strings.EqualFold(c.GetHeader("X-Scheme"), "https") {
+		return true
+	}
+	host := c.Request.Host
+	return !strings.HasPrefix(host, "localhost") && !strings.HasPrefix(host, "127.0.0.1")
 }
 
 func UserInfo(c *gin.Context) {

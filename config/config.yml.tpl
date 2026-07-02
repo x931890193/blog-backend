@@ -27,6 +27,19 @@ Qiniu:
 GitHub:
   client_id: aa,
   client_secret: aa,
+  redirect_uri: https://www.bytealien.com/api/user/github/oauth
+
+AIArticle:
+  enabled: false
+  # robfig/cron v1 format: second minute hour day month weekday
+  spec: "0 37 6 * * ?"
+  api_key:
+  api_base: https://api.openai.com/v1
+  model: gpt-4o-mini
+  temperature: 0.7
+  timeout_seconds: 90
+  category_id: 2
+  user_id: 1
 
 Mail:
   smtp_host:  smtp.gmail.com

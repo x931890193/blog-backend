@@ -6,8 +6,10 @@ import (
 	"blog-backend/model/conn"
 	"blog-backend/utils/crypt"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -28,6 +30,9 @@ func (u *User) Authenticate() error {
 
 func GetUsersByIDs(ids []int) ([]User, error) {
 	users := []User{}
+	if len(ids) == 0 {
+		return users, nil
+	}
 	if err := conn.MysqlConn.Model(User{}).Where("id in (?)", ids).Find(&users).Error; err != nil {
 		logger.Logger.Error(fmt.Sprintf("GetUsersByIDs error: %v", err.Error()))
 		return nil, err
@@ -110,4 +115,103 @@ func (u *User) GetListByQuery(v map[string]interface{}) ([]*User, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func AdminExists() (bool, error) {
+	var count int64
+	if err := conn.MysqlConn.Model(&User{}).Where("is_admin = ?", true).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func CreateBootstrapAdmin(username, passwordHash string) (*User, error) {
+	now := time.Now()
+	user := &User{}
+	err := conn.MysqlConn.Where("user_name = ?", username).First(user).Error
+	if err == nil {
+		updates := map[string]interface{}{
+			"password":       passwordHash,
+			"is_admin":       true,
+			"receive_update": true,
+			"last_login":     now,
+			"updated_at":     now,
+		}
+		if user.Avatar == "" {
+			updates["avatar"] = "https://www.bytealien.com/favicon.ico"
+		}
+		if user.Email == "" {
+			updates["email"] = username + "@bytealien.local"
+		}
+		if err := conn.MysqlConn.Model(user).UpdateColumns(updates).First(user).Error; err != nil {
+			return nil, err
+		}
+		return user, nil
+	}
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+
+	user = &User{
+		UserName:      username,
+		Password:      passwordHash,
+		Avatar:        "https://www.bytealien.com/favicon.ico",
+		Label:         0,
+		Email:         username + "@bytealien.local",
+		GitHubId:      0,
+		GitHubUrl:     "",
+		IsAdmin:       true,
+		ReceiveUpdate: true,
+		LastLogin:     now,
+	}
+	if err := conn.MysqlConn.Create(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func GetAdminUsers(pageSize, currentPage int, username string) ([]*User, int64, error) {
+	users := []*User{}
+	var total int64
+	db := conn.MysqlConn.Model(&User{}).Where("is_delete = ?", false)
+	if username != "" {
+		db = db.Where("user_name like ?", "%"+username+"%")
+	}
+	if err := db.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	if pageSize > 0 && currentPage > 0 {
+		db = db.Limit(pageSize).Offset((currentPage - 1) * pageSize)
+	}
+	if err := db.Order("id desc").Find(&users).Error; err != nil {
+		return nil, 0, err
+	}
+	return users, total, nil
+}
+
+func GetAdminUserByID(id int) (*User, error) {
+	user := &User{}
+	if err := conn.MysqlConn.Model(user).Where("id = ? and is_delete = ?", id, false).First(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func CreateAdminUser(user *User) error {
+	return conn.MysqlConn.Create(user).Error
+}
+
+func UpdateAdminUserByID(id int, values map[string]interface{}) (*User, error) {
+	user := &User{}
+	if err := conn.MysqlConn.Model(user).Where("id = ?", id).UpdateColumns(values).First(user, id).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func DeleteAdminUsersByIds(ids []int) error {
+	if len(ids) == 0 {
+		return nil
+	}
+	return conn.MysqlConn.Model(&User{}).Where("id in (?)", ids).Update("is_delete", true).Error
 }

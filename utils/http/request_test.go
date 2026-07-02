@@ -12,5 +12,5 @@ func TestRequest(t *testing.T) {
 		return
 	}
 	fmt.Println(string(data))
-	logger.Logger.Error(1111)
+	logger.Logger.Error("1111")
 }

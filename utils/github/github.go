@@ -5,7 +5,13 @@ import (
 	"blog-backend/logger"
 	"blog-backend/utils/http"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/ioutil"
+	nethttp "net/http"
+	"net/url"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -14,19 +20,14 @@ const (
 	githubUserInfoUrl    = "https://api.github.com/user"
 )
 
-type accessTokenGetRequest struct {
-	ClientId     string `json:"client_id"`
-	ClientSecret string `json:"client_secret"`
-	Code         string `json:"code"`
-	RedirectUri  string `json:"redirect_uri"`
-}
-
 type accessTokenGetResp struct {
-	//access_token=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&scope=&token_type=bearer
-	AccessToken string `json:"access_token"`
-	Scope       string `json:"scope"`
-	TokenType   string `json:"token_type"`
-	RedirectUri string `json:"redirect_uri"`
+	AccessToken      string `json:"access_token"`
+	Scope            string `json:"scope"`
+	TokenType        string `json:"token_type"`
+	RedirectUri      string `json:"redirect_uri"`
+	Error            string `json:"error"`
+	ErrorDescription string `json:"error_description"`
+	ErrorUri         string `json:"error_uri"`
 }
 
 type User struct {
@@ -65,17 +66,16 @@ type User struct {
 }
 
 func GetAccessToken(code string) (*accessTokenGetResp, error) {
-	params := map[string]string{
-		"client_id":     config.Cfg.GitHub.ClientId,
-		"client_secret": config.Cfg.GitHub.ClientSecret,
-		"code":          code,
-		"redirect_uri":  "",
+	code = strings.TrimSpace(code)
+	if code == "" {
+		return nil, errors.New("github oauth code is empty")
 	}
-	urlParameters := gitHubAccessTokenUrl + "?"
-	for k, v := range params {
-		urlParameters += fmt.Sprintf("%v=%v&", k, v)
-	}
-	res, err := utils.Post(urlParameters, nil, utils.ContentTypeJson, map[string]string{"Accept": "application/json"})
+	params := url.Values{}
+	params.Set("client_id", config.Cfg.GitHub.ClientId)
+	params.Set("client_secret", config.Cfg.GitHub.ClientSecret)
+	params.Set("code", code)
+	params.Set("redirect_uri", RedirectURI())
+	res, err := postGitHubForm(gitHubAccessTokenUrl, params)
 	if err != nil {
 		logger.Logger.Error(fmt.Sprintf("GetAccessToken: %s", err.Error()))
 		return nil, err
@@ -86,11 +86,64 @@ func GetAccessToken(code string) (*accessTokenGetResp, error) {
 		logger.Logger.Error(fmt.Sprintf("GetAccessToken: %s", err.Error()))
 		return nil, err
 	}
+	if strings.TrimSpace(tokenRes.AccessToken) == "" {
+		if tokenRes.Error != "" {
+			return nil, fmt.Errorf("github oauth token exchange failed: %s %s", tokenRes.Error, tokenRes.ErrorDescription)
+		}
+		return nil, errors.New("github oauth token exchange failed: empty access_token")
+	}
 	return &tokenRes, nil
 }
 
+func postGitHubForm(endpoint string, params url.Values) ([]byte, error) {
+	req, err := nethttp.NewRequest("POST", endpoint, strings.NewReader(params.Encode()))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("User-Agent", utils.UserAgent)
+	client := nethttp.Client{Timeout: utils.RequestTimeOut}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, errors.New("github oauth token exchange status " + strconv.Itoa(resp.StatusCode) + ": " + truncateBody(body))
+	}
+	return body, nil
+}
+
+func truncateBody(body []byte) string {
+	content := strings.TrimSpace(string(body))
+	runes := []rune(content)
+	if len(runes) > 240 {
+		return string(runes[:240]) + "..."
+	}
+	return content
+}
+
+func RedirectURI() string {
+	if config.Cfg != nil && config.Cfg.GitHub.RedirectUri != "" {
+		return config.Cfg.GitHub.RedirectUri
+	}
+	return config.Host + "/api/user/github/oauth"
+}
+
 func GetUserInfo(token string) (*User, error) {
-	res, err := utils.Get(githubUserInfoUrl, nil, utils.ContentTypeJson, map[string]string{"Authorization": fmt.Sprintf("Bearer %v", token)})
+	token = strings.TrimSpace(token)
+	if token == "" {
+		return nil, errors.New("github access_token is empty")
+	}
+	res, err := utils.Get(githubUserInfoUrl, nil, utils.ContentTypeJson, map[string]string{
+		"Accept":        "application/json",
+		"Authorization": fmt.Sprintf("Bearer %v", token),
+	})
 	if err != nil {
 		logger.Logger.Error(fmt.Sprintf("GetUserInfo: %s", err.Error()))
 		return nil, err

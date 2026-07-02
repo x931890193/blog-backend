@@ -22,6 +22,12 @@ func init() {
 		&User{},
 		&Link{},
 		&Resource{},
+		&AdminNotice{},
+		&AdminCarousel{},
+		&AdminBlacklist{},
+		&AdminRole{},
+		&AdminQuartzJob{},
+		&AdminQuartzLog{},
 	)
 	return
 	_ = conn.PgConn.AutoMigrate(
@@ -61,6 +67,7 @@ type SiteInfo struct {
 	SelfDescriptionHtml string `gorm:"comment: 个人介绍; type:text" json:"self_description_html"`
 	Git                 string `gorm:"type:CHAR(255)" json:"git"`
 	Job                 string `gorm:"type:CHAR(255)" json:"job"`
+	LoveCount           int    `gorm:"not null; default:99999; column:love_count" json:"love_count"`
 }
 
 func (SiteInfo) TableName() string {
@@ -74,12 +81,15 @@ type Request struct {
 	Referer     string `gorm:"type: text" json:"referer"`
 	URL         string `gorm:"not null" json:"url"`
 	Major       int
-	RemoteAddr  string `gorm:"not null" json:"remote_addr"`
-	UserAgent   useragent.UserAgent
+	RemoteAddr  string              `gorm:"not null" json:"remote_addr"`
+	UserAgent   useragent.UserAgent `gorm:"type:text"`
 	OpType      string
 	Method      string
 	IsLogin     bool
 	RequestTime uint
+	StatusCode  int    `gorm:"not null; default:200"`
+	UserName    string `gorm:"type:VARCHAR(255)"`
+	ErrorMsg    string `gorm:"type:text"`
 }
 
 func (Request) TableName() string {
@@ -157,6 +167,9 @@ type Comment struct {
 	Ua        string
 	Location  string
 	OS        string
+	Display   bool `gorm:"not null; default:true" json:"display"`
+	Good      int  `gorm:"not null; default:0" json:"good"`
+	Bad       int  `gorm:"not null; default:0" json:"bad"`
 }
 
 func (Comment) TableName() string {
@@ -228,4 +241,91 @@ type Resource struct {
 
 func (Resource) TableName() string {
 	return "resource"
+}
+
+type AdminNotice struct {
+	BaseModel
+	Title    string `gorm:"not null; type:VARCHAR(255)"`
+	Type     string `gorm:"not null; type:VARCHAR(32); default:'1'"`
+	Status   string `gorm:"not null; type:VARCHAR(32); default:'0'"`
+	Content  string `gorm:"type:text"`
+	CreateBy string `gorm:"type:VARCHAR(255); default:'admin'"`
+}
+
+func (AdminNotice) TableName() string {
+	return "admin_notice"
+}
+
+type AdminCarousel struct {
+	BaseModel
+	Title       string `gorm:"not null; type:VARCHAR(255)"`
+	Description string `gorm:"type:VARCHAR(255)"`
+	URL         string `gorm:"not null; type:VARCHAR(255)"`
+	HeaderImg   string `gorm:"type:VARCHAR(255)"`
+	Display     bool   `gorm:"not null; default:true"`
+	Target      bool   `gorm:"not null; default:false"`
+	Click       uint   `gorm:"not null; default:0"`
+}
+
+func (AdminCarousel) TableName() string {
+	return "admin_carousel"
+}
+
+type AdminBlacklist struct {
+	BaseModel
+	IP             string `gorm:"not null; unique; type:VARCHAR(64)"`
+	Description    string `gorm:"type:VARCHAR(255)"`
+	LastAccessURL  string `gorm:"type:VARCHAR(255)"`
+	LastAccessTime time.Time
+	InterceptCount uint `gorm:"not null; default:0"`
+}
+
+func (AdminBlacklist) TableName() string {
+	return "admin_blacklist"
+}
+
+type AdminRole struct {
+	BaseModel
+	RoleName string `gorm:"not null; type:VARCHAR(255)"`
+	RoleKey  string `gorm:"not null; unique; type:VARCHAR(255)"`
+	RoleSort uint   `gorm:"not null; default:0"`
+	Status   string `gorm:"not null; type:VARCHAR(32); default:'0'"`
+	Remark   string `gorm:"type:VARCHAR(255)"`
+	MenuIds  string `gorm:"type:VARCHAR(255)"`
+}
+
+func (AdminRole) TableName() string {
+	return "admin_role"
+}
+
+type AdminQuartzJob struct {
+	BaseModel
+	JobName        string `gorm:"not null; type:VARCHAR(255)"`
+	BeanName       string `gorm:"type:VARCHAR(255)"`
+	MethodName     string `gorm:"not null; type:VARCHAR(255)"`
+	MethodParams   string `gorm:"type:VARCHAR(255)"`
+	CronExpression string `gorm:"type:VARCHAR(255)"`
+	Status         bool   `gorm:"not null; default:false"`
+	Remark         string `gorm:"type:VARCHAR(255)"`
+}
+
+func (AdminQuartzJob) TableName() string {
+	return "admin_quartz_job"
+}
+
+type AdminQuartzLog struct {
+	BaseModel
+	JobName        string `gorm:"type:VARCHAR(255)"`
+	BeanName       string `gorm:"type:VARCHAR(255)"`
+	MethodName     string `gorm:"type:VARCHAR(255)"`
+	MethodParams   string `gorm:"type:VARCHAR(255)"`
+	CronExpression string `gorm:"type:VARCHAR(255)"`
+	Status         bool   `gorm:"not null; default:true"`
+	Cost           uint   `gorm:"not null; default:0"`
+	Result         string `gorm:"type:text"`
+	Exception      string `gorm:"type:text"`
+}
+
+func (AdminQuartzLog) TableName() string {
+	return "admin_quartz_log"
 }

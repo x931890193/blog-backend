@@ -2,6 +2,9 @@ package entity
 
 import (
 	"blog-backend/model/conn"
+	"errors"
+	"fmt"
+	"gorm.io/gorm"
 )
 
 const (
@@ -19,24 +22,70 @@ func (l *Link) AddOne() error {
 
 func (l *Link) GetAllList() ([]*Link, error) {
 	res := []*Link{}
-	if err := conn.MysqlConn.Model(l).Find(&res).Error; err != nil {
+	if err := conn.MysqlConn.Model(l).Where("is_delete = ?", false).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
 func (l *Link) GetLinByUserId() error {
-	if err := conn.MysqlConn.Model(l).Find(l).Error; err != nil {
+	if err := conn.MysqlConn.Model(l).Where("user_id = ? and is_delete = ?", l.UserId, false).First(l).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return err
 	}
 	return nil
 }
 
 func (l *Link) UpdateOrCreate(v map[string]interface{}) error {
-	if err := conn.MysqlConn.Model(l).Where("user_id=?", l.UserId).FirstOrCreate(l).UpdateColumns(v).Error; err != nil {
+	existing := Link{}
+	err := conn.MysqlConn.Model(&Link{}).Where("user_id = ?", l.UserId).First(&existing).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		l.Title, _ = v["title"].(string)
+		l.Description, _ = v["description"].(string)
+		l.Email, _ = v["email"].(string)
+		if l.Email == "" {
+			l.Email = fmt.Sprintf("user-%d@bytealien.link", l.UserId)
+		}
+		l.Url, _ = v["url"].(string)
+		l.HeaderImg, _ = v["header_img"].(string)
+		l.ShowLink, _ = v["show_link"].(bool)
+		if status, ok := v["verify_status"].(int); ok {
+			l.VerifyStatus = status
+		}
+		if err := conn.MysqlConn.Create(l).Error; err != nil {
+			return err
+		}
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	v["is_delete"] = false
+	if err := conn.MysqlConn.Model(&Link{}).Where("id = ?", existing.ID).UpdateColumns(v).Error; err != nil {
+		return err
+	}
+	if err := conn.MysqlConn.First(l, existing.ID).Error; err != nil {
 		return err
 	}
 	return nil
+}
+
+func (l *Link) UpdateDisplay(display bool) error {
+	return conn.MysqlConn.Model(l).Where("id = ?", l.ID).Update("show_link", display).Error
+}
+
+func (l *Link) GetByID() error {
+	return conn.MysqlConn.Model(l).Where("id = ? and is_delete = ?", l.ID, false).First(l).Error
+}
+
+func (l *Link) UpdateByID(values map[string]interface{}) error {
+	return conn.MysqlConn.Model(l).Where("id = ? and is_delete = ?", l.ID, false).UpdateColumns(values).Error
+}
+
+func DeleteLinksByIds(ids []int) error {
+	if len(ids) == 0 {
+		return nil
+	}
+	return conn.MysqlConn.Model(&Link{}).Where("id in (?)", ids).Update("is_delete", true).Error
 }
 
 func (l *Link) GetLinkStatus() string {

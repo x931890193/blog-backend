@@ -13,6 +13,9 @@ func (a *Article) GetArticleById() (*Article, error) {
 
 func (a *Article) GetArticleByIds(ids []int) ([]*Article, error) {
 	articles := []*Article{}
+	if len(ids) == 0 {
+		return articles, nil
+	}
 	err := conn.MysqlConn.Model(Article{}).Where("id in ?", ids).Find(&articles).Error
 	if err != nil {
 		return nil, err
@@ -22,6 +25,15 @@ func (a *Article) GetArticleByIds(ids []int) ([]*Article, error) {
 
 func (a *Article) GetArticleListByIdsWithPage(pageSize, CurrentPage int, ids []uint) ([]*Article, error) {
 	var res []*Article
+	if len(ids) == 0 {
+		return res, nil
+	}
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+	if CurrentPage <= 0 {
+		CurrentPage = 1
+	}
 	limitStart := (CurrentPage - 1) * pageSize
 	err := conn.MysqlConn.Model(Article{}).Where("id in ?", ids).Order("created_at Desc").Limit(pageSize).Offset(limitStart).Find(&res).Error
 	if err != nil {
@@ -33,6 +45,9 @@ func (a *Article) GetArticleListByIdsWithPage(pageSize, CurrentPage int, ids []u
 func (a *Article) GetArticleMapsByIds(ids []int) (map[int]*Article, error) {
 	articles := []*Article{}
 	res := map[int]*Article{}
+	if len(ids) == 0 {
+		return res, nil
+	}
 	err := conn.MysqlConn.Model(Article{}).Where("id in ?", ids).Find(&articles).Error
 	if err != nil {
 		return nil, err
@@ -47,7 +62,7 @@ func (a *Article) GetAllArticle(categoryID uint) ([]*Article, error) {
 	var res []*Article
 	query := conn.MysqlConn.Model(Article{})
 	if categoryID != 0 {
-		query.Where("category_id=?", categoryID)
+		query = query.Where("category_id=?", categoryID)
 	}
 	err := query.Find(&res).Error
 	if err != nil {
@@ -83,12 +98,54 @@ func GetArticleMap(limit int) (map[int]*Article, error) {
 
 func (a *Article) GetArticleListOrderCreateTime(pageSize, CurrentPage int) ([]*Article, error) {
 	var res []*Article
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+	if CurrentPage <= 0 {
+		CurrentPage = 1
+	}
 	limitStart := (CurrentPage - 1) * pageSize
 	err := conn.MysqlConn.Model(Article{}).Order("created_at Desc").Limit(pageSize).Offset(limitStart).Find(&res).Error
 	if err != nil {
 		return nil, err
 	}
 	return res, nil
+}
+
+func GetAdminArticleList(pageSize, CurrentPage int, title, summary, status, support string) ([]*Article, int64, error) {
+	var res []*Article
+	var total int64
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+	if CurrentPage <= 0 {
+		CurrentPage = 1
+	}
+	query := conn.MysqlConn.Model(Article{})
+	if title != "" {
+		query = query.Where("title LIKE ?", "%"+title+"%")
+	}
+	if summary != "" {
+		query = query.Where("summary LIKE ?", "%"+summary+"%")
+	}
+	if status == "true" {
+		query = query.Where("is_delete = ?", false)
+	} else if status == "false" {
+		query = query.Where("is_delete = ?", true)
+	}
+	if support == "true" {
+		query = query.Where("support = ?", true)
+	} else if support == "false" {
+		query = query.Where("support = ?", false)
+	}
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	limitStart := (CurrentPage - 1) * pageSize
+	if err := query.Order("created_at Desc").Limit(pageSize).Offset(limitStart).Find(&res).Error; err != nil {
+		return nil, 0, err
+	}
+	return res, total, nil
 }
 
 func (a *Article) CreateOne() error {
@@ -129,6 +186,20 @@ func (a *Article) UpdateById() error {
 	return nil
 }
 
+func (a *Article) UpdateColumnsById(values map[string]interface{}) error {
+	if err := conn.MysqlConn.Model(&Article{}).Where("id=?", a.ID).UpdateColumns(values).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteArticlesByIds(ids []int) error {
+	if len(ids) == 0 {
+		return nil
+	}
+	return conn.MysqlConn.Delete(&Article{}, ids).Error
+}
+
 func (a *Article) GetListByQuery(v map[string]interface{}) ([]*Article, error) {
 	articles := []*Article{}
 	if err := conn.MysqlConn.Model(a).Where(v).Find(&articles).Error; err != nil {
@@ -143,4 +214,12 @@ func (a *Article) GetTotal() (int64, error) {
 		return 0, err
 	}
 	return c, nil
+}
+
+func ArticleContentExists(marker string) (bool, error) {
+	var count int64
+	if err := conn.MysqlConn.Model(Article{}).Where("content LIKE ?", "%"+marker+"%").Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }

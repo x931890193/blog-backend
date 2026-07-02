@@ -4,9 +4,13 @@ import (
 	"blog-backend/config"
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
+	"blog-backend/utils/crypt"
 	"blog-backend/utils/github"
+	"encoding/base64"
 	"errors"
+	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -24,6 +28,26 @@ func UserAuth(username, password string) (token string, err error) {
 		return "", err
 	}
 	return token, nil
+}
+
+func GenerateAdmin(username, password string) (*entity.User, error) {
+	username = strings.TrimSpace(username)
+	password = strings.TrimSpace(password)
+	if username == "" {
+		username = "admin"
+	}
+	if password == "" {
+		return nil, errors.New("管理员密码不能为空")
+	}
+	adminExists, err := entity.AdminExists()
+	if err != nil {
+		return nil, err
+	}
+	if adminExists {
+		return nil, errors.New("管理员已存在，禁止再次初始化")
+	}
+	encodedPassword := base64.StdEncoding.EncodeToString([]byte(password))
+	return entity.CreateBootstrapAdmin(username, crypt.Sha256(encodedPassword))
 }
 
 func ParseToken(token string) (*entity.User, error) {
@@ -66,12 +90,27 @@ func GetUsersMapByIds(ids []int) (map[int]entity.User, error) {
 }
 
 func GetOrCreateGitHubUser(user *github.User) (*entity.User, error) {
+	username := strings.TrimSpace(user.Name)
+	if username == "" {
+		username = strings.TrimSpace(user.Login)
+	}
+	if username == "" {
+		username = fmt.Sprintf("github_%d", user.Id)
+	}
+	email := strings.TrimSpace(user.Email)
+	if email == "" {
+		email = fmt.Sprintf("%d@github.local", user.Id)
+	}
+	githubURL := strings.TrimSpace(user.HtmlUrl)
+	if githubURL == "" {
+		githubURL = strings.TrimSpace(user.Url)
+	}
 	obj := &entity.User{
 		GitHubId:  user.Id,
-		UserName:  user.Name,
+		UserName:  username,
 		Avatar:    user.AvatarUrl,
-		Email:     user.Email,
-		GitHubUrl: user.Url,
+		Email:     email,
+		GitHubUrl: githubURL,
 		LastLogin: time.Now(),
 	}
 	err := obj.GetOrCreate()

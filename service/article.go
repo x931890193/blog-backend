@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 )
@@ -70,6 +71,9 @@ func ArticleListWithUser(pageSize, currentPage int, userId int, like, collect ui
 }
 
 func articleListWithUser(article entity.Article, pageSize, currentPage int, ids []uint) ([]*pb.Article, int, error) {
+	if len(ids) == 0 {
+		return []*pb.Article{}, 0, nil
+	}
 	articles, err := article.GetArticleListByIdsWithPage(pageSize, currentPage, ids)
 	if err != nil {
 		return nil, 0, err
@@ -104,6 +108,10 @@ func ArticleListOrigin(pageSize, currentPage int) ([]*entity.Article, error) {
 	return articles, nil
 }
 
+func AdminArticleList(pageSize, currentPage int, title, summary, status, support string) ([]*entity.Article, int64, error) {
+	return entity.GetAdminArticleList(pageSize, currentPage, strings.TrimSpace(title), strings.TrimSpace(summary), strings.TrimSpace(status), strings.TrimSpace(support))
+}
+
 func AddArticle(request *pb.AdminArticleAddRequest) error {
 	tags, _ := json.Marshal(request.TagTitleList)
 	article := entity.Article{
@@ -124,34 +132,44 @@ func AddArticle(request *pb.AdminArticleAddRequest) error {
 	if err != nil {
 		return err
 	}
+	InvalidateArticleTotalCount()
 	go SendEmailWhenArticle(&article)
 	return nil
 }
 
 func UpdateArticle(request *pb.AdminArticleAddRequest, id int) error {
 	tags, _ := json.Marshal(request.TagTitleList)
-	article := entity.Article{
-		BaseModel: entity.BaseModel{
-			ID: id,
-		},
-		CategoryId:    uint(request.CategoryId),
-		Tags:          string(tags),
-		UserId:        0,
-		Title:         request.Title,
-		Summary:       request.Summary,
-		Content:       request.Content,
-		ClickTimes:    0,
-		CanComment:    request.Comment,
-		Weight:        uint(request.Weight),
-		Support:       request.Support,
-		HeaderImgType: uint(request.HeaderImgType),
-		HeaderImg:     request.HeaderImg,
-	}
-	err := article.UpdateById()
-	if err != nil {
+	article := entity.Article{BaseModel: entity.BaseModel{ID: id}}
+	return article.UpdateColumnsById(map[string]interface{}{
+		"category_id":     uint(request.CategoryId),
+		"tags":            string(tags),
+		"title":           request.Title,
+		"summary":         request.Summary,
+		"content":         request.Content,
+		"can_comment":     request.Comment,
+		"weight":          uint(request.Weight),
+		"support":         request.Support,
+		"header_img_type": uint(request.HeaderImgType),
+		"header_img":      request.HeaderImg,
+	})
+}
+
+func DeleteArticles(ids []int) error {
+	if err := entity.DeleteArticlesByIds(ids); err != nil {
 		return err
 	}
+	InvalidateArticleTotalCount()
 	return nil
+}
+
+func UpdateArticleSupport(id int, support bool) error {
+	article := entity.Article{BaseModel: entity.BaseModel{ID: id}}
+	return article.UpdateColumnsById(map[string]interface{}{"support": support})
+}
+
+func UpdateArticleComment(id int, comment bool) error {
+	article := entity.Article{BaseModel: entity.BaseModel{ID: id}}
+	return article.UpdateColumnsById(map[string]interface{}{"can_comment": comment})
 }
 
 func GetAdminOne(id int) (*pb.AdminArticleOneResp, error) {
@@ -323,13 +341,18 @@ func SendEmailWhenArticle(article *entity.Article) {
 
 func GetArticleTotalCount() uint32 {
 	count, err := cache.Client.Get("ArticleTotalCount").Int()
-	if err != nil {
-		article := entity.Article{}
-		total, err := article.GetTotal()
-		if err != nil {
-			return 0
-		}
-		cache.Client.Set("ArticleTotalCount", total, time.Duration(-1))
+	if err == nil {
+		return uint32(count)
 	}
-	return uint32(count)
+	article := entity.Article{}
+	total, err := article.GetTotal()
+	if err != nil {
+		return 0
+	}
+	cache.Client.Set("ArticleTotalCount", total, time.Duration(-1))
+	return uint32(total)
+}
+
+func InvalidateArticleTotalCount() {
+	cache.Client.Del("ArticleTotalCount")
 }

@@ -78,7 +78,19 @@ type config struct {
 	GitHub struct {
 		ClientId     string `yaml:"client_id"`
 		ClientSecret string `yaml:"client_secret"`
+		RedirectUri  string `yaml:"redirect_uri"`
 	} `yaml:"GitHub"`
+	AIArticle struct {
+		Enabled        bool    `yaml:"enabled"`
+		Spec           string  `yaml:"spec"`
+		APIKey         string  `yaml:"api_key"`
+		APIBase        string  `yaml:"api_base"`
+		Model          string  `yaml:"model"`
+		Temperature    float64 `yaml:"temperature"`
+		TimeoutSeconds int     `yaml:"timeout_seconds"`
+		CategoryId     uint    `yaml:"category_id"`
+		UserId         uint    `yaml:"user_id"`
+	} `yaml:"AIArticle"`
 	Mail struct {
 		SMTPHost     string `yaml:"smtp_host"`
 		SMTPPort     string `yaml:"smtp_port"`
