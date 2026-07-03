@@ -83,7 +83,7 @@ func articleListWithUser(article entity.Article, pageSize, currentPage int, ids 
 		res = append(res, &pb.Article{
 			Title:            item.Title,
 			BrowseCount:      uint32(item.ClickTimes),
-			ClassId:          uint32(item.ID),
+			ClassId:          uint32(item.CategoryId),
 			CollectCount:     uint32(item.CollectCount),
 			CommentCount:     uint32(item.CommentCount),
 			Content:          item.Summary,
@@ -213,7 +213,7 @@ func GetOne(id int) (*pb.ArticleOneResp, error) {
 		Obj: &pb.Article{
 			Title:            one.Title,
 			BrowseCount:      uint32(one.ClickTimes),
-			ClassId:          uint32(one.ID),
+			ClassId:          uint32(one.CategoryId),
 			CollectCount:     uint32(one.CollectCount),
 			CommentCount:     uint32(one.CommentCount),
 			Content:          one.Content,
@@ -243,7 +243,7 @@ func GetOneAndUpdateClick(id int) (*pb.ArticleOneResp, error) {
 		Obj: &pb.Article{
 			Title:            one.Title,
 			BrowseCount:      uint32(one.ClickTimes),
-			ClassId:          uint32(one.ID),
+			ClassId:          uint32(one.CategoryId),
 			CollectCount:     uint32(one.CollectCount),
 			CommentCount:     uint32(one.CommentCount),
 			Content:          one.Content,
