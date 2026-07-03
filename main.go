@@ -13,29 +13,50 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 )
 
 func initCrontabTask() {
 	c := cron.New()
 	spec := "0 */24 * * * ?"
-	if err := c.AddFunc(spec, crontab.SaveAliOrder); err != nil {
-		logger.Logger.Error(err.Error())
-	}
-	if err := c.AddFunc(spec, crontab.SaveWechatOrder); err != nil {
-		logger.Logger.Error(err.Error())
-	}
+	registerCronFunc(c, "save_alipay_order", spec, crontab.SaveAliOrder)
+	registerCronFunc(c, "save_wechat_order", spec, crontab.SaveWechatOrder)
 	if config.Cfg.AIArticle.Enabled {
 		aiArticleSpec := config.Cfg.AIArticle.Spec
 		if aiArticleSpec == "" {
 			aiArticleSpec = "0 37 6 * * ?"
 		}
-		if err := c.AddFunc(aiArticleSpec, crontab.GenerateAIArticle); err != nil {
-			logger.Logger.Error(err.Error())
+		if strings.TrimSpace(config.Cfg.AIArticle.APIKey) == "" {
+			logger.Logger.Warn("AIArticle cron enabled but api_key is empty; generation will be skipped")
 		}
+		registerCronFunc(c, "ai_article", aiArticleSpec, crontab.GenerateAIArticle)
+	} else {
+		logger.Logger.Info("AIArticle cron disabled")
 	}
 	c.Start()
+	logger.Logger.Info("cron scheduler started")
 	select {}
+}
+
+func registerCronFunc(c *cron.Cron, name, spec string, fn func()) {
+	if err := c.AddFunc(spec, fn); err != nil {
+		logger.Logger.Error(fmt.Sprintf("cron register failed: name=%s spec=%s error=%s", name, spec, err.Error()))
+		return
+	}
+	logger.Logger.Info(fmt.Sprintf("cron registered: name=%s spec=%s next=%s", name, spec, cronNextRun(spec)))
+}
+
+func cronNextRun(spec string) string {
+	schedule, err := cron.Parse(spec)
+	if err != nil {
+		return fmt.Sprintf("invalid spec: %s", err.Error())
+	}
+	next := schedule.Next(time.Now())
+	if next.IsZero() {
+		return "unscheduled"
+	}
+	return next.Format("2006-01-02 15:04:05 MST")
 }
 
 func main() {

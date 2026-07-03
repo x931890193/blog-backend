@@ -32,6 +32,9 @@ GitHub:
 AIArticle:
   enabled: false
   # robfig/cron v1 format: second minute hour day month weekday
+  # Environment overrides: AI_ARTICLE_ENABLED, AI_ARTICLE_SPEC,
+  # AI_ARTICLE_API_KEY/OPENAI_API_KEY, AI_ARTICLE_API_BASE/OPENAI_API_BASE,
+  # AI_ARTICLE_MODEL/OPENAI_MODEL.
   spec: "0 37 6 * * ?"
   api_key:
   api_base: https://api.openai.com/v1

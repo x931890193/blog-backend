@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -123,4 +124,54 @@ func init() {
 	if err != nil {
 		panic(err.Error())
 	}
+	applyAIArticleEnvOverrides()
+}
+
+func applyAIArticleEnvOverrides() {
+	if value := firstEnv("AI_ARTICLE_ENABLED"); value != "" {
+		if enabled, err := strconv.ParseBool(value); err == nil {
+			Cfg.AIArticle.Enabled = enabled
+		}
+	}
+	if value := firstEnv("AI_ARTICLE_SPEC"); value != "" {
+		Cfg.AIArticle.Spec = value
+	}
+	if value := firstEnv("AI_ARTICLE_API_KEY", "OPENAI_API_KEY"); value != "" {
+		Cfg.AIArticle.APIKey = value
+	}
+	if value := firstEnv("AI_ARTICLE_API_BASE", "OPENAI_API_BASE"); value != "" {
+		Cfg.AIArticle.APIBase = value
+	}
+	if value := firstEnv("AI_ARTICLE_MODEL", "OPENAI_MODEL"); value != "" {
+		Cfg.AIArticle.Model = value
+	}
+	if value := firstEnv("AI_ARTICLE_TEMPERATURE"); value != "" {
+		if temperature, err := strconv.ParseFloat(value, 64); err == nil {
+			Cfg.AIArticle.Temperature = temperature
+		}
+	}
+	if value := firstEnv("AI_ARTICLE_TIMEOUT_SECONDS"); value != "" {
+		if timeoutSeconds, err := strconv.Atoi(value); err == nil {
+			Cfg.AIArticle.TimeoutSeconds = timeoutSeconds
+		}
+	}
+	if value := firstEnv("AI_ARTICLE_CATEGORY_ID"); value != "" {
+		if categoryID, err := strconv.ParseUint(value, 10, 32); err == nil {
+			Cfg.AIArticle.CategoryId = uint(categoryID)
+		}
+	}
+	if value := firstEnv("AI_ARTICLE_USER_ID"); value != "" {
+		if userID, err := strconv.ParseUint(value, 10, 32); err == nil {
+			Cfg.AIArticle.UserId = uint(userID)
+		}
+	}
+}
+
+func firstEnv(names ...string) string {
+	for _, name := range names {
+		if value := strings.TrimSpace(os.Getenv(name)); value != "" {
+			return value
+		}
+	}
+	return ""
 }
