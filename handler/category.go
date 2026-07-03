@@ -46,7 +46,14 @@ func CategoryList(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, resp)
 		return
 	}
-	resp, err := service.GetCategoryList(req.PageSize, req.PageNum, req.Title, req.Description)
+	resp, err := service.GetCategoryList(
+		req.PageSize,
+		req.PageNum,
+		req.Title,
+		req.Description,
+		c.Query("params[beginTime]"),
+		c.Query("params[endTime]"),
+	)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -62,7 +69,11 @@ func GetArticleByClass(c *gin.Context) {
 	if err != nil {
 		atoi = 0
 	}
-	resp, err := service.GetArticleWithClassAndTags(uint(atoi))
+	tagsId, err := strconv.Atoi(c.Query("tagsId"))
+	if err != nil {
+		tagsId = 0
+	}
+	resp, err := service.GetArticleWithClassAndTags(uint(atoi), uint(tagsId))
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())

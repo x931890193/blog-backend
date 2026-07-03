@@ -2,6 +2,8 @@ package entity
 
 import (
 	"blog-backend/model/conn"
+	"errors"
+	"gorm.io/gorm"
 	"strings"
 )
 
@@ -124,4 +126,24 @@ func DeleteCommentsByIds(ids []int) error {
 
 func UpdateCommentDisplay(id int, display bool) error {
 	return conn.MysqlConn.Model(&Comment{}).Where("id = ?", id).Update("display", display).Error
+}
+
+func IncrementCommentVote(id int, field string) (*Comment, error) {
+	if field != "good" && field != "bad" {
+		return nil, errors.New("invalid comment vote field")
+	}
+	comment := &Comment{}
+	err := conn.MysqlConn.Transaction(func(tx *gorm.DB) error {
+		if err := tx.First(comment, id).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(comment).UpdateColumn(field, gorm.Expr(field+" + ?", 1)).Error; err != nil {
+			return err
+		}
+		return tx.First(comment, id).Error
+	})
+	if err != nil {
+		return nil, err
+	}
+	return comment, nil
 }

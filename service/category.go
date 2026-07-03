@@ -28,8 +28,8 @@ func GetCategoryMap() (map[int]*entity.Category, error) {
 	return res, nil
 }
 
-func GetCategoryList(pageSize, currentPage int, title, description string) (*pb.AdminCategoryListResp, error) {
-	list, total, err := entity.GetAdminCategoryList(pageSize, currentPage, title, description)
+func GetCategoryList(pageSize, currentPage int, title, description, beginTime, endTime string) (*pb.AdminCategoryListResp, error) {
+	list, total, err := entity.GetAdminCategoryList(pageSize, currentPage, title, description, beginTime, endTime)
 	if err != nil {
 		return nil, err
 	}

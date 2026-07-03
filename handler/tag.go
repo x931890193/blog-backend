@@ -9,8 +9,9 @@ import (
 )
 
 type AdminTagListRequest struct {
-	PageNum  int `form:"pageNum"`
-	PageSize int `form:"pageSize"`
+	PageNum  int    `form:"pageNum"`
+	PageSize int    `form:"pageSize"`
+	Title    string `form:"title"`
 }
 
 func AdminTagList(c *gin.Context) {
@@ -23,7 +24,13 @@ func AdminTagList(c *gin.Context) {
 		return
 	}
 	req.PageSize, req.PageNum = normalizePagination(req.PageSize, req.PageNum)
-	tagResp, total, err := service.GetTagList(req.PageSize, req.PageNum)
+	tagResp, total, err := service.GetTagList(
+		req.PageSize,
+		req.PageNum,
+		req.Title,
+		c.Query("params[beginTime]"),
+		c.Query("params[endTime]"),
+	)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -43,7 +50,7 @@ func AdminAddTag(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	if err := service.AddTag(req.Title); err != nil {
+	if err := service.AddTag(req.Title, req.Description); err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)
@@ -61,7 +68,7 @@ func AdminEditTag(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	if err := service.UpdateTag(int(req.Id), req.Title); err != nil {
+	if err := service.UpdateTag(int(req.Id), req.Title, req.Description); err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
 		c.ProtoBuf(http.StatusOK, &resp)

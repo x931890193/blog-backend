@@ -7,11 +7,14 @@ import (
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
 	"encoding/json"
+	"net"
 	"path"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type AdminListRequest struct {
@@ -34,6 +37,16 @@ func adminPage(pageSize, pageNum int) (int, int) {
 
 func adminOffset(pageSize, pageNum int) int {
 	return (pageNum - 1) * pageSize
+}
+
+func applyCreatedAtRange(query *gorm.DB, beginTime, endTime string) *gorm.DB {
+	if v := strings.TrimSpace(beginTime); v != "" {
+		query = query.Where("created_at >= ?", v+" 00:00:00")
+	}
+	if v := strings.TrimSpace(endTime); v != "" {
+		query = query.Where("created_at <= ?", v+" 23:59:59")
+	}
+	return query
 }
 
 func formatAdminTime(value time.Time) string {
@@ -84,7 +97,7 @@ func EnsureDefaultAdminRoles() error {
 	return conn.MysqlConn.Create(&roles).Error
 }
 
-func AdminRoleList(pageSize, pageNum int, roleName, roleKey, status string) (*pb.AdminRoleListResp, error) {
+func AdminRoleList(pageSize, pageNum int, roleName, roleKey, status, beginTime, endTime string) (*pb.AdminRoleListResp, error) {
 	if err := EnsureDefaultAdminRoles(); err != nil {
 		return nil, err
 	}
@@ -101,6 +114,7 @@ func AdminRoleList(pageSize, pageNum int, roleName, roleKey, status string) (*pb
 	if strings.TrimSpace(status) != "" {
 		query = query.Where("status = ?", strings.TrimSpace(status))
 	}
+	query = applyCreatedAtRange(query, beginTime, endTime)
 	if err := query.Count(&total).Error; err != nil {
 		return nil, err
 	}
@@ -190,7 +204,7 @@ func roleToTableRow(role entity.AdminRole) *pb.AdminTableRow {
 	}
 }
 
-func AdminNoticeList(pageSize, pageNum int, title, createBy, noticeType, status string) (*pb.AdminTableListResp, error) {
+func AdminNoticeList(pageSize, pageNum int, title, createBy, noticeType, status, beginTime, endTime string) (*pb.AdminTableListResp, error) {
 	pageSize, pageNum = adminPage(pageSize, pageNum)
 	var notices []entity.AdminNotice
 	var total int64
@@ -207,6 +221,7 @@ func AdminNoticeList(pageSize, pageNum int, title, createBy, noticeType, status 
 	if strings.TrimSpace(status) != "" {
 		query = query.Where("status = ?", status)
 	}
+	query = applyCreatedAtRange(query, beginTime, endTime)
 	if err := query.Count(&total).Error; err != nil {
 		return nil, err
 	}
@@ -273,7 +288,7 @@ func DeleteAdminNotices(ids []int) error {
 	return conn.MysqlConn.Delete(&entity.AdminNotice{}, ids).Error
 }
 
-func AdminCarouselList(pageSize, pageNum int, title, description string) (*pb.AdminTableListResp, error) {
+func AdminCarouselList(pageSize, pageNum int, title, description, beginTime, endTime string) (*pb.AdminTableListResp, error) {
 	pageSize, pageNum = adminPage(pageSize, pageNum)
 	var items []entity.AdminCarousel
 	var total int64
@@ -284,6 +299,7 @@ func AdminCarouselList(pageSize, pageNum int, title, description string) (*pb.Ad
 	if strings.TrimSpace(description) != "" {
 		query = query.Where("description LIKE ?", "%"+strings.TrimSpace(description)+"%")
 	}
+	query = applyCreatedAtRange(query, beginTime, endTime)
 	if err := query.Count(&total).Error; err != nil {
 		return nil, err
 	}
@@ -359,7 +375,7 @@ func carouselToTableRow(item entity.AdminCarousel) *pb.AdminTableRow {
 	}
 }
 
-func AdminBlacklistList(pageSize, pageNum int, ip, description string) (*pb.AdminTableListResp, error) {
+func AdminBlacklistList(pageSize, pageNum int, ip, description, beginTime, endTime string) (*pb.AdminTableListResp, error) {
 	pageSize, pageNum = adminPage(pageSize, pageNum)
 	var items []entity.AdminBlacklist
 	var total int64
@@ -370,6 +386,7 @@ func AdminBlacklistList(pageSize, pageNum int, ip, description string) (*pb.Admi
 	if strings.TrimSpace(description) != "" {
 		query = query.Where("description LIKE ?", "%"+strings.TrimSpace(description)+"%")
 	}
+	query = applyCreatedAtRange(query, beginTime, endTime)
 	if err := query.Count(&total).Error; err != nil {
 		return nil, err
 	}
@@ -381,6 +398,54 @@ func AdminBlacklistList(pageSize, pageNum int, ip, description string) (*pb.Admi
 		rows = append(rows, blacklistToTableRow(item))
 	}
 	return &pb.AdminTableListResp{Total: uint32(total), Rows: rows}, nil
+}
+
+func MatchAdminBlacklist(ip, url string) (bool, error) {
+	ip = strings.TrimSpace(ip)
+	if ip == "" {
+		return false, nil
+	}
+	var items []entity.AdminBlacklist
+	if err := conn.MysqlConn.Find(&items).Error; err != nil {
+		return false, err
+	}
+	for _, item := range items {
+		if blacklistIPMatches(strings.TrimSpace(item.IP), ip) {
+			return true, conn.MysqlConn.Model(&entity.AdminBlacklist{}).Where("id = ?", item.ID).Updates(map[string]interface{}{
+				"last_access_url":  truncateValue(url, 255),
+				"last_access_time": time.Now(),
+				"intercept_count":  item.InterceptCount + 1,
+				"updated_at":       time.Now(),
+			}).Error
+		}
+	}
+	return false, nil
+}
+
+func blacklistIPMatches(rule, ip string) bool {
+	if rule == "" || ip == "" {
+		return false
+	}
+	if strings.Contains(rule, "/") {
+		_, network, err := net.ParseCIDR(rule)
+		return err == nil && network.Contains(net.ParseIP(ip))
+	}
+	if strings.HasSuffix(rule, "*") {
+		return strings.HasPrefix(ip, strings.TrimSuffix(rule, "*"))
+	}
+	return rule == ip
+}
+
+func truncateValue(value string, max int) string {
+	value = strings.TrimSpace(value)
+	if max <= 0 {
+		return value
+	}
+	runes := []rune(value)
+	if len(runes) <= max {
+		return value
+	}
+	return string(runes[:max])
 }
 
 func AdminBlacklistOne(id int) (*pb.AdminTableOneResp, error) {
@@ -426,7 +491,7 @@ func blacklistToTableRow(item entity.AdminBlacklist) *pb.AdminTableRow {
 	}
 }
 
-func AdminQuartzJobList(pageSize, pageNum int, jobName, methodName, status string) (*pb.AdminTableListResp, error) {
+func AdminQuartzJobList(pageSize, pageNum int, jobName, methodName, status, beginTime, endTime string) (*pb.AdminTableListResp, error) {
 	pageSize, pageNum = adminPage(pageSize, pageNum)
 	var items []entity.AdminQuartzJob
 	var total int64
@@ -442,6 +507,7 @@ func AdminQuartzJobList(pageSize, pageNum int, jobName, methodName, status strin
 			query = query.Where("status = ?", status == "true" || status == "1")
 		}
 	}
+	query = applyCreatedAtRange(query, beginTime, endTime)
 	if err := query.Count(&total).Error; err != nil {
 		return nil, err
 	}
@@ -540,7 +606,7 @@ func quartzJobToTableRow(item entity.AdminQuartzJob) *pb.AdminTableRow {
 	}
 }
 
-func AdminQuartzLogList(pageSize, pageNum int, jobName, methodName, status string) (*pb.AdminTableListResp, error) {
+func AdminQuartzLogList(pageSize, pageNum int, jobName, methodName, status, beginTime, endTime string) (*pb.AdminTableListResp, error) {
 	pageSize, pageNum = adminPage(pageSize, pageNum)
 	var items []entity.AdminQuartzLog
 	var total int64
@@ -552,8 +618,9 @@ func AdminQuartzLogList(pageSize, pageNum int, jobName, methodName, status strin
 		query = query.Where("method_name LIKE ?", "%"+strings.TrimSpace(methodName)+"%")
 	}
 	if strings.TrimSpace(status) != "" {
-		query = query.Where("status = ?", status == "0" || status == "true" || status == "1")
+		query = query.Where("status = ?", status == "true" || status == "1")
 	}
+	query = applyCreatedAtRange(query, beginTime, endTime)
 	if err := query.Count(&total).Error; err != nil {
 		return nil, err
 	}
@@ -604,7 +671,7 @@ func quartzLogToTableRow(item entity.AdminQuartzLog) *pb.AdminTableRow {
 	}
 }
 
-func AdminStorageList(pageSize, pageNum int, name string) (*pb.AdminTableListResp, error) {
+func AdminStorageList(pageSize, pageNum int, name, beginTime, endTime string) (*pb.AdminTableListResp, error) {
 	pageSize, pageNum = adminPage(pageSize, pageNum)
 	var items []entity.Resource
 	var total int64
@@ -612,6 +679,7 @@ func AdminStorageList(pageSize, pageNum int, name string) (*pb.AdminTableListRes
 	if strings.TrimSpace(name) != "" {
 		query = query.Where("`key` LIKE ?", "%"+strings.TrimSpace(name)+"%")
 	}
+	query = applyCreatedAtRange(query, beginTime, endTime)
 	if err := query.Count(&total).Error; err != nil {
 		return nil, err
 	}
@@ -780,6 +848,7 @@ func AdminRequestLogList(kind string, pageSize, pageNum int, filters map[string]
 			query = query.Where("status_code >= 400")
 		}
 	}
+	query = applyCreatedAtRange(query, filters["beginTime"], filters["endTime"])
 	if err := query.Count(&total).Error; err != nil {
 		return nil, err
 	}
@@ -958,7 +1027,7 @@ func AdminDashboardLogRows(kind string, pageSize, pageNum int) (*pb.LogResp, err
 	resp := &pb.LogResp{}
 	switch kind {
 	case "taskLog":
-		result, err := AdminQuartzLogList(pageSize, pageNum, "", "", "")
+		result, err := AdminQuartzLogList(pageSize, pageNum, "", "", "", "", "")
 		if err != nil {
 			return nil, err
 		}

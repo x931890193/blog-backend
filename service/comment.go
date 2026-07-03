@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"strings"
 )
 
 func AddComment(request *pb.CommentAddRequest, user *entity.User, c *gin.Context) (data *pb.Comment, err error) {
@@ -62,6 +63,8 @@ func AddComment(request *pb.CommentAddRequest, user *entity.User, c *gin.Context
 		CreateDate: one.CreatedAt.Format("2006-01-02 15:04:05"),
 		Content:    one.Content,
 		Children:   []*pb.Comment{},
+		Good:       uint32(one.Good),
+		Bad:        uint32(one.Bad),
 	}
 	return &pbComment, nil
 }
@@ -107,6 +110,8 @@ func getAllChildrenComment(dbRes []*entity.Comment, parentId uint, userMap map[i
 			Ip:             item.Ip,
 			Ua:             item.Ua,
 			Os:             item.OS,
+			Good:           uint32(item.Good),
+			Bad:            uint32(item.Bad),
 		})
 		children = []*pb.Comment{}
 	}
@@ -294,6 +299,22 @@ func DeleteComments(ids []int) error {
 
 func UpdateCommentDisplay(id int, display bool) error {
 	return entity.UpdateCommentDisplay(id, display)
+}
+
+func VoteComment(id int, voteType string) (*pb.Comment, error) {
+	field := "good"
+	if strings.TrimSpace(voteType) == "bad" {
+		field = "bad"
+	}
+	comment, err := entity.IncrementCommentVote(id, field)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.Comment{
+		XId:  strconv.Itoa(comment.ID),
+		Good: uint32(comment.Good),
+		Bad:  uint32(comment.Bad),
+	}, nil
 }
 
 func userLabel(index int) string {

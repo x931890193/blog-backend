@@ -24,6 +24,7 @@ func SetupServer() *gin.Engine {
 	router.HandleMethodNotAllowed = true
 	router.GET("/", handler.Hello)
 	router.Use(middleware.RequestMiddleware())
+	router.Use(middleware.BlacklistMiddleware())
 	router.Use(middleware.BaseAuthMiddleware())
 	admin := router.Group("/admin")
 	{
@@ -159,6 +160,7 @@ func SetupServer() *gin.Engine {
 		comment.GET("/list", handler.GetCommentList)
 		comment.GET("/info")
 		comment.POST("/add", handler.AddComment)
+		comment.POST("/vote", handler.VoteComment)
 		comment.GET("/getTopComment", handler.GetTopComments)
 	}
 	// resource

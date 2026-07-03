@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net"
+	"net/http"
 	"strings"
 	"time"
 )
@@ -105,6 +106,30 @@ func RequestMiddleware() gin.HandlerFunc {
 				logger.Logger.Error(fmt.Sprintf("保存请求日志失败: %v", err))
 			}
 		}()
+	}
+}
+
+func BlacklistMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if strings.HasPrefix(c.Request.URL.Path, "/admin") || c.Request.URL.Path == "/ws" {
+			c.Next()
+			return
+		}
+		ip := realClientIP(c)
+		blocked, err := service.MatchAdminBlacklist(ip, c.Request.URL.String())
+		if err != nil {
+			logger.Logger.Error(fmt.Sprintf("检查黑名单失败: %v", err))
+			c.Next()
+			return
+		}
+		if blocked {
+			c.AbortWithStatusJSON(http.StatusUnavailableForLegalReasons, gin.H{
+				"code": 451,
+				"msg":  "访问受限",
+			})
+			return
+		}
+		c.Next()
 	}
 }
 

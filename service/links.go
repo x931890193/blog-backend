@@ -4,6 +4,7 @@ import (
 	"blog-backend/model/entity"
 	pb "blog-backend/proto"
 	"strconv"
+	"strings"
 )
 
 func AddLink(req *pb.LinkRequest) error {
@@ -35,17 +36,21 @@ func linkDisplayFromRequest(req *pb.LinkRequest) bool {
 	return display
 }
 
-func LinkList(admin bool) (*pb.LinkListResp, error) {
-	link := entity.Link{}
-	list, err := link.GetAllList()
+func LinkList(admin bool, pageSize, pageNum int, title, description, beginTime, endTime string) (*pb.LinkListResp, error) {
+	list, total, err := entity.GetLinkList(
+		admin,
+		pageSize,
+		pageNum,
+		strings.TrimSpace(title),
+		strings.TrimSpace(description),
+		strings.TrimSpace(beginTime),
+		strings.TrimSpace(endTime),
+	)
 	if err != nil {
 		return nil, err
 	}
 	item := []*pb.LinkBase{}
 	for _, l := range list {
-		if !admin && (l.VerifyStatus != entity.VerifyPass || !l.ShowLink) {
-			continue
-		}
 		item = append(item, &pb.LinkBase{
 			Title:        l.Title,
 			Description:  l.Description,
@@ -60,7 +65,7 @@ func LinkList(admin bool) (*pb.LinkListResp, error) {
 		})
 	}
 	return &pb.LinkListResp{
-		Total: uint32(len(item)),
+		Total: uint32(total),
 		Rows:  item,
 	}, nil
 }

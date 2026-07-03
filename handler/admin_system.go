@@ -21,6 +21,8 @@ type AdminUserListRequest struct {
 	PageNum     int    `form:"pageNum"`
 	CurrentPage int    `form:"currentPage"`
 	UserName    string `form:"userName"`
+	Phone       string `form:"phone"`
+	Status      string `form:"status"`
 }
 
 type AdminTableListRequest struct {
@@ -83,7 +85,15 @@ func AdminUserList(c *gin.Context) {
 	if currentPage == 0 {
 		currentPage = req.PageNum
 	}
-	result, err := service.AdminUserList(req.PageSize, currentPage, req.UserName)
+	result, err := service.AdminUserList(
+		req.PageSize,
+		currentPage,
+		req.UserName,
+		req.Phone,
+		req.Status,
+		c.Query("params[beginTime]"),
+		c.Query("params[endTime]"),
+	)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -297,7 +307,15 @@ func AdminRoleList(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	result, err := service.AdminRoleList(req.PageSize, adminCurrentPage(req), req.RoleName, req.RoleKey, req.Status)
+	result, err := service.AdminRoleList(
+		req.PageSize,
+		adminCurrentPage(req),
+		req.RoleName,
+		req.RoleKey,
+		req.Status,
+		c.Query("params[beginTime]"),
+		c.Query("params[endTime]"),
+	)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -682,7 +700,7 @@ func AdminNoticeList(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	result, err := service.AdminNoticeList(req.PageSize, adminCurrentPage(req), req.Title, req.CreateBy, req.Type, req.Status)
+	result, err := service.AdminNoticeList(req.PageSize, adminCurrentPage(req), req.Title, req.CreateBy, req.Type, req.Status, c.Query("params[beginTime]"), c.Query("params[endTime]"))
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -717,7 +735,7 @@ func AdminCarouselList(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	result, err := service.AdminCarouselList(req.PageSize, adminCurrentPage(req), req.Title, req.Description)
+	result, err := service.AdminCarouselList(req.PageSize, adminCurrentPage(req), req.Title, req.Description, c.Query("params[beginTime]"), c.Query("params[endTime]"))
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -760,7 +778,7 @@ func AdminBlacklistList(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	result, err := service.AdminBlacklistList(req.PageSize, adminCurrentPage(req), req.IP, req.Description)
+	result, err := service.AdminBlacklistList(req.PageSize, adminCurrentPage(req), req.IP, req.Description, c.Query("params[beginTime]"), c.Query("params[endTime]"))
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -795,7 +813,7 @@ func AdminQuartzJobList(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	result, err := service.AdminQuartzJobList(req.PageSize, adminCurrentPage(req), req.JobName, req.MethodName, req.Status)
+	result, err := service.AdminQuartzJobList(req.PageSize, adminCurrentPage(req), req.JobName, req.MethodName, req.Status, c.Query("params[beginTime]"), c.Query("params[endTime]"))
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -862,7 +880,7 @@ func AdminQuartzLogList(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	result, err := service.AdminQuartzLogList(req.PageSize, adminCurrentPage(req), req.JobName, req.MethodName, req.Status)
+	result, err := service.AdminQuartzLogList(req.PageSize, adminCurrentPage(req), req.JobName, req.MethodName, req.Status, c.Query("params[beginTime]"), c.Query("params[endTime]"))
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -897,7 +915,7 @@ func AdminStorageList(c *gin.Context) {
 		c.ProtoBuf(http.StatusOK, &resp)
 		return
 	}
-	result, err := service.AdminStorageList(req.PageSize, adminCurrentPage(req), req.Name)
+	result, err := service.AdminStorageList(req.PageSize, adminCurrentPage(req), req.Name, c.Query("params[beginTime]"), c.Query("params[endTime]"))
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())
@@ -963,6 +981,8 @@ func adminRequestLogList(c *gin.Context, kind string) {
 		"status":       req.Status,
 		"title":        req.Title,
 		"businessType": req.BusinessType,
+		"beginTime":    c.Query("params[beginTime]"),
+		"endTime":      c.Query("params[endTime]"),
 	})
 	if err != nil {
 		resp.Code = uint32(DbError)

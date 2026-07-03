@@ -32,7 +32,7 @@ func (c *Category) GetAllCategory(pageSize, currentPage int) ([]*Category, error
 	return res, nil
 }
 
-func GetAdminCategoryList(pageSize, currentPage int, title, description string) ([]*Category, int64, error) {
+func GetAdminCategoryList(pageSize, currentPage int, title, description, beginTime, endTime string) ([]*Category, int64, error) {
 	var res []*Category
 	var total int64
 	query := conn.MysqlConn.Model(&Category{})
@@ -41,6 +41,12 @@ func GetAdminCategoryList(pageSize, currentPage int, title, description string) 
 	}
 	if v := strings.TrimSpace(description); v != "" {
 		query = query.Where("seo_desc LIKE ?", "%"+v+"%")
+	}
+	if v := strings.TrimSpace(beginTime); v != "" {
+		query = query.Where("created_at >= ?", v+" 00:00:00")
+	}
+	if v := strings.TrimSpace(endTime); v != "" {
+		query = query.Where("created_at <= ?", v+" 23:59:59")
 	}
 	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err

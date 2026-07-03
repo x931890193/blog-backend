@@ -4,6 +4,8 @@ import (
 	"blog-backend/model/conn"
 	"errors"
 	"fmt"
+	"strings"
+
 	"gorm.io/gorm"
 )
 
@@ -26,6 +28,37 @@ func (l *Link) GetAllList() ([]*Link, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+func GetLinkList(admin bool, pageSize, currentPage int, title, description, beginTime, endTime string) ([]*Link, int64, error) {
+	res := []*Link{}
+	var total int64
+	query := conn.MysqlConn.Model(&Link{}).Where("is_delete = ?", false)
+	if !admin {
+		query = query.Where("verify_status = ? and show_link = ?", VerifyPass, true)
+	}
+	if v := strings.TrimSpace(title); v != "" {
+		query = query.Where("title LIKE ?", "%"+v+"%")
+	}
+	if v := strings.TrimSpace(description); v != "" {
+		query = query.Where("description LIKE ?", "%"+v+"%")
+	}
+	if v := strings.TrimSpace(beginTime); v != "" {
+		query = query.Where("created_at >= ?", v+" 00:00:00")
+	}
+	if v := strings.TrimSpace(endTime); v != "" {
+		query = query.Where("created_at <= ?", v+" 23:59:59")
+	}
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	if pageSize > 0 && currentPage > 0 {
+		query = query.Limit(pageSize).Offset((currentPage - 1) * pageSize)
+	}
+	if err := query.Order("created_at DESC").Find(&res).Error; err != nil {
+		return nil, 0, err
+	}
+	return res, total, nil
 }
 
 func (l *Link) GetLinByUserId() error {

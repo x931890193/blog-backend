@@ -215,7 +215,16 @@ func AdminArticleList(c *gin.Context) {
 		return
 	}
 	req.PageSize, req.PageNum = normalizePagination(req.PageSize, req.PageNum)
-	list, total, err := service.AdminArticleList(req.PageSize, req.PageNum, req.Title, req.Summary, req.Status, req.Support)
+	list, total, err := service.AdminArticleList(
+		req.PageSize,
+		req.PageNum,
+		req.Title,
+		req.Summary,
+		req.Status,
+		req.Support,
+		c.Query("params[beginTime]"),
+		c.Query("params[endTime]"),
+	)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())

@@ -112,7 +112,7 @@ func (a *Article) GetArticleListOrderCreateTime(pageSize, CurrentPage int) ([]*A
 	return res, nil
 }
 
-func GetAdminArticleList(pageSize, CurrentPage int, title, summary, status, support string) ([]*Article, int64, error) {
+func GetAdminArticleList(pageSize, CurrentPage int, title, summary, status, support, beginTime, endTime string) ([]*Article, int64, error) {
 	var res []*Article
 	var total int64
 	if pageSize <= 0 {
@@ -137,6 +137,12 @@ func GetAdminArticleList(pageSize, CurrentPage int, title, summary, status, supp
 		query = query.Where("support = ?", true)
 	} else if support == "false" {
 		query = query.Where("support = ?", false)
+	}
+	if beginTime != "" {
+		query = query.Where("created_at >= ?", beginTime+" 00:00:00")
+	}
+	if endTime != "" {
+		query = query.Where("created_at <= ?", endTime+" 23:59:59")
 	}
 	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err

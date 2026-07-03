@@ -101,6 +101,7 @@ type Tags struct {
 	BaseModel
 	Name    string `gorm:"not null; comment:tag name; unique" json:"name"`
 	TagType uint   `gorm:"not null; comment:标签类型; type:VARCHAR(255)" json:"tag_type"`
+	Color   string `gorm:"not null; default:'#409EFF'; type:VARCHAR(32)" json:"color"`
 }
 
 func (Tags) TableName() string {
@@ -181,6 +182,7 @@ type User struct {
 	UserName      string `gorm:"not null; unique; comment: 用户名;" json:"username"`
 	Password      string `gorm:"not null;comment: 密码;" json:"-"`
 	Avatar        string `gorm:"not null; comment: 头像;" json:"avatar"`
+	Phone         string `gorm:"type:VARCHAR(32); comment: 手机号码;" json:"phone"`
 	Label         int    `gorm:"not null; comment: 标签; default: 0;" json:"label"`
 	Email         string `gorm:"not null; unique; comment: 邮箱;" json:"email"`
 	GitHubId      int    `gorm:"not null; comment: githubID; column:github_id" json:"github_id"`

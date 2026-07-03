@@ -1,8 +1,11 @@
 package entity
 
-import "blog-backend/model/conn"
+import (
+	"blog-backend/model/conn"
+	"strings"
+)
 
-func GetTags(pageSize, currentPage int) ([]*Tags, int64, error) {
+func GetTags(pageSize, currentPage int, title, beginTime, endTime string) ([]*Tags, int64, error) {
 	var tags []*Tags
 	var total int64
 	if pageSize <= 0 {
@@ -13,6 +16,15 @@ func GetTags(pageSize, currentPage int) ([]*Tags, int64, error) {
 	}
 	offset := (currentPage - 1) * pageSize
 	query := conn.MysqlConn.Model(&Tags{})
+	if v := strings.TrimSpace(title); v != "" {
+		query = query.Where("name LIKE ?", "%"+v+"%")
+	}
+	if v := strings.TrimSpace(beginTime); v != "" {
+		query = query.Where("created_at >= ?", v+" 00:00:00")
+	}
+	if v := strings.TrimSpace(endTime); v != "" {
+		query = query.Where("created_at <= ?", v+" 23:59:59")
+	}
 	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
@@ -22,13 +34,24 @@ func GetTags(pageSize, currentPage int) ([]*Tags, int64, error) {
 	return tags, total, nil
 }
 
-func CreateTag(name string) error {
-	tag := &Tags{Name: name, TagType: 0}
+func GetTagByID(id int) (*Tags, error) {
+	tag := &Tags{}
+	if err := conn.MysqlConn.First(tag, id).Error; err != nil {
+		return nil, err
+	}
+	return tag, nil
+}
+
+func CreateTag(name, color string) error {
+	tag := &Tags{Name: name, TagType: 0, Color: color}
 	return conn.MysqlConn.Create(tag).Error
 }
 
-func UpdateTag(id int, name string) error {
-	return conn.MysqlConn.Model(&Tags{}).Where("id = ?", id).Update("name", name).Error
+func UpdateTag(id int, name, color string) error {
+	return conn.MysqlConn.Model(&Tags{}).Where("id = ?", id).Updates(map[string]interface{}{
+		"name":  name,
+		"color": color,
+	}).Error
 }
 
 func DeleteTagsByIds(ids []int) error {

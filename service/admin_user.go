@@ -12,9 +12,17 @@ import (
 
 const defaultAdminAvatar = "https://www.bytealien.com/favicon.ico"
 
-func AdminUserList(pageSize, currentPage int, username string) (*pb.AdminUserListResp, error) {
+func AdminUserList(pageSize, currentPage int, username, phone, status, beginTime, endTime string) (*pb.AdminUserListResp, error) {
 	pageSize, currentPage = normalizeAdminPagination(pageSize, currentPage)
-	users, total, err := entity.GetAdminUsers(pageSize, currentPage, strings.TrimSpace(username))
+	users, total, err := entity.GetAdminUsers(
+		pageSize,
+		currentPage,
+		strings.TrimSpace(username),
+		strings.TrimSpace(phone),
+		strings.TrimSpace(status),
+		strings.TrimSpace(beginTime),
+		strings.TrimSpace(endTime),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -119,6 +127,7 @@ func AdminCreateUser(req *pb.AdminUserRequest) error {
 		UserName:      username,
 		Password:      hashAdminPassword(password),
 		Avatar:        avatar,
+		Phone:         strings.TrimSpace(req.Phone),
 		Email:         email,
 		IsAdmin:       statusToAdmin(req.Status, req.IsAdmin),
 		ReceiveUpdate: true,
@@ -131,6 +140,7 @@ func AdminUpdateUser(req *pb.AdminUserRequest) error {
 	values := map[string]interface{}{
 		"user_name":      firstNonEmpty(req.UserName, req.NickName),
 		"email":          req.Email,
+		"phone":          strings.TrimSpace(req.Phone),
 		"is_admin":       statusToAdmin(req.Status, req.IsAdmin),
 		"receive_update": req.ReceiveUpdate,
 		"updated_at":     time.Now(),
@@ -181,6 +191,7 @@ func adminUserToPB(user *entity.User) *pb.AdminUserBase {
 		UserName:      user.UserName,
 		NickName:      user.UserName,
 		Email:         user.Email,
+		Phone:         user.Phone,
 		Status:        status,
 		Avatar:        user.Avatar,
 		IsAdmin:       user.IsAdmin,

@@ -74,7 +74,20 @@ func DeleteLink(c *gin.Context) {
 func LinkList(c *gin.Context) {
 	var resp *pb.LinkListResp
 	isAdmin := strings.Contains(c.Request.URL.String(), "admin")
-	resp, err := service.LinkList(isAdmin)
+	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
+	if pageNum == 0 {
+		pageNum, _ = strconv.Atoi(c.Query("currentPage"))
+	}
+	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
+	resp, err := service.LinkList(
+		isAdmin,
+		pageSize,
+		pageNum,
+		c.Query("title"),
+		c.Query("description"),
+		c.Query("params[beginTime]"),
+		c.Query("params[endTime]"),
+	)
 	if err != nil {
 		resp.Code = uint32(DbError)
 		resp.Msg = ConvertMsg(DbError, err.Error())

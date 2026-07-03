@@ -83,6 +83,27 @@ func GetCommentList(c *gin.Context) {
 	c.ProtoBuf(http.StatusOK, &resp)
 }
 
+func VoteComment(c *gin.Context) {
+	resp := pb.CommentAddResp{}
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil || id <= 0 {
+		resp.Code = uint32(ParamsError)
+		resp.Msg = ConvertMsg(ParamsError, "评论ID不正确")
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	voteType := c.Query("type")
+	data, err := service.VoteComment(id, voteType)
+	if err != nil {
+		resp.Code = uint32(DbError)
+		resp.Msg = ConvertMsg(DbError, err.Error())
+		c.ProtoBuf(http.StatusOK, &resp)
+		return
+	}
+	resp.Data = data
+	c.ProtoBuf(http.StatusOK, &resp)
+}
+
 type AdminCommentListRequest struct {
 	PageNum  int    `form:"pageNum"`
 	PageSize int    `form:"pageSize"`

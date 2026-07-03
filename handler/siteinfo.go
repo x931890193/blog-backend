@@ -21,6 +21,13 @@ func GetSiteInfo(c *gin.Context) {
 	resp.Author = siteInfo.Author
 	resp.Beian = siteInfo.RecordNumber
 	resp.Github = siteInfo.Git
+	resp.Title = siteInfo.Title
+	resp.Descriptions = siteInfo.Description
+	resp.Keywords = siteInfo.Keywords
+	resp.AlipayImage = siteInfo.AliPayImage
+	resp.WechatPayImage = siteInfo.WeChatPayImage
+	resp.Job = siteInfo.Job
+	resp.LoveCount = uint32(service.SiteLoveCount(siteInfo))
 	c.ProtoBuf(http.StatusOK, &resp)
 }
 
@@ -112,6 +119,11 @@ func AdminGetSiteInfo(c *gin.Context) {
 	resp.Beian = siteInfo.RecordNumber
 	resp.Github = siteInfo.Git
 	resp.Title = siteInfo.Title
+	resp.Keywords = siteInfo.Keywords
+	resp.AlipayImage = siteInfo.AliPayImage
+	resp.WechatPayImage = siteInfo.WeChatPayImage
+	resp.Job = siteInfo.Job
+	resp.LoveCount = uint32(service.SiteLoveCount(siteInfo))
 	c.ProtoBuf(http.StatusOK, &resp)
 }
 
@@ -125,9 +137,16 @@ func AdminSetSiteInfo(c *gin.Context) {
 		return
 	}
 	_, err := service.UpdateOrCreate(int(req.Id), map[string]interface{}{
-		"record_number": req.Beian,
-		"title":         req.Title,
-		"description":   req.Descriptions,
+		"author":          req.Author,
+		"record_number":   req.Beian,
+		"title":           req.Title,
+		"description":     req.Descriptions,
+		"keywords":        req.Keywords,
+		"git":             req.Github,
+		"job":             req.Job,
+		"alipay_image":    req.AlipayImage,
+		"wechatpay_image": req.WechatPayImage,
+		"love_count":      int(req.LoveCount),
 	})
 	if err != nil {
 		resp.Code = uint32(DbError)

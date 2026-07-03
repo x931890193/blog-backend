@@ -170,12 +170,27 @@ func CreateBootstrapAdmin(username, passwordHash string) (*User, error) {
 	return user, nil
 }
 
-func GetAdminUsers(pageSize, currentPage int, username string) ([]*User, int64, error) {
+func GetAdminUsers(pageSize, currentPage int, username, phone, status, beginTime, endTime string) ([]*User, int64, error) {
 	users := []*User{}
 	var total int64
 	db := conn.MysqlConn.Model(&User{}).Where("is_delete = ?", false)
 	if username != "" {
 		db = db.Where("user_name like ?", "%"+username+"%")
+	}
+	if phone != "" {
+		db = db.Where("phone like ?", "%"+phone+"%")
+	}
+	switch status {
+	case "0", "true", "admin":
+		db = db.Where("is_admin = ?", true)
+	case "1", "false", "user":
+		db = db.Where("is_admin = ?", false)
+	}
+	if beginTime != "" {
+		db = db.Where("created_at >= ?", beginTime+" 00:00:00")
+	}
+	if endTime != "" {
+		db = db.Where("created_at <= ?", endTime+" 23:59:59")
 	}
 	if err := db.Count(&total).Error; err != nil {
 		return nil, 0, err

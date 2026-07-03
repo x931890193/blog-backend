@@ -116,6 +116,13 @@ message SiteInfoReq {
     string beian = 5;
     string title = 6;
     uint32 id = 7;
+    string author = 8;
+    string github = 9;
+    string keywords = 10;
+    string alipayImage = 11;
+    string wechatPayImage = 12;
+    string job = 13;
+    uint32 loveCount = 14;
 }
 
 message SiteInfoResp {
@@ -128,6 +135,11 @@ message SiteInfoResp {
   string selfDescriptions = 7;
   uint32 id = 8;
   string title = 9;
+  string keywords = 10;
+  string alipayImage = 11;
+  string wechatPayImage = 12;
+  string job = 13;
+  uint32 loveCount = 14;
 }
 
 message BrowseList {
@@ -331,6 +343,9 @@ message AdminArticleOneResp {
 message Tags  {
   uint32 _id = 1;
   string name = 2;
+  string color = 3;
+  uint32 count = 4;
+  string createTime = 5;
 }
 
 message ListByClassResp {

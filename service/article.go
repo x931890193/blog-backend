@@ -108,8 +108,17 @@ func ArticleListOrigin(pageSize, currentPage int) ([]*entity.Article, error) {
 	return articles, nil
 }
 
-func AdminArticleList(pageSize, currentPage int, title, summary, status, support string) ([]*entity.Article, int64, error) {
-	return entity.GetAdminArticleList(pageSize, currentPage, strings.TrimSpace(title), strings.TrimSpace(summary), strings.TrimSpace(status), strings.TrimSpace(support))
+func AdminArticleList(pageSize, currentPage int, title, summary, status, support, beginTime, endTime string) ([]*entity.Article, int64, error) {
+	return entity.GetAdminArticleList(
+		pageSize,
+		currentPage,
+		strings.TrimSpace(title),
+		strings.TrimSpace(summary),
+		strings.TrimSpace(status),
+		strings.TrimSpace(support),
+		strings.TrimSpace(beginTime),
+		strings.TrimSpace(endTime),
+	)
 }
 
 func AddArticle(request *pb.AdminArticleAddRequest) error {
@@ -258,13 +267,15 @@ func GetOneAndUpdateClick(id int) (*pb.ArticleOneResp, error) {
 	}, nil
 }
 
-func GetArticleWithClassAndTags(categoryId uint) (*pb.ListByClassResp, error) {
+func GetArticleWithClassAndTags(categoryId, tagID uint) (*pb.ListByClassResp, error) {
 	article := entity.Article{}
 	category := entity.Category{}
 	res := &pb.ListByClassResp{}
 	articleList := []*pb.ListByClassResp_ArticleList{}
 	catgoryList := []*pb.ListByClassResp_ClassList{}
 	catgoryMap := map[int]*pb.ListByClassResp_ClassList{}
+	tagMap := map[uint]*pb.Tags{}
+	tagNameByID := map[uint]string{}
 	categories, err := category.GetAllCategory(0, 0)
 	for _, c := range categories {
 		catgoryMap[c.ID] = &pb.ListByClassResp_ClassList{
@@ -273,22 +284,47 @@ func GetArticleWithClassAndTags(categoryId uint) (*pb.ListByClassResp, error) {
 			Count: 0,
 		}
 	}
+	tags, _, err := entity.GetTags(1000, 1, "", "", "")
+	if err != nil {
+		return nil, err
+	}
+	for _, tag := range tags {
+		tagMap[uint(tag.ID)] = &pb.Tags{
+			XId:        uint32(tag.ID),
+			Name:       tag.Name,
+			Color:      normalizeTagColor(tag.Color),
+			CreateTime: formatAdminTime(tag.CreatedAt),
+		}
+		tagNameByID[uint(tag.ID)] = tag.Name
+	}
+	selectedTag := tagNameByID[tagID]
 	articles, err := article.GetAllArticle(0)
 	if err != nil {
 		return nil, err
 	}
 	articleYearMap := map[int][]*pb.ListByClassResp_List{}
 	for _, a := range articles {
-		year := a.CreatedAt.Year()
-		_, ok := articleYearMap[year]
-		if !ok {
-			articleYearMap[year] = []*pb.ListByClassResp_List{}
-		}
 		if item, exist := catgoryMap[int(a.CategoryId)]; exist {
 			item.Count++
 		}
 		if categoryId != 0 && a.CategoryId != categoryId {
 			continue
+		}
+		articleTags := parseArticleTags(a.Tags)
+		for _, tagName := range articleTags {
+			for _, tag := range tagMap {
+				if tag.Name == tagName {
+					tag.Count++
+					break
+				}
+			}
+		}
+		if tagID != 0 && (selectedTag == "" || !containsString(articleTags, selectedTag)) {
+			continue
+		}
+		year := a.CreatedAt.Year()
+		if _, ok := articleYearMap[year]; !ok {
+			articleYearMap[year] = []*pb.ListByClassResp_List{}
 		}
 		articleYearMap[year] = append(articleYearMap[year], &pb.ListByClassResp_List{
 			Title:      a.Title,
@@ -312,7 +348,24 @@ func GetArticleWithClassAndTags(categoryId uint) (*pb.ListByClassResp, error) {
 	res.ArticleList = articleList
 	sort.Slice(catgoryList, func(i, j int) bool { return catgoryList[i].XId < catgoryList[j].XId })
 	res.ClassList = catgoryList
+	tagList := make([]*pb.Tags, 0, len(tagMap))
+	for _, tag := range tagMap {
+		if tag.Count > 0 {
+			tagList = append(tagList, tag)
+		}
+	}
+	sort.Slice(tagList, func(i, j int) bool { return tagList[i].XId < tagList[j].XId })
+	res.Tags = tagList
 	return res, nil
+}
+
+func containsString(values []string, target string) bool {
+	for _, value := range values {
+		if value == target {
+			return true
+		}
+	}
+	return false
 }
 
 func SendEmailWhenArticle(article *entity.Article) {
